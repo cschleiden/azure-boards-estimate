@@ -44,8 +44,7 @@
         "function-parentheses-newline-inside": "always-multi-line",
         "function-parentheses-space-inside": "never-single-line",
         "function-whitespace-after": "always",
-        "function-url-quotes": "always",
-        "indentation": 2,
+        "indentation": 4,
         "max-empty-lines": 1,
         "max-line-length": [
             80,
@@ -81,7 +80,6 @@
         "value-list-comma-newline-after": "always-multi-line",
         "value-list-comma-space-after": "always-single-line",
         "value-list-comma-space-before": "never",
-        "value-no-vendor-prefix": true,
-        "length-zero-no-unit": true,
+        "value-no-vendor-prefix": true
     },
 }

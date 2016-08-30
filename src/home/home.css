@@ -1,0 +1,26 @@
+.session {
+    cursor: pointer;
+
+    font-weight: bold;
+    margin: 10px;
+
+    &:hover {
+        background: aliceblue;
+    }
+}
+
+.session .icon {
+    background: blue;
+    border-radius: 10px;
+    height: 50px;
+    width: 50px;
+}
+
+.session .line1 {
+    height: 25px;
+}
+
+.session .line2 {
+    color: red;
+    height: 25px;
+}
