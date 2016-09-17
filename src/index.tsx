@@ -1,6 +1,5 @@
 /// <reference path="../typings/index.d.ts" />
 
-
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
@@ -8,28 +7,35 @@ import * as Redux from "redux";
 import { Provider } from "react-redux";
 
 import { Router, Route, IndexRoute, browserHistory } from "react-router";
-import { syncHistoryWithStore, routerReducer } from "react-router-redux";
+import { syncHistoryWithStore, routerReducer, routerMiddleware } from "react-router-redux";
 
-import { sessionReducer } from "./stores/sessionStore";
+import { sessionReducer } from "./reducers/sessionsReducer";
 
 import { App } from "./components/app";
-import { About } from "./components/about";
-import { Session } from "./components/session";
+//import { Session } from "./components/session";
+
 import Home from "./home/home";
+import Create from "./pages/create/create";
+
 
 import "./styles/index.scss";
+
+const middleware = routerMiddleware(browserHistory)
 
 const store = Redux.createStore(
   Redux.combineReducers({
     routing: routerReducer,
     sessions: sessionReducer
-  }), (window as any).devToolsExtension && (window as any).devToolsExtension({
-    serializeState: (key, value) => value && value.data ? value.data : value,
-    deserializeState: (state) => ({
-      routing: state.routing,
-      sessions: state.sessions.data
-    })
-  }));
+  }),
+  Redux.compose(
+    Redux.applyMiddleware(middleware),
+    (window as any).devToolsExtension && (window as any).devToolsExtension({
+      serializeState: (key, value) => value && value.data ? value.data : value,
+      deserializeState: (state) => ({
+        routing: state.routing,
+        sessions: state.sessions.data
+      })
+    })));
 
 // Work around typings error
 const history: any = syncHistoryWithStore(browserHistory as any, store);
@@ -38,7 +44,8 @@ ReactDOM.render(
   <Provider store={ store }>
     <Router history={ history }>
       <Route path="/" component={ Home } />
-      <Route path="/session" component={ Session } />
+      <Route path="/create" component={ Create } />
+      <Route path="/settings" />
     </Router>
   </Provider>,
   document.getElementById("root")

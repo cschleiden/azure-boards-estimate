@@ -1,16 +1,15 @@
 import * as React from "react";
 import { Link } from "react-router";
 import { connect } from "react-redux";
+import { push } from 'react-router-redux'
 
 import { IImmutable } from "immuts";
 
-import { ISessionState } from "../stores/sessionStore";
 import { ISession } from "../model/session";
-
+import { ISessionState } from "../reducers/sessionsReducer";
 import { addAction, removeAction } from "../actions/sessionActionsCreators";
 
 import { Button, ButtonType } from "office-ui-fabric-react/lib/Button";
-
 import { List } from "office-ui-fabric-react/lib/List";
 
 import "./sessionList.scss";
@@ -55,7 +54,7 @@ function mapStateToProps(state: { sessions: IImmutable<ISessionState> }) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        create: (): void => dispatch(addAction("test")),
+        create: (): void => dispatch(push("/create")),
         remove: (id: string): void => dispatch(removeAction(id))
     };
 }
