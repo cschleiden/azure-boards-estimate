@@ -31,12 +31,7 @@ const basePlugins = [
 ];
 
 const devPlugins = [
-  new webpack.NoErrorsPlugin(),
-  new styleLintPlugin({
-    configFile: './.stylelintrc',
-    files: ['src/**/*.css'],
-    failOnError: false,
-  }),
+  new webpack.NoErrorsPlugin()
 ];
 
 const prodPlugins = [
@@ -50,28 +45,6 @@ const prodPlugins = [
 const plugins = basePlugins
   .concat(process.env.NODE_ENV === 'production' ? prodPlugins : [])
   .concat(process.env.NODE_ENV === 'development' ? devPlugins : []);
-
-const postcssBasePlugins = [
-  require('postcss-modules-local-by-default'),
-  require('postcss-import')({
-    addDependencyTo: webpack,
-  }),
-  require('postcss-cssnext')({
-    browsers: ['ie >= 8', 'last 2 versions'],
-  }),
-];
-const postcssDevPlugins = [];
-const postcssProdPlugins = [
-  require('cssnano')({
-    safe: true,
-    sourcemap: true,
-    autoprefixer:false,
-  }),
-];
-
-const postcssPlugins = postcssBasePlugins
-  .concat(process.env.NODE_ENV === 'production' ? postcssProdPlugins : [])
-  .concat(process.env.NODE_ENV === 'development' ? postcssDevPlugins : []);
 
 module.exports = {
 
@@ -115,16 +88,12 @@ module.exports = {
     loaders: [
       loaders.tsx,
       loaders.html,
-      loaders.css,
+      loaders.scss,
       loaders.svg,
       loaders.eot,
       loaders.woff,
       loaders.woff2,
       loaders.ttf,
     ]
-  },
-
-  postcss: function() {
-    return postcssPlugins;
-  },
+  }
 };

@@ -2,71 +2,101 @@ import * as React from "react";
 import { Link } from "react-router";
 import { connect } from "react-redux";
 
+import { IImmutable } from "immuts";
+
+import { ISessionState } from "../stores/sessionStore";
 import { ISession } from "../model/session";
-import { addAction } from "../actions/sessionActionsCreators";
 
-const Styles = require("./home.css");
+import { addAction, removeAction } from "../actions/sessionActionsCreators";
 
-const SessionComponent: React.StatelessComponent<{}> = (props: {}): JSX.Element => {
-    return <li className={ "clearfix " + Styles.session as string }>
-        <div className={ "left " + Styles.icon }></div>
+import { Button, ButtonType } from "office-ui-fabric-react/lib/Button";
 
-        <div className={ Styles.line1 }>Session Nam</div>
-        <div className={ Styles.line2 }>Session Nam2</div>
+import { List } from "office-ui-fabric-react/lib/List";
 
-        <span className="bowtie-icon bowtie-edit-delete"></span>
-    </li>;
+import "./sessionList.scss";
+
+interface ISessionProps {
+    session: ISession;
+
+    remove: (id: string) => void;
+}
+
+const SessionComponent: React.StatelessComponent<ISessionProps> = (props: ISessionProps): JSX.Element => {
+    return <ul className="ms-List">
+        <li className="ms-ListItem">
+            <span className="ms-ListItem-primaryText">
+                <a className="ms-Link" href="#">
+                    { props.session.name }
+                </a>
+            </span>
+            <span className="ms-ListItem-secondaryText">Workitems #12, #2434, #23423</span>
+            <span className="ms-ListItem-metaText">7/8 2016 - 2: 42p</span>
+            <div className="ms-ListItem-actions">
+                <div className="ms-ListItem-action">
+                    <Button buttonType={ ButtonType.icon } onClick={ () => props.remove(props.session.id) } icon="trash" rootProps={{ title: "Remove" }} />
+                </div>
+            </div>
+        </li>
+    </ul>;
 };
 
 interface IHomeProps {
-    sessions: ISession[];
-    create: (name: string) => void;
+    sessions: ISessionState; 
+
+    create: () => void;
+    remove: (id: string) => void;
 }
 
-class Home extends React.Component<IHomeProps, void> {
-    public render(): JSX.Element {
-        let content: JSX.Element;
-
-        let sessions = this._renderSessions();
-
-        if (!sessions || sessions.length === 0) {
-            content = <div>
-                Create a new content
-            </div>;
-        } else {
-            content = <ul className="list-reset">
-                { sessions }
-            </ul>;
-        }
-
-        return <div className="home">
-            <h1>Sessions</h1>
-
-            <div className="clearfix">
-                <div className="right">
-                    <a href="#" onClick={ () => this.props.create("test") }>+ Create new session</a>
-                </div>
-            </div>
-
-            { content }
-        </div>;
-    }
-
-    private _renderSessions(): JSX.Element[] {
-        return this.props.sessions.map(x => <SessionComponent />);
-    }
-}
-
-function mapStateToProps(state) {
+function mapStateToProps(state: { sessions: IImmutable<ISessionState> }) {
     return {
-        sessions: state.sessions.sessions
+        sessions: state.sessions.data
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        create: (name: string): void => dispatch(addAction(name))
+        create: (): void => dispatch(addAction("test")),
+        remove: (id: string): void => dispatch(removeAction(id))
     };
+}
+
+class Home extends React.Component<IHomeProps, void> {
+    public shouldUpdateComponent(nextProps) {
+        return this.props.sessions !== nextProps.sessions;
+    }
+
+    public render(): JSX.Element {
+        let content: JSX.Element;
+
+        const sessions = this.props.sessions.sessions;
+        if (!sessions || sessions.length === 0) {
+            content = <div>
+                Start a new session TODO
+            </div>;
+        } else {
+            content = <List
+                items={ sessions }
+                onRenderCell={ (item) => <SessionComponent session={ item } remove={ this.props.remove } /> } />;
+        }
+
+        return <div className="ms-Grid">
+            <div className="ms-Grid-row">
+                <div className="ms-Grid-col ms-u-sm12">
+                    <span className="ms-font-su">Sessions</span>
+
+                    <div className="clearfix">
+                        <div className="right">
+                            <Button
+                                buttonType={ ButtonType.hero }
+                                onClick={ () => this.props.create() }>Create new session</Button>
+                        </div>
+                    </div>
+
+                    { content }
+                </div>
+            </div>
+        </div>;
+    }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

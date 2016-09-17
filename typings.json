@@ -1,4 +1,7 @@
 {
+  "dependencies": {
+    "immuts": "npm:immuts/dist/immuts.d.ts"
+  },
   "globalDependencies": {
     "assert": "github:DefinitelyTyped/DefinitelyTyped/assert/assert.d.ts#58697597421d259f656dad7a2a5f20140c8a8051",
     "chai": "registry:dt/chai#3.4.0+20160317120654",

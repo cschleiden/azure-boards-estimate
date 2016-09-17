@@ -17,17 +17,22 @@ import { About } from "./components/about";
 import { Session } from "./components/session";
 import Home from "./home/home";
 
-// Global styles
-import "./styles/index.css";
+import "./styles/index.scss";
 
 const store = Redux.createStore(
   Redux.combineReducers({
     routing: routerReducer,
     sessions: sessionReducer
-  }), (window as any).devToolsExtension && (window as any).devToolsExtension());
+  }), (window as any).devToolsExtension && (window as any).devToolsExtension({
+    serializeState: (key, value) => value && value.data ? value.data : value,
+    deserializeState: (state) => ({
+      routing: state.routing,
+      sessions: state.sessions.data
+    })
+  }));
 
 // Work around typings error
-const history: any = syncHistoryWithStore(browserHistory as any, store); 
+const history: any = syncHistoryWithStore(browserHistory as any, store);
 
 ReactDOM.render(
   <Provider store={ store }>
