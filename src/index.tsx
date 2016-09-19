@@ -7,28 +7,27 @@ import * as Redux from "redux";
 import { Provider } from "react-redux";
 
 import { Router, Route, IndexRoute, browserHistory } from "react-router";
-import { syncHistoryWithStore, routerReducer, routerMiddleware } from "react-router-redux";
+import { syncHistoryWithStore, routerMiddleware } from "react-router-redux";
+import thunkMiddleware from "redux-thunk";
 
-import { sessionReducer } from "./reducers/sessionsReducer";
+import * as createLogger from "redux-logger";
+import promiseMiddleware from "./middleware/promise-middleware";
 
-import { App } from "./components/app";
-//import { Session } from "./components/session";
+import rootReducer from "./reducers";
 
-import Home from "./home/home";
+import Home from "./pages/home/home";
 import Create from "./pages/create/create";
-
 
 import "./styles/index.scss";
 
-const middleware = routerMiddleware(browserHistory)
-
 const store = Redux.createStore(
-  Redux.combineReducers({
-    routing: routerReducer,
-    sessions: sessionReducer
-  }),
+  rootReducer,
   Redux.compose(
-    Redux.applyMiddleware(middleware),
+    Redux.applyMiddleware(
+      routerMiddleware(browserHistory),
+      promiseMiddleware as any,
+      thunkMiddleware,
+      createLogger()),
     (window as any).devToolsExtension && (window as any).devToolsExtension({
       serializeState: (key, value) => value && value.data ? value.data : value,
       deserializeState: (state) => ({

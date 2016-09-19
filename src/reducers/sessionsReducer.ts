@@ -4,28 +4,35 @@ import * as ImmutableJs from "immutable";
 import { makeImmutable, IImmutable, makeImmutableJs } from "immuts";
 
 import { IAction } from "../actions/action";
-import * as Actions from "../actions/sessionActionsCreators";
+import * as Actions from "../actions/sessions";
 import { ISession } from "../model/session";
-
-export interface ITest {
-    name: string;
-}
 
 export interface ISessionState {
     sessions: ISession[];
-    test: ITest;
+    isLoading: boolean;
+
+    currentSession: ISession;
 }
 
-const initialState: IImmutable<ISessionState> = makeImmutable<ISessionState>({
+const initialState = makeImmutable({
     sessions: [],
-    test: {
-        name: "foo"
-    }
+    isLoading: false,
+    currentSession: null
 });
 
-export var sessionReducer = (state: IImmutable<ISessionState> = initialState, action?): IImmutable<ISessionState> => {
+export const sessions = (
+    state: IImmutable<ISessionState> = initialState,
+    action?: any): IImmutable<ISessionState> => {
     switch (action.type) {
+        case Actions.FETCH_SESSIONS_PENDING:
+            return state.set(x => x.isLoading, true);
+
+        case Actions.FETCH_SESSIONS_SUCCESS:
+            return state.set(x => x.isLoading, false);
+
         case Actions.ADD_SESSION:
+            const payload: Actions.IAddActionPayload = action.payload;
+
             return state.update(x => x.sessions, s => s.concat([{
                 id: (state.data.sessions.length + 1).toString(10),
                 name: action.payload.name,

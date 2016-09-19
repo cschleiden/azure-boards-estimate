@@ -1,13 +1,13 @@
 import * as React from "react";
 import { Link } from "react-router";
 import { connect } from "react-redux";
-import { push } from 'react-router-redux'
+import { push } from "react-router-redux";
 
 import { IImmutable } from "immuts";
 
-import { ISession } from "../model/session";
-import { ISessionState } from "../reducers/sessionsReducer";
-import { addAction, removeAction } from "../actions/sessionActionsCreators";
+import { ISession } from "../../model/session";
+import { ISessionState } from "../../reducers/sessionsReducer";
+import { addAction, removeAction, fetchAction } from "../../actions/sessions";
 
 import { Button, ButtonType } from "office-ui-fabric-react/lib/Button";
 import { List } from "office-ui-fabric-react/lib/List";
@@ -40,8 +40,9 @@ const SessionComponent: React.StatelessComponent<ISessionProps> = (props: ISessi
 };
 
 interface IHomeProps {
-    sessions: ISessionState; 
+    sessions: ISessionState;
 
+    fetch: () => void;
     create: () => void;
     remove: (id: string) => void;
 }
@@ -55,7 +56,8 @@ function mapStateToProps(state: { sessions: IImmutable<ISessionState> }) {
 function mapDispatchToProps(dispatch) {
     return {
         create: (): void => dispatch(push("/create")),
-        remove: (id: string): void => dispatch(removeAction(id))
+        remove: (id: string): void => dispatch(removeAction(id)),
+        fetch: () => dispatch(fetchAction())
     };
 }
 
@@ -64,11 +66,17 @@ class Home extends React.Component<IHomeProps, void> {
         return this.props.sessions !== nextProps.sessions;
     }
 
+    public componentDidMount() {
+        this.props.fetch();
+    }
+
     public render(): JSX.Element {
         let content: JSX.Element;
 
         const sessions = this.props.sessions.sessions;
-        if (!sessions || sessions.length === 0) {
+        if (this.props.sessions.isLoading) { 
+            content = <div>Loading...</div>;
+        } else if (!sessions || sessions.length === 0) {
             content = <div>
                 Start a new session TODO
             </div>;

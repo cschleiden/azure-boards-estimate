@@ -13,6 +13,7 @@
     "mocha": "github:DefinitelyTyped/DefinitelyTyped/mocha/mocha.d.ts#d6dd320291705694ba8e1a79497a908e9f5e6617",
     "node": "registry:dt/node#6.0.0+20160818175514",
     "object-assign": "github:DefinitelyTyped/DefinitelyTyped/object-assign/object-assign.d.ts#70bf7e2bfeb0d5b1b651ef3219bcc65c8eec117e",
+    "q": "registry:dt/q#0.0.0+20160613154756",
     "react": "registry:dt/react#0.14.0+20160817201227",
     "react-dom": "registry:dt/react-dom#0.14.0+20160412154040",
     "react-redux": "registry:dt/react-redux#4.4.0+20160724070751",
@@ -20,6 +21,9 @@
     "react-router-redux": "registry:dt/react-router-redux#4.0.0+20160724070902",
     "react-router/history": "registry:dt/react-router/history#2.0.0+20160608102730",
     "redux": "registry:dt/redux#3.5.2+20160703092728",
+    "redux-actions": "registry:dt/redux-actions#0.8.0+20160521154116",
+    "redux-logger": "registry:dt/redux-logger#2.6.0+20160619033847",
+    "redux-thunk": "registry:dt/redux-thunk#2.1.0+20160703120921",
     "sinon": "registry:dt/sinon#1.16.0+20160317120654",
     "webpack": "github:DefinitelyTyped/DefinitelyTyped/webpack/webpack.d.ts#70bf7e2bfeb0d5b1b651ef3219bcc65c8eec117e"
   }
