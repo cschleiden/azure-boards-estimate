@@ -5,6 +5,7 @@ import { Action, createAction } from "redux-actions";
 import { IAction, makeAsyncAction } from "./action";
 
 import { ISession } from "../model/session";
+import { SessionService } from "../services/sessionService";
 
 export const FETCH_SESSIONS_PENDING = "fetch-sessions-pending";
 export const FETCH_SESSIONS_SUCCESS = "fetch-sessions-success";
@@ -18,7 +19,7 @@ export const fetchAction = makeAsyncAction<ISession[], void>({
         pending: FETCH_SESSIONS_PENDING
     },
     payload: {
-        promise: Q.delay([], 2000)
+        promise: SessionService.getInstance().getSessionsAsync()
     }
 });
 

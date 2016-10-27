@@ -78,7 +78,7 @@ class Home extends React.Component<IHomeProps, void> {
             content = <div>Loading...</div>;
         } else if (!sessions || sessions.length === 0) {
             content = <div>
-                Start a new session TODO
+                No existing sessions. Once you have started one, it will show up here. 
             </div>;
         } else {
             content = <List

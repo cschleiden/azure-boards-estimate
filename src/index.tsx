@@ -36,7 +36,7 @@ const store = Redux.createStore(
       })
     })));
 
-// Work around typings error
+// Work around typings error by casting to any
 const history: any = syncHistoryWithStore(browserHistory as any, store);
 
 ReactDOM.render(
