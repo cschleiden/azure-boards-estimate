@@ -2,17 +2,22 @@
   "compileOnSave": false,
   "buildOnSave": false,
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "amd",
+    "moduleResolution": "node",
     "target": "es5",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "noImplicitAny": false,
     "removeComments": false,
     "sourceMap": true,
-    "jsx": "react"
+    "jsx": "react",    
+    "typeRoots": [
+      "typings/",
+      "node_modules/@types/"
+    ]
   },
-  "exclude": [
-    "node_modules",
-    "dist"
+  "filesGlob": [
+    "src/**/*.ts",
+    "src/**/*.tsx"
   ]
 }

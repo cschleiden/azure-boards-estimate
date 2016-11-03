@@ -36,7 +36,6 @@ dist
 .#*
 
 # Typescript-related generated files
-typings
 src/**/*.js
 src/**/*.js.map
 test/**/*.js

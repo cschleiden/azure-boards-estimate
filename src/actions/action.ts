@@ -1,6 +1,6 @@
 export interface IAction<T> {
     type: string;
-    payload: T;
+    payload?: T;
 }
 
 export interface IAsyncPayload<TResult, TData> {
@@ -8,15 +8,13 @@ export interface IAsyncPayload<TResult, TData> {
     data?: TData;
 }
 
-export interface IAsyncAction<TResult, TData> {
-    types: {
-        succcess: string;
-        failed?: string;
-        pending?: string;
-    };
-    payload?: IAsyncPayload<TResult, TData>;
+export interface IAsyncAction<TResult, TData> extends IAction<IAsyncPayload<TResult, TData>> {
     meta?: any;
 }
+
+export const success = (type: string) => `${type}-success`;
+export const failed = (type: string) => `${type}-failed`;
+export const pending = (type: string) => `${type}-pending`;
 
 export const makeAsyncAction = <TResult, TData>(action: IAsyncAction<TResult, TData>): () => void => {
     return () => {

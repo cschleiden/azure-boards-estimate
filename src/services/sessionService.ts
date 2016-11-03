@@ -1,3 +1,5 @@
+import * as Q from "q";
+
 import VSS_Extension_Service = require("VSS/SDK/Services/ExtensionData");
 
 import { ISession } from "../model/session";
@@ -17,23 +19,27 @@ export class SessionService {
     }
 
     private _extensionService: VSS_Extension_Service.ExtensionDataService;
+    private _collectionNames: string[];
 
-    private constructor() {}
+    private constructor() { }
 
     public getSessionsAsync(): IPromise<ISession[]> {
-        return this._getService().then(service => service.getDocuments(CollectionName).then((documents: ISession[]) => {
-            return documents;
-        }));
+        return this._getService().then(service =>
+            service.getDocuments(CollectionName).then((documents: ISession[]) => {
+                return documents;
+            }));
     }
 
     private _getService(): IPromise<VSS_Extension_Service.ExtensionDataService> {
         if (this._extensionService) {
             return Q(this._extensionService);
         }
-        
+
         return VSS.getService(VSS.ServiceIds.ExtensionData).then((extensionService: VSS_Extension_Service.ExtensionDataService) => {
-            this._extensionService = extensionService;
-            return extensionService;
+            return extensionService.queryCollectionNames([CollectionName]).then(() => {
+                this._extensionService = extensionService;
+                return extensionService;
+            });
         });
     }
 }

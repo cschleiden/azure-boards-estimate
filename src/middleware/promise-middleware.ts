@@ -1,7 +1,7 @@
-import * as Q from "q";
 import objectAssign = require("object-assign");
+import Q = require("q");
 
-import { IAsyncAction, IAsyncPayload } from "../actions/action";
+import { IAsyncAction, IAsyncPayload, success, pending, failed } from "../actions/action";
 
 export default function promiseMiddleware({ dispatch }) {
     return next => <TResult, TData>(action: IAsyncAction<TResult, TData>) => {
@@ -9,19 +9,17 @@ export default function promiseMiddleware({ dispatch }) {
             return next(action);
         }
 
-        const { types, payload, meta } = action;
+        const { type, payload, meta } = action;
         const { promise, data } = payload;
 
         /**
          * Dispatch the pending action
          */
-        if (types.pending) {
-            dispatch(objectAssign({},
-                { type: types.pending },
-                data ? { payload: data } : {},
-                meta ? { meta } : {}
-            ));
-        }
+        dispatch(objectAssign({},
+            { type: pending(type) },
+            data ? { payload: data } : {},
+            meta ? { meta } : {}
+        ));
 
         /**
          * If successful, dispatch the fulfilled action, otherwise dispatch
@@ -30,19 +28,17 @@ export default function promiseMiddleware({ dispatch }) {
         return promise.then(
             result => {
                 dispatch({
-                    type: types.succcess,
+                    type: success(type),
                     payload: result,
                     meta,
                 });
             },
             error => {
-                if (types.failed) {
-                    dispatch({
-                        type: types.failed,
-                        payload: error,
-                        meta,
-                    });
-                }
+                dispatch({
+                    type: failed(type),
+                    payload: error,
+                    meta,
+                });
             }
         );
     };

@@ -7,17 +7,10 @@ import { IAction, makeAsyncAction } from "./action";
 import { ISession } from "../model/session";
 import { SessionService } from "../services/sessionService";
 
-export const FETCH_SESSIONS_PENDING = "fetch-sessions-pending";
-export const FETCH_SESSIONS_SUCCESS = "fetch-sessions-success";
-export const FETCH_SESSIONS_ERROR = "fetch-sessions-error";
-
+export const FETCH_SESSIONS = "fetch-sessions";
 
 export const fetchAction = makeAsyncAction<ISession[], void>({
-    types: {
-        succcess: FETCH_SESSIONS_SUCCESS,
-        failed: FETCH_SESSIONS_ERROR,
-        pending: FETCH_SESSIONS_PENDING
-    },
+    type: FETCH_SESSIONS,
     payload: {
         promise: SessionService.getInstance().getSessionsAsync()
     }

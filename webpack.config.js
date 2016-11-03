@@ -6,6 +6,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const proxy = require('./server/webpack-dev-proxy');
 const loaders = require('./webpack/loaders');
 const styleLintPlugin = require('stylelint-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const ProgressBarPlugin = require('progress-bar-webpack-plugin');
 
 const baseAppEntries = [
   './src/index.tsx',
@@ -25,9 +27,16 @@ const basePlugins = [
   }),
   new webpack.optimize.CommonsChunkPlugin('vendor', '[name].[hash].js'),
   new HtmlWebpackPlugin({
-    template: './src/index.html',
-    inject: 'body'
-  })
+    template: './src/index.ejs',
+    inject: false // we inject ourselves in the template
+  }),
+  new CopyWebpackPlugin([
+    { from: "./node_modules/vss-web-extension-sdk/lib/VSS.SDK.min.js", to: "libs/VSS.SDK.min.js" }
+    //{ from: "./src/*.html", to: "./" },
+    //{ from: "./marketplace", to: "marketplace" },
+    //{ from: "./vss-extension.json", to: "vss-extension-release.json" }
+  ]),
+  new ProgressBarPlugin()
 ];
 
 const devPlugins = [
@@ -47,7 +56,7 @@ const plugins = basePlugins
   .concat(process.env.NODE_ENV === 'development' ? devPlugins : []);
 
 module.exports = {
-
+  target: "web",
   entry: {
     app: appEntries,
     vendor: [
@@ -60,12 +69,17 @@ module.exports = {
     ]
   },
 
+  externals: [
+    /^q$/ // /^VSS\/.*/, /^TFS\/.*/, 
+  ],
+
   output: {
     path: path.join(__dirname, 'dist'),
     filename: '[name].js',
     publicPath: '/',
     sourceMapFilename: '[name].js.map',
-    chunkFilename: '[id].chunk.js'
+    chunkFilename: '[id].chunk.js',
+    libraryTarget: "amd"
   },
 
   devtool: 'source-map',

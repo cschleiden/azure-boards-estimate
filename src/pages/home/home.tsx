@@ -9,9 +9,10 @@ import { ISession } from "../../model/session";
 import { ISessionState } from "../../reducers/sessionsReducer";
 import { addAction, removeAction, fetchAction } from "../../actions/sessions";
 
-import { Button, ButtonType } from "office-ui-fabric-react/lib/Button";
-import { List } from "office-ui-fabric-react/lib/List";
+import { Button, ButtonType } from "office-ui-fabric-react/lib-amd/Button";
+import { List } from "office-ui-fabric-react/lib-amd/List";
 
+import "./home.scss";
 import "./sessionList.scss";
 
 interface ISessionProps {

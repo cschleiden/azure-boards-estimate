@@ -1,8 +1,5 @@
-/// <reference path="../typings/index.d.ts" />
-
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-
 import * as Redux from "redux";
 import { Provider } from "react-redux";
 
@@ -13,7 +10,7 @@ import thunkMiddleware from "redux-thunk";
 import * as createLogger from "redux-logger";
 import promiseMiddleware from "./middleware/promise-middleware";
 
-import rootReducer from "./reducers";
+import rootReducer from "./reducers/index";
 
 import Home from "./pages/home/home";
 import Create from "./pages/create/create";
@@ -42,7 +39,7 @@ const history: any = syncHistoryWithStore(browserHistory as any, store);
 ReactDOM.render(
   <Provider store={ store }>
     <Router history={ history }>
-      <Route path="/" component={ Home } />
+      <Route path="index.html" component={ Home } />
       <Route path="/create" component={ Create } />
       <Route path="/settings" />
     </Router>

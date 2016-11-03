@@ -1,0 +1,20 @@
+{
+    "galleryFlags": [
+        "Public",
+        "Preview"
+    ],
+    "files": [
+        {
+            "path": "src",
+            "addressable": true
+        },
+        {
+            "path": "libs",
+            "addressable": true
+        },
+        {
+            "path": "marketplace",
+            "addressable": true
+        }
+    ]
+}
