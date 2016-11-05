@@ -2,7 +2,8 @@
 // Project: https://www.visualstudio.com/integrate/extensions/overview
 // Definitions by: Microsoft <vsointegration@microsoft.com>
 
-/// <reference path='vss.d.ts' />
+/// <reference types="vss" />
+
 declare module "TFS/Build/Contracts" {
 import DistributedTask_Common = require("TFS/DistributedTaskCommon/Contracts");
 import TFS_Core_Contracts = require("TFS/Core/Contracts");

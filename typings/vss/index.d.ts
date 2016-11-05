@@ -6,11 +6,10 @@
 // Common interfaces specific to WebPlatform area
 //----------------------------------------------------------
 
-/// <reference path='../node_modules/@types/knockout/index.d.ts' />
-/// <reference path='../node_modules/@types/jquery/index.d.ts' />
-/// <reference path='../node_modules/@types/q/index.d.ts' />
-/// <reference path='../node_modules/@types/requirejs/index.d.ts' />
-
+/// <reference types="knockout" />
+/// <reference types="jquery" />
+/// <reference types="q" />
+/// <reference types="requirejs" />
 
 /**
 * VSS-specific options for VSS ajax requests
