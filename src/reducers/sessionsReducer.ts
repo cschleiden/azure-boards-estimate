@@ -1,11 +1,8 @@
-import { createStore } from "redux";
-
-import * as ImmutableJs from "immutable";
-import { makeImmutable, IImmutable, makeImmutableJs } from "immuts";
+import { makeImmutable, IImmutable } from "immuts";
 
 import { IAction, success, pending, failed } from "../actions/action";
 import * as SessionActions from "../actions/sessions";
-import { ISession } from "../model/session";
+import { ISession, SessionMode } from "../model/session";
 
 export interface ISessionState {
     sessions: ISession[];
@@ -37,7 +34,10 @@ export const sessions = (
                 id: (state.data.sessions.length + 1).toString(10),
                 name: action.payload.name,
                 createdAt: new Date(),
-                createdBy: "user"
+                createdBy: "user",
+                description: "",
+                mode: SessionMode.Azure,
+                version: 1
             }]));
 
         case SessionActions.REMOVE_SESSION: {

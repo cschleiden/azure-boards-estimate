@@ -17,6 +17,7 @@ import Create from "./pages/create/create";
 
 import "./styles/index.scss";
 
+// Create main store
 const store = Redux.createStore(
   rootReducer,
   Redux.compose(

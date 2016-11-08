@@ -25,7 +25,7 @@ const basePlugins = [
     __DEV__: process.env.NODE_ENV !== 'production',
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
   }),
-  new webpack.optimize.CommonsChunkPlugin('vendor', '[name].[hash].js'),
+  // new webpack.optimize.CommonsChunkPlugin('vendor', '[name].[hash].js'),
   new HtmlWebpackPlugin({
     template: './src/index.ejs',
     inject: false // we inject ourselves in the template

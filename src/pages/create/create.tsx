@@ -5,51 +5,84 @@ import { push } from "react-router-redux";
 
 import { IImmutable } from "immuts";
 
-import { ISession } from "../../model/session";
-import { ISessionState } from "../../reducers/sessionsReducer";
-import { addAction, removeAction, fetchAction } from "../../actions/sessions";
+import { ISession, SessionMode } from "../../model/session";
+import { ICreateSessionState } from "../../reducers/createReducer";
+import { setName, setDescription, changeMode } from "../../actions/create";
 
+import { TextField } from "office-ui-fabric-react/lib-amd/TextField";
 import { Button, ButtonType } from "office-ui-fabric-react/lib-amd/Button";
 import { List } from "office-ui-fabric-react/lib-amd/List";
+import { ChoiceGroup } from "office-ui-fabric-react/lib-amd/ChoiceGroup";
 
-interface ICreateProps {
-    sessions: ISessionState;
-
-    cancel: () => void;
-    create: (name: string) => void;
-    fetch: () => void;
+interface IState {
+    session: ISession;
 }
 
-function mapStateToProps(state: { sessions: IImmutable<ISessionState> }) {
-    return {
-        sessions: state.sessions.data
-    };
+const mapStateToProps = (state: { create: IImmutable<ICreateSessionState> }) => ({
+    session: state.create.data.session
+}) as IState;
+
+interface IDispatch {
+    setName: (string) => void;
+    setDescription: (string) => void;
+    changeMode: (SessionMode) => void;
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-        cancel: (): void => { push("/create"); },
-        create: (id: string): void => dispatch(addAction("name")), 
-        fetch: () => dispatch(fetchAction())
-    };
-}
+const mapDispatchToProps = (dispatch) => ({
+    setName: (name: string) => dispatch(setName(name)),
+    setDescription: (description: string) => dispatch(setDescription(description)),
+    changeMode: (mode: SessionMode) => dispatch(changeMode(mode))
+}) as IDispatch;
 
-class Create extends React.Component<ICreateProps, void> {
-    public shouldUpdateComponent(nextProps) {
-        return this.props.sessions !== nextProps.sessions;
-    }
-
+class Create extends React.PureComponent<IState & IDispatch, void> {
     public render(): JSX.Element {
         return <div className="ms-Grid">
             <div className="ms-Grid-row">
                 <div className="ms-Grid-col ms-u-sm12">
                     <span className="ms-font-su">Create new session</span>
 
-                    <Button onClick={ () => this.props.fetch() }>Test</Button>
+                    <TextField label="Name" value={ this.props.session.name } onChanged={ this._changeName } />
+                    <TextField label="Description" value={ this.props.session.description } />
+
+                    <ChoiceGroup
+                        label="Pick one image"
+                        options={[
+                            {
+                                key: SessionMode[SessionMode.Azure],
+                                isChecked: this.props.session.mode === SessionMode.Azure,
+                                imageSrc: "/Modules/DevOffice.Fabric/dist/choicegroup-bar-unselected.png",
+                                selectedImageSrc: "/Modules/DevOffice.Fabric/dist/choicegroup-bar-selected.png",
+                                imageSize: { width: 50, height: 50 },
+                                text: "Azure"
+                            },
+                            {
+                                key: SessionMode[SessionMode.Offline],
+                                isChecked: this.props.session.mode === SessionMode.Offline,
+                                imageSrc: "/Modules/DevOffice.Fabric/dist/choicegroup-bar-unselected.png",
+                                selectedImageSrc: "/Modules/DevOffice.Fabric/dist/choicegroup-bar-selected.png",
+                                imageSize: { width: 50, height: 50 },
+                                text: "Offline"
+                            },
+                            {
+                                key: SessionMode[SessionMode.Local],
+                                isChecked: this.props.session.mode === SessionMode.Local,
+                                imageSrc: "/Modules/DevOffice.Fabric/dist/choicegroup-bar-unselected.png",
+                                selectedImageSrc: "/Modules/DevOffice.Fabric/dist/choicegroup-bar-selected.png",
+                                imageSize: { width: 50, height: 50 },
+                                text: "Local"
+                            },
+                        ]}
+                        onChanged={null} />
+
+                    <Button>Create</Button>
                 </div>
             </div>
-        </div>;
+        </div >;
     }
+
+    private _changeName = (value) => {
+        this.props.setName(value);
+    };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Create);
