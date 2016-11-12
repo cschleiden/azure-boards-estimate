@@ -81,7 +81,9 @@ class Create extends React.PureComponent<IState & IDispatch, void> {
     }
 
     private _changeName = (value) => {
-        this.props.setName(value);
+        if (this.props.session.name !== value) {
+            this.props.setName(value);
+        }
     };
 }
 

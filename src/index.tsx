@@ -10,6 +10,7 @@ import thunkMiddleware from "redux-thunk";
 import * as createLogger from "redux-logger";
 import promiseMiddleware from "./middleware/promise-middleware";
 
+import { makeImmutable, IImmutable } from "immuts";
 import rootReducer from "./reducers/index";
 
 import Home from "./pages/home/home";
@@ -26,12 +27,14 @@ const store = Redux.createStore(
       promiseMiddleware as any,
       thunkMiddleware,
       createLogger()),
-    (window as any).devToolsExtension && (window as any).devToolsExtension({
-      serializeState: (key, value) => value && value.data ? value.data : value,
+    (window as any).__REDUX_DEVTOOLS_EXTENSION__ && (window as any).__REDUX_DEVTOOLS_EXTENSION__({
+      serializeState: (key, value) => value && value.data ? value.data : value, 
       deserializeState: (state) => ({
-        routing: state.routing,
-        sessions: state.sessions.data
-      })
+        routing: state && state.routing,
+        sessions:  makeImmutable(state.session),
+        create: makeImmutable(state.create)
+      }),
+      shouldHotReload: false
     })));
 
 // Work around typings error by casting to any
