@@ -70,7 +70,7 @@ module.exports = {
   },
 
   externals: [
-    /^q$/ // /^VSS\/.*/, /^TFS\/.*/, 
+    /^q$/, /^VSS\/.*/, /^TFS\/.*/
   ],
 
   output: {
