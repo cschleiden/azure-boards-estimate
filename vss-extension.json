@@ -21,6 +21,10 @@
         "Work Items",
         "Estimate"
     ],
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/cschleiden/vsts-estimate"
+    },
     "content": {
         "details": {
             "path": "marketplace/details.md"
