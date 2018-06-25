@@ -1,0 +1,69 @@
+{
+    "manifestVersion": 1,
+    "version": "0.0.7",
+    "name": "Estimate 2 Preview",
+    "scopes": [
+        "vso.work",
+        "vso.work_write"
+    ],
+    "description": "",
+    "publisher": "cschleiden",
+    "id": "estimate",
+    "icons": {
+        "default": "marketplace/logo.png"
+    },
+    "targets": [
+        {
+            "id": "Microsoft.VisualStudio.Services.Cloud"
+        }
+    ],
+    "tags": [
+        "Work Items",
+        "Estimate",
+        "Planning",
+        "Poker"
+    ],
+    "content": {
+        "details": {
+            "path": "marketplace/details.md"
+        }
+    },
+    "links": {
+        "support": {
+            "uri": "mailto:christopher.schleiden@microsoft.com"
+        }
+    },
+    "branding": {
+        "color": "rgb(220, 235, 252)",
+        "theme": "light"
+    },
+    "categories": [
+        "Plan and track"
+    ],
+    "contributions": [
+        {
+            "id": "hub",
+            "type": "ms.vss-web.hub",
+            "targets": [
+                "ms.vss-work-web.work-hub-group"
+            ],
+            "properties": {
+                "name": "Estimate 2",
+                "order": 99,
+                "uri": "index.html"
+            }
+        },
+        {
+            "id": "hub",
+            "type": "ms.vss-web.hub",
+            "targets": [
+                "ms.vss-work-web.work-mobile-hub-group"
+            ],
+            "properties": {
+                "name": "Estimate 2",
+                "order": 99,
+                "uri": "index.html"
+            }
+        }
+    ]
+}
