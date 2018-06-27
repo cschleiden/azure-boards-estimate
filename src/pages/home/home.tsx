@@ -1,5 +1,6 @@
-import { PrimaryButton } from "office-ui-fabric-react";
+import { ChoiceGroup, DefaultButton, IChoiceGroupOption, Label, Panel, PanelType, PrimaryButton, TextField } from "office-ui-fabric-react";
 import * as React from "react";
+import { getIcon } from "../../components/cardIcon";
 import { CardList } from "../../components/cardList";
 import { Title } from "../../components/title";
 import { ISession, SessionMode } from "../../model/session";
@@ -12,6 +13,10 @@ export interface IHomePageProps extends IPageProps<{}> {
 const Actions = styled.div`    
     display: flex;
     justify-content: flex-end
+`;
+
+const FooterButton = styled.span`
+    margin-right: 8px;
 `;
 
 export class HomePage extends React.Component<IHomePageProps> {
@@ -52,6 +57,35 @@ export class HomePage extends React.Component<IHomePageProps> {
                             name: "Backend"
                         }
                     ] as ISession[]} />
+
+                <Panel
+                    headerText="Create new session"
+                    hasCloseButton={true}
+                    isOpen={true}
+                    type={PanelType.custom}
+                    customWidth="400px"
+                    onRenderFooterContent={this.renderFooter}
+                    isFooterAtBottom={true}
+                >
+                    <div>
+                        <TextField label="Name" />
+                        <Label>Type</Label>
+                        <ChoiceGroup
+                            options={options}
+                        />
+                    </div>
+                </Panel>
+            </div>
+        );
+    }
+
+    private renderFooter = () => {
+        return (
+            <div>
+                <FooterButton>
+                    <PrimaryButton>Create</PrimaryButton>
+                </FooterButton>
+                <DefaultButton>Cancel</DefaultButton>
             </div>
         );
     }
@@ -61,3 +95,28 @@ export class HomePage extends React.Component<IHomePageProps> {
         history.push("/create");
     }
 }
+
+
+const options: IChoiceGroupOption[] = [
+    {
+        iconProps: {
+            iconName: getIcon(SessionMode.Azure)
+        },
+        key: SessionMode.Azure.toString(),
+        text: "Azure"
+    },
+    {
+        iconProps: {
+            iconName: getIcon(SessionMode.Local)
+        },
+        key: SessionMode.Local.toString(),
+        text: "Local",
+    },
+    {
+        iconProps: {
+            iconName: getIcon(SessionMode.Offline)
+        },
+        key: SessionMode.Offline.toString(),
+        text: "Offline"
+    }
+];

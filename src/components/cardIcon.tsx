@@ -17,21 +17,21 @@ export class CardIcon extends React.Component<ICardTypeProps> {
                         fontSize: "48px"
                     }
                 }}
-                iconName={this.getIcon(mode)}
+                iconName={getIcon(mode)}
             />
         )
     }
+}
 
-    private getIcon(mode: SessionMode): string {
-        switch (mode) {
-            case SessionMode.Local:
-                return "Transition";
+export function getIcon(mode: SessionMode): string {
+    switch (mode) {
+        case SessionMode.Local:
+            return "Transition";
 
-            case SessionMode.Azure:
-                return "AzureLogo";
+        case SessionMode.Azure:
+            return "AzureLogo";
 
-            case SessionMode.Offline:
-                return "PlugDisconnected";
-        }
+        case SessionMode.Offline:
+            return "PlugDisconnected";
     }
 }
