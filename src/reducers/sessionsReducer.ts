@@ -14,7 +14,7 @@ const populate = (state: ISessionsState, action: ReturnType<typeof Actions.popul
     });
 }
 
-export const sessions = <TPayload>(
+export default <TPayload>(
     state: ISessionsState = {
         sessions: []
     },

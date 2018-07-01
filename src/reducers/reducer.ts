@@ -1,10 +1,13 @@
 import { combineReducers } from "redux";
-import { ISessionsState, sessions } from "./sessionsReducer";
+import create, { ICreateSessionState } from "./createReducer";
+import sessions, { ISessionsState } from "./sessionsReducer";
 
 export interface IState {
+    create: ICreateSessionState;
     sessions: ISessionsState;
 }
 
 export const rootReducer = combineReducers({
+    create,
     sessions
 });

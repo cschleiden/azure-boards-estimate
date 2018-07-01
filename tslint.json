@@ -11,7 +11,8 @@
         "jsx-double"
       ]
     },
-    "member-access": false
+    "member-access": false,
+    "object-literal-sort-keys": false
   },
   "linterOptions": {
     "exclude": [
