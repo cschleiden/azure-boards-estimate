@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { CardList } from "../../components/cardList";
 import CreatePanel from "../../components/create/panel";
 import { Title } from "../../components/title";
-import { ISession, SessionSource } from "../../model/session";
+import { ISession } from "../../model/session";
 import { IState } from "../../reducers/reducer";
 import { init } from "../../reducers/sessionsActions";
 import styled from "../../styles/themed-styles";
