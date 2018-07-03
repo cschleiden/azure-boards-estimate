@@ -6,11 +6,15 @@ import createSagaMiddleware from "redux-saga";
 import App from "./App";
 import { createSaga } from "./reducers/createSaga";
 import { rootReducer } from "./reducers/reducer";
+import { rootSaga } from "./reducers/sessionsSaga";
 import registerServiceWorker from "./registerServiceWorker";
 import "./services/registration";
 
 const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-const sagaMiddleware = createSagaMiddleware();
+
+// tslint:disable-next-line:no-string-literal
+const monitor = window["__SAGA_MONITOR_EXTENSION__"]
+const sagaMiddleware = createSagaMiddleware({ sagaMonitor: monitor });
 
 const store = createStore(
   rootReducer,
@@ -22,6 +26,7 @@ const store = createStore(
 );
 
 sagaMiddleware.run(createSaga);
+sagaMiddleware.run(rootSaga);
 
 ReactDOM.render(
   <Provider store={store}>

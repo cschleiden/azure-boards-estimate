@@ -10,7 +10,7 @@ export interface ISessionsState {
 
 const populate = (state: ISessionsState, action: ReturnType<typeof Actions.populate>): ISessionsState => {
     return produce(state, draft => {
-        draft.sessions = action.payload.sessions;
+        draft.sessions = action.payload;
     });
 }
 

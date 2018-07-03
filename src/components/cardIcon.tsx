@@ -1,14 +1,14 @@
 import { Icon } from "office-ui-fabric-react";
 import * as React from "react";
-import { SessionMode } from "../model/session";
+import { SessionSource } from "../model/session";
 
 export interface ICardTypeProps {
-    mode: SessionMode;
+    source: SessionSource;
 }
 
 export class CardIcon extends React.Component<ICardTypeProps> {
     render(): JSX.Element {
-        const { mode } = this.props;
+        const { source } = this.props;
 
         return (
             <Icon
@@ -17,21 +17,21 @@ export class CardIcon extends React.Component<ICardTypeProps> {
                         fontSize: "48px"
                     }
                 }}
-                iconName={getIcon(mode)}
+                iconName={getIconForSource(source)}
             />
         )
     }
 }
 
-export function getIcon(mode: SessionMode): string {
-    switch (mode) {
-        case SessionMode.Local:
-            return "Transition";
+export function getIconForSource(source: SessionSource): string {
+    switch (source) {
+        case SessionSource.Query:
+            return "Query";
 
-        case SessionMode.Azure:
-            return "AzureLogo";
+        case SessionSource.Sprint:
+            return "Sprint";
 
-        case SessionMode.Offline:
-            return "PlugDisconnected";
+        case SessionSource.Ids:
+            return "";
     }
 }

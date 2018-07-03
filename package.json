@@ -18,6 +18,7 @@
     "react-scripts-ts": "2.16.0",
     "redux": "^4.0.0",
     "redux-saga": "^0.16.0",
+    "redux-saga-devtools": "^0.2.0",
     "styled-components": "^3.3.3",
     "typescript-fsa": "^3.0.0-beta-2",
     "vss-ui": "^4.134.1",

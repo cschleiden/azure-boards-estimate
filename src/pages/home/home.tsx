@@ -1,29 +1,41 @@
 import { PrimaryButton } from "office-ui-fabric-react";
 import * as React from "react";
+import { connect } from "react-redux";
 import { CardList } from "../../components/cardList";
 import CreatePanel from "../../components/create/panel";
 import { Title } from "../../components/title";
-import { ISession, SessionMode } from "../../model/session";
+import { ISession, SessionSource } from "../../model/session";
+import { IState } from "../../reducers/reducer";
+import { init } from "../../reducers/sessionsActions";
 import styled from "../../styles/themed-styles";
 import { IPageProps } from "../props";
 
-export interface IHomePageProps extends IPageProps<{}> {
+interface IHomePageProps extends IPageProps<{}> {
+    sessions: ISession[];
 }
 
-const Actions = styled.div`    
+const Actions = {
+    onInit: init
+};
+
+const ActionArea = styled.div`    
     display: flex;
     justify-content: flex-end
 `;
 
-export class HomePage extends React.Component<IHomePageProps> {
+class HomePage extends React.Component<IHomePageProps & typeof Actions> {
+    componentDidMount() {
+        this.props.onInit();
+    }
+
     render(): JSX.Element {
-        const { history, match } = this.props;
+        const { history, match, sessions } = this.props;
 
         return (
             <div>
                 <Title>Estimate</Title>
 
-                <Actions>
+                <ActionArea>
                     <PrimaryButton
                         iconProps={{
                             iconName: "Add"
@@ -32,27 +44,12 @@ export class HomePage extends React.Component<IHomePageProps> {
                     >
                         Create Session
                     </PrimaryButton>
-                </Actions>
+                </ActionArea>
 
                 <CardList
                     history={history}
-                    sessions={[
-                        {
-                            id: "1",
-                            mode: SessionMode.Azure,
-                            name: "Sprint 149"
-                        },
-                        {
-                            id: "2",
-                            mode: SessionMode.Local,
-                            name: "Mobile App"
-                        },
-                        {
-                            id: "3",
-                            mode: SessionMode.Offline,
-                            name: "Backend"
-                        }
-                    ] as ISession[]} />
+                    sessions={sessions}
+                />
 
                 {match.path === "/create" && <CreatePanel
                     onDismiss={this.closeCreate}
@@ -71,3 +68,10 @@ export class HomePage extends React.Component<IHomePageProps> {
         history.push("/");
     }
 }
+
+export default connect(
+    (state: IState) => ({
+        sessions: state.sessions.sessions
+    }),
+    Actions
+)(HomePage);

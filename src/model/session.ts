@@ -1,13 +1,15 @@
-export enum SessionMode {
-    Azure,
-    Local,
-    Offline
-}
-
 export enum SessionSource {
     Sprint,
     Query,
     Ids
+}
+
+export interface IEstimate {
+    userId: string;
+
+    workItemId: number;
+
+    estimate: string;
 }
 
 export interface ISession {
@@ -16,8 +18,6 @@ export interface ISession {
     name: string;
 
     version: number;
-
-    mode: SessionMode;
 
     source: SessionSource;
     sourceData?: string | number[];

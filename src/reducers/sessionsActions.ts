@@ -3,4 +3,6 @@ import { ISession } from "../model/session";
 
 const factory = actionCreatorFactory("session");
 
-export const populate = factory<{ sessions: ISession[] }>("POPULATE");
+export const init = factory<void>("init");
+
+export const populate = factory<ISession[]>("populate");

@@ -1,7 +1,10 @@
 import { all, call, put, select, take } from "redux-saga/effects";
+import history from "../lib/history";
 import { Services } from "../services/services";
+import { ISessionService, SessionServiceId } from "../services/sessions";
 import { ITeamService, TeamServiceId } from "../services/teams";
 import * as Actions from "./createActions";
+import { ICreateSessionState } from "./createReducer";
 import { IState } from "./reducer";
 
 export function* createSaga() {
@@ -35,11 +38,13 @@ export function* createSessionSaga() {
     while (true) {
         yield take(Actions.create.type);
 
-        const { name, mode } = yield select<IState>(x => x.create);
+        const { session }: ICreateSessionState = yield select<IState>(x => x.create);
 
-        yield put(Actions.create2({
-            name,
-            mode
-        }));
+        // Save session
+        const sessionService = Services.getService<ISessionService>(SessionServiceId);
+        yield call([sessionService, sessionService.saveSession], session);
+
+        // Navigate to homepage
+        yield call(history.push as any, "/");
     }
 }

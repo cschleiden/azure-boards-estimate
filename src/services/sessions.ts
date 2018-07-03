@@ -1,8 +1,10 @@
-import { ISession, SessionMode, SessionSource } from "../model/session";
+import { ISession, SessionSource } from "../model/session";
 import { IService } from "./services";
 
 export interface ISessionService extends IService {
     getSessions(): Promise<ISession[]>;
+
+    saveSession(session: ISession): Promise<ISession>;
 }
 
 export const SessionServiceId = "SessionService";
@@ -14,7 +16,6 @@ export class MockSessionService implements ISessionService {
             createdAt: new Date(),
             createdBy: "Christopher Schleiden",
             name: "Sprint 132",
-            mode: SessionMode.Azure,
             source: SessionSource.Sprint,
             sourceData: "123",
             version: 1
@@ -24,7 +25,6 @@ export class MockSessionService implements ISessionService {
             createdAt: new Date(),
             createdBy: "Christopher Schleiden",
             name: "Distributed Team",
-            mode: SessionMode.Offline,
             source: SessionSource.Sprint,
             sourceData: "123",
             version: 1

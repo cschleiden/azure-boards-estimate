@@ -1,14 +1,18 @@
 import { Action } from "redux";
 import reducerMap from "../lib/reducerMap";
-import { SessionMode, SessionSource } from "../model/session";
+import { ISession, SessionSource } from "../model/session";
 import { IIteration, ITeam } from "../services/teams";
 import * as Actions from "./createActions";
 
 const initialState = {
-    name: "",
-
-    mode: SessionMode.Azure,
-    source: SessionSource.Sprint,
+    session: {
+        id: "",
+        name: "",
+        source: SessionSource.Sprint,
+        createdAt: new Date(),
+        createdBy: "",
+        version: 1
+    } as ISession,
 
     teams: null as (ITeam[] | null),
     iterations: null as (IIteration[] | null),
@@ -22,19 +26,13 @@ const initialState = {
 export type ICreateSessionState = typeof initialState;
 
 const setName = (state: ICreateSessionState, action: ReturnType<typeof Actions.setName>): ICreateSessionState => {
-    state.name = action.payload;
-
-    return state;
-}
-
-const setMode = (state: ICreateSessionState, action: ReturnType<typeof Actions.setMode>): ICreateSessionState => {
-    state.mode = action.payload;
+    state.session.name = action.payload;
 
     return state;
 }
 
 const setSource = (state: ICreateSessionState, action: ReturnType<typeof Actions.setSource>): ICreateSessionState => {
-    state.source = action.payload;
+    state.session.source = action.payload;
 
     return state;
 }
@@ -75,7 +73,6 @@ export default <TPayload>(
 
     return reducerMap(action, state, {
         [Actions.setName.type]: setName,
-        [Actions.setMode.type]: setMode,
         [Actions.setSource.type]: setSource,
         [Actions.create.type]: create,
 

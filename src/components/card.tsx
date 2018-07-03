@@ -52,14 +52,14 @@ export interface ICardProps {
 
 export class Card extends React.Component<ICardProps> {
     render(): JSX.Element {
-        const { session: { id, name, mode } } = this.props;
+        const { session: { id, name, source } } = this.props;
 
         return (
             <CardFrame href={`/session/${id}`} onClick={this.navigate}>
                 <CardTitle>{name}</CardTitle>
 
                 <CardMode>
-                    <CardIcon mode={mode} />
+                    <CardIcon source={source} />
                 </CardMode>
             </CardFrame>
         );

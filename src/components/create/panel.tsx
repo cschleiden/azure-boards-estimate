@@ -1,39 +1,11 @@
 import { ChoiceGroup, DefaultButton, Dropdown, IChoiceGroupOption, IDropdownOption, Label, Panel, PanelType, PrimaryButton, TextField } from "office-ui-fabric-react";
 import * as React from "react";
 import { connect } from "react-redux";
-import { SessionMode, SessionSource } from "../../model/session";
-import { create, init, setIteration, setMode, setName, setSource, setTeam } from "../../reducers/createActions";
+import { SessionSource } from "../../model/session";
+import { create, init, setIteration, setName, setSource, setTeam } from "../../reducers/createActions";
 import { IState } from "../../reducers/reducer";
 import { IIteration, ITeam } from "../../services/teams";
 import styled from "../../styles/themed-styles";
-import { getIcon } from "../cardIcon";
-
-const modeOptions: IChoiceGroupOption[] = [
-    {
-        iconProps: {
-            iconName: getIcon(SessionMode.Azure)
-        },
-        key: SessionMode.Azure.toString(),
-        text: "Azure",
-        title: "Live estimation, provides the best experience via an Azure backend."
-    },
-    {
-        iconProps: {
-            iconName: getIcon(SessionMode.Local)
-        },
-        key: SessionMode.Local.toString(),
-        text: "Local",
-        title: "Local estimation, use this if you cannot connect to Azure."
-    },
-    {
-        iconProps: {
-            iconName: getIcon(SessionMode.Offline)
-        },
-        key: SessionMode.Offline.toString(),
-        text: "Offline",
-        title: ""
-    }
-];
 
 const sourceOptions: IChoiceGroupOption[] = [
     {
@@ -62,7 +34,6 @@ export interface ICreatePanelOwnProps {
 
 interface ICreatePanelProps {
     name: string;
-    mode: SessionMode;
     source: SessionSource;
     isValid: boolean;
 
@@ -76,7 +47,6 @@ interface ICreatePanelProps {
 const Actions = {
     onInit: init,
     onSetName: setName,
-    onSetMode: setMode,
     onSetSource: setSource,
     onSetTeam: setTeam,
     onSetIteration: setIteration,
@@ -89,7 +59,7 @@ class CreatePanel extends React.Component<ICreatePanelProps & typeof Actions & I
     }
 
     public render(): JSX.Element {
-        const { name, mode, source, onDismiss, onSetName } = this.props;
+        const { name, source, onDismiss, onSetName } = this.props;
 
         return (
             <Panel
@@ -107,13 +77,6 @@ class CreatePanel extends React.Component<ICreatePanelProps & typeof Actions & I
                         onChanged={onSetName}
                         label="Name"
                         value={name}
-                    />
-
-                    <Label>Type</Label>
-                    <ChoiceGroup
-                        selectedKey={mode.toString()}
-                        onChanged={this.onChangeMode}
-                        options={modeOptions}
                     />
 
                     <Label>Work items</Label>
@@ -187,16 +150,13 @@ class CreatePanel extends React.Component<ICreatePanelProps & typeof Actions & I
                     <PrimaryButton
                         onClick={this.onCreate}
                         disabled={!isValid}
-                    >Create</PrimaryButton>
+                    >
+                        Create
+                    </PrimaryButton>
                 </FooterButton>
                 <DefaultButton>Cancel</DefaultButton>
             </div>
         );
-    }
-
-    private onChangeMode = (option: IChoiceGroupOption) => {
-        const { onSetMode } = this.props;
-        onSetMode(parseInt(option.key, 10) as SessionMode);
     }
 
     private onChangeSource = (option: IChoiceGroupOption) => {
@@ -222,10 +182,9 @@ class CreatePanel extends React.Component<ICreatePanelProps & typeof Actions & I
 
 export default connect(
     (state: IState) => ({
-        name: state.create.name,
-        mode: state.create.mode,
-        source: state.create.source,
-        isValid: state.create.name !== "",
+        name: state.create.session.name,
+        source: state.create.session.source,
+        isValid: state.create.session.name !== "",
 
         teams: state.create.teams,
         iterations: state.create.iterations,
