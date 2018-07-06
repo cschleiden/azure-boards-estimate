@@ -4,14 +4,6 @@ export enum SessionSource {
     Ids
 }
 
-export interface IEstimate {
-    userId: string;
-
-    workItemId: number;
-
-    estimate: string;
-}
-
 export interface ISession {
     id: string;
 
@@ -24,4 +16,6 @@ export interface ISession {
 
     createdAt: Date;
     createdBy: string;
+
+    cardSet: string;
 }

@@ -4,6 +4,8 @@ import { IService } from "./services";
 export interface ISessionService extends IService {
     getSessions(): Promise<ISession[]>;
 
+    getSession(id: string): Promise<ISession | null>;
+
     saveSession(session: ISession): Promise<ISession>;
 }
 
@@ -18,6 +20,7 @@ export class MockSessionService implements ISessionService {
             name: "Sprint 132",
             source: SessionSource.Sprint,
             sourceData: "123",
+            cardSet: "default",
             version: 1
         },
         {
@@ -27,12 +30,18 @@ export class MockSessionService implements ISessionService {
             name: "Distributed Team",
             source: SessionSource.Sprint,
             sourceData: "123",
+            cardSet: "default",
             version: 1
         }
     ];
 
     async getSessions(): Promise<ISession[]> {
-        return this.sessions;
+        return this.sessions.slice(0);
+    }
+
+    async getSession(id: string): Promise<ISession | null> {
+        const result = this.sessions.filter(s => s.id === id);
+        return result && result.length > 0 && result[0] || null;
     }
 
     async saveSession(session: ISession): Promise<ISession> {

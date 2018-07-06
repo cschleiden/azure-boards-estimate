@@ -1,9 +1,10 @@
 import { ChoiceGroup, DefaultButton, Dropdown, IChoiceGroupOption, IDropdownOption, Label, Panel, PanelType, PrimaryButton, TextField } from "office-ui-fabric-react";
 import * as React from "react";
 import { connect } from "react-redux";
+import { ICardSet } from "../../model/cards";
 import { SessionSource } from "../../model/session";
-import { create, init, setIteration, setName, setSource, setTeam } from "../../reducers/createActions";
-import { IState } from "../../reducers/reducer";
+import { create, init, setIteration, setName, setSource, setTeam } from "../../pages/create/createActions";
+import { IState } from "../../reducer";
 import { IIteration, ITeam } from "../../services/teams";
 import styled from "../../styles/themed-styles";
 
@@ -42,6 +43,8 @@ interface ICreatePanelProps {
 
     team: string;
     iteration: string;
+
+    cardSets: ICardSet[];
 }
 
 const Actions = {
@@ -59,7 +62,7 @@ class CreatePanel extends React.Component<ICreatePanelProps & typeof Actions & I
     }
 
     public render(): JSX.Element {
-        const { name, source, onDismiss, onSetName } = this.props;
+        const { name, source, onDismiss, onSetName, cardSets } = this.props;
 
         return (
             <Panel
@@ -87,6 +90,14 @@ class CreatePanel extends React.Component<ICreatePanelProps & typeof Actions & I
                     />
 
                     {this.renderSourceSelection()}
+
+                    <Label>Cards</Label>
+                    <Dropdown
+                        options={cardSets && cardSets.map(cs => ({
+                            key: cs.id,
+                            text: cs.name
+                        })) || []}
+                    />
                 </div>
             </Panel>
         );
@@ -190,7 +201,9 @@ export default connect(
         iterations: state.create.iterations,
 
         team: state.create.team,
-        iteration: state.create.iteration
+        iteration: state.create.iteration,
+
+        cardSets: state.create.cardSets
     }),
     Actions
 )(CreatePanel);

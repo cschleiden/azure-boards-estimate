@@ -1,4 +1,4 @@
-import { IEstimate } from "../../model/session";
+import { IEstimate } from "../../model/estimate";
 
 export interface IChannel {
     start(): Promise<void>;

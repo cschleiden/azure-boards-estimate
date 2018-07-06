@@ -5,17 +5,17 @@ import { CardList } from "../../components/cardList";
 import CreatePanel from "../../components/create/panel";
 import { Title } from "../../components/title";
 import { ISession } from "../../model/session";
-import { IState } from "../../reducers/reducer";
-import { init } from "../../reducers/sessionsActions";
+import { IState } from "../../reducer";
 import styled from "../../styles/themed-styles";
 import { IPageProps } from "../props";
+import { loadSessions } from "./sessionsActions";
 
 interface IHomePageProps extends IPageProps<{}> {
     sessions: ISession[];
 }
 
 const Actions = {
-    onInit: init
+    onInit: loadSessions
 };
 
 const ActionArea = styled.div`    
@@ -51,9 +51,11 @@ class HomePage extends React.Component<IHomePageProps & typeof Actions> {
                     sessions={sessions}
                 />
 
-                {match.path === "/create" && <CreatePanel
-                    onDismiss={this.closeCreate}
-                />}
+                {match.path.indexOf("/create") !== -1 && (
+                    <CreatePanel
+                        onDismiss={this.closeCreate}
+                    />
+                )}
             </div>
         );
     }

@@ -1,4 +1,4 @@
-import { IEstimate } from "../model/session";
+import { IEstimate } from "../model/estimate";
 import { IService } from "./services";
 
 export interface IEstimationService extends IService {

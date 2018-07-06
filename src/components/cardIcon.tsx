@@ -25,11 +25,11 @@ export class CardIcon extends React.Component<ICardTypeProps> {
 
 export function getIconForSource(source: SessionSource): string {
     switch (source) {
-        case SessionSource.Query:
-            return "Query";
-
         case SessionSource.Sprint:
             return "Sprint";
+
+        case SessionSource.Query:
+            return "QueryList";
 
         case SessionSource.Ids:
             return "";
