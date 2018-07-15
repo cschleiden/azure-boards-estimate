@@ -1,4 +1,4 @@
-import { ChoiceGroup, DefaultButton, Dropdown, IChoiceGroupOption, IDropdownOption, Label, Panel, PanelType, PrimaryButton, TextField } from "office-ui-fabric-react";
+import { ChoiceGroup, Dropdown, IChoiceGroupOption, IDropdownOption, Label, Panel, PanelType, TextField } from "office-ui-fabric-react";
 import * as React from "react";
 import { connect } from "react-redux";
 import { ICardSet } from "../../model/cards";
@@ -7,6 +7,7 @@ import { create, init, setIteration, setName, setSource, setTeam } from "../../p
 import { IState } from "../../reducer";
 import { IIteration, ITeam } from "../../services/teams";
 import styled from "../../styles/themed-styles";
+import { DefaultButton, PrimaryButton } from "../buttons";
 
 const sourceOptions: IChoiceGroupOption[] = [
     {
@@ -153,7 +154,7 @@ class CreatePanel extends React.Component<ICreatePanelProps & typeof Actions & I
     }
 
     private renderFooter = () => {
-        const { isValid } = this.props;
+        const { isValid, onDismiss } = this.props;
 
         return (
             <div>
@@ -165,7 +166,7 @@ class CreatePanel extends React.Component<ICreatePanelProps & typeof Actions & I
                         Create
                     </PrimaryButton>
                 </FooterButton>
-                <DefaultButton>Cancel</DefaultButton>
+                <DefaultButton onClick={onDismiss}>Cancel</DefaultButton>
             </div>
         );
     }

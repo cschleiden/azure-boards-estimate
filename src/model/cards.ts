@@ -1,11 +1,18 @@
 export interface ICard {
     display: string;
 
-    value: number | null;
+    value: number | string | null;
+}
+
+export enum CardSetType {
+    Numeric,
+    Ordinal
 }
 
 export interface ICardSet {
     id: string;
+
+    type: CardSetType;
 
     name: string;
 
@@ -15,6 +22,7 @@ export interface ICardSet {
 export const defaultCardSets: ICardSet[] = [
     {
         id: "default",
+        type: CardSetType.Numeric,
         name: "Default",
         cards: [
             {

@@ -14,7 +14,7 @@ const CardFrame = styled.a`
     min-width: 200px;
     flex-basis: 200px;
     margin-right: 32px;
-    margin-bottom   : 32px;
+    margin-bottom: 32px;
     background-color: rgb(248, 248, 248);
     padding: 20px;
     cursor: pointer;
@@ -50,7 +50,7 @@ export interface ICardProps {
     session: ISession;
 }
 
-export class Card extends React.Component<ICardProps> {
+export class SessionCard extends React.Component<ICardProps> {
     render(): JSX.Element {
         const { session: { id, name, source } } = this.props;
 

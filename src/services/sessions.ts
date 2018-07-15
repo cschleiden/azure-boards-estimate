@@ -28,7 +28,7 @@ export class MockSessionService implements ISessionService {
             createdAt: new Date(),
             createdBy: "Christopher Schleiden",
             name: "Distributed Team",
-            source: SessionSource.Sprint,
+            source: SessionSource.Query,
             sourceData: "123",
             cardSet: "default",
             version: 1

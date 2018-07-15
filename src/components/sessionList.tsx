@@ -2,7 +2,7 @@ import { History } from "history";
 import * as React from "react";
 import { ISession } from "../model/session";
 import styled from "../styles/themed-styles";
-import { Card } from "./card";
+import { SessionCard } from "./sessionCard";
 
 const List = styled.ul`
     display: flex;
@@ -15,13 +15,13 @@ export interface ICardListProps {
     history: History;
 }
 
-export class CardList extends React.Component<ICardListProps> {
+export class SessionList extends React.Component<ICardListProps> {
     render(): JSX.Element {
         const { history, sessions } = this.props;
 
         return (
             <List>
-                {sessions.map(session => <Card key={session.id} session={session} history={history} />)}
+                {sessions.map(session => <SessionCard key={session.id} session={session} history={history} />)}
             </List>
         );
     }

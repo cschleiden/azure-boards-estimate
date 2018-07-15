@@ -1,12 +1,11 @@
-import { PrimaryButton } from "office-ui-fabric-react";
 import * as React from "react";
 import { connect } from "react-redux";
-import { CardList } from "../../components/cardList";
+import { PrimaryButton } from "../../components/buttons";
 import CreatePanel from "../../components/create/panel";
-import { Title } from "../../components/title";
+import { Header } from "../../components/header";
+import { SessionList } from "../../components/sessionList";
 import { ISession } from "../../model/session";
 import { IState } from "../../reducer";
-import styled from "../../styles/themed-styles";
 import { IPageProps } from "../props";
 import { loadSessions } from "./sessionsActions";
 
@@ -18,11 +17,6 @@ const Actions = {
     onInit: loadSessions
 };
 
-const ActionArea = styled.div`    
-    display: flex;
-    justify-content: flex-end
-`;
-
 class HomePage extends React.Component<IHomePageProps & typeof Actions> {
     componentDidMount() {
         this.props.onInit();
@@ -33,20 +27,21 @@ class HomePage extends React.Component<IHomePageProps & typeof Actions> {
 
         return (
             <div>
-                <Title>Estimate</Title>
+                <Header
+                    title="Estimate"
+                    buttons={(
+                        <PrimaryButton
+                            iconProps={{
+                                iconName: "Add"
+                            }}
+                            onClick={this.create}
+                        >
+                            Create Session
+                        </PrimaryButton>
+                    )}
+                />
 
-                <ActionArea>
-                    <PrimaryButton
-                        iconProps={{
-                            iconName: "Add"
-                        }}
-                        onClick={this.create}
-                    >
-                        Create Session
-                    </PrimaryButton>
-                </ActionArea>
-
-                <CardList
+                <SessionList
                     history={history}
                     sessions={sessions}
                 />

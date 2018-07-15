@@ -1,7 +1,12 @@
 import { call, put, takeLatest } from "redux-saga/effects";
-import { ISession } from "../../model/session";
+import { ICardSet } from "../../model/cards";
+import { IWorkItem } from "../../model/IWorkItem";
+import { ISession, SessionSource } from "../../model/session";
+import { CardSetServiceId, ICardSetService } from "../../services/cardSets";
 import { Services } from "../../services/services";
 import { ISessionService, SessionServiceId } from "../../services/sessions";
+import { ISprintService, SprintServiceId } from "../../services/sprints";
+import { IWorkItemService, WorkItemServiceId } from "../../services/workItems";
 import { loadedSession, loadSession } from "./sessionActions";
 
 export function* rootSessionSaga() {
@@ -9,9 +14,35 @@ export function* rootSessionSaga() {
 }
 
 export function* sessionSaga(action: ReturnType<typeof loadSession>) {
-
     const sessionService = Services.getService<ISessionService>(SessionServiceId);
     const session: ISession = yield call([sessionService, sessionService.getSession], action.payload);
 
-    yield put(loadedSession(session));
+    // Load cardset
+    const cardService = Services.getService<ICardSetService>(CardSetServiceId);
+    const cardSet: ICardSet = yield call([cardService, cardService.getSet], session.cardSet);
+
+    // Load work items
+    let workItemIds: number[];
+
+    switch (session.source) {
+        case SessionSource.Sprint: {
+            const sprintService = Services.getService<ISprintService>(SprintServiceId);
+            // TODO: Split team id            
+            workItemIds = yield call([sprintService, sprintService.getWorkItems], session.sourceData, session.sourceData);
+            break;
+        }
+
+        case SessionSource.Ids: {
+            workItemIds = session.sourceData as number[];
+            break;
+        }
+
+        default:
+            throw new Error("Unexpected session source");
+    }
+
+    const workItemService = Services.getService<IWorkItemService>(WorkItemServiceId);
+    const workItems: IWorkItem[] = yield call([workItemService, workItemService.getWorkItems], workItemIds);
+
+    yield put(loadedSession({ session, cardSet, workItems }));
 }
