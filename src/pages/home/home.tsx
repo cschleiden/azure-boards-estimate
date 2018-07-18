@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { PrimaryButton } from "../../components/buttons";
+import { MoreButton, PrimaryButton } from "../../components/buttons";
 import CreatePanel from "../../components/create/panel";
 import { Header } from "../../components/header";
 import { SessionList } from "../../components/sessionList";
@@ -30,14 +30,33 @@ class HomePage extends React.Component<IHomePageProps & typeof Actions> {
                 <Header
                     title="Estimate"
                     buttons={(
-                        <PrimaryButton
-                            iconProps={{
-                                iconName: "Add"
-                            }}
-                            onClick={this.create}
-                        >
-                            Create Session
-                        </PrimaryButton>
+                        <>
+                            <PrimaryButton
+                                iconProps={{
+                                    iconName: "Add"
+                                }}
+                                onClick={this.create}
+                            >
+                                Create Session
+                            </PrimaryButton>
+                            &nbsp;
+                            <MoreButton
+                                iconProps={{
+                                    iconName: "More"
+                                }}
+                                menuProps={{
+                                    items: [
+                                        {
+                                            key: "end",
+                                            text: "Settings",
+                                            iconProps: {
+                                                iconName: "Settings"
+                                            }
+                                        }
+                                    ]
+                                }}
+                            />
+                        </>
                     )}
                 />
 

@@ -76,6 +76,7 @@ export interface ICreatePanelOwnProps {
 
 interface ICreatePanelProps {
     name: string;
+    cardSet: string;
     mode: SessionMode;
     source: SessionSource;
     isValid: boolean;
@@ -106,7 +107,7 @@ class CreatePanel extends React.Component<ICreatePanelProps & typeof Actions & I
     }
 
     public render(): JSX.Element {
-        const { name, mode, source, onDismiss, onSetName, cardSets } = this.props;
+        const { name, cardSet, mode, source, onDismiss, onSetName, cardSets } = this.props;
 
         return (
             <Panel
@@ -150,7 +151,7 @@ class CreatePanel extends React.Component<ICreatePanelProps & typeof Actions & I
 
                     <Group>
                         <Label>Cards</Label>
-                        <CardSetPicker cardSets={cardSets} selectedCardSetId={cardSets && cardSets[0].id || ""} onChange={this.onChangeCardSet} />
+                        <CardSetPicker cardSets={cardSets} selectedCardSetId={cardSet || ""} onChange={this.onChangeCardSet} />
                     </Group>
                 </div>
             </Panel>
@@ -257,6 +258,7 @@ class CreatePanel extends React.Component<ICreatePanelProps & typeof Actions & I
 export default connect(
     (state: IState) => ({
         name: state.create.session.name,
+        cardSet: state.create.session.cardSet,
         mode: state.create.session.mode,
         source: state.create.session.source,
         isValid: state.create.session.name !== "",
