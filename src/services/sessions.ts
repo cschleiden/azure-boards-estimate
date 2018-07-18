@@ -1,4 +1,4 @@
-import { ISession, SessionSource } from "../model/session";
+import { ISession, SessionMode, SessionSource } from "../model/session";
 import { IService } from "./services";
 
 export interface ISessionService extends IService {
@@ -17,6 +17,7 @@ export class MockSessionService implements ISessionService {
             id: "123",
             createdAt: new Date(),
             createdBy: "Christopher Schleiden",
+            mode: SessionMode.Online,
             name: "Sprint 132",
             source: SessionSource.Sprint,
             sourceData: "123",
@@ -27,6 +28,7 @@ export class MockSessionService implements ISessionService {
             id: "456",
             createdAt: new Date(),
             createdBy: "Christopher Schleiden",
+            mode: SessionMode.Offline,
             name: "Distributed Team",
             source: SessionSource.Query,
             sourceData: "123",

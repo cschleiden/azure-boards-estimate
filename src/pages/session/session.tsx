@@ -3,6 +3,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { DefaultButton, MoreButton } from "../../components/buttons";
 import { Card } from "../../components/cards/card";
+import { Vote } from "../../components/cards/vote";
 import { Header } from "../../components/header";
 import { Splitter } from "../../components/splitter";
 import { SubTitle } from "../../components/subtitle";
@@ -12,14 +13,16 @@ import { ICard, ICardSet } from "../../model/cards";
 import { IWorkItem } from "../../model/IWorkItem";
 import { ISession } from "../../model/session";
 import { IState } from "../../reducer";
+import styled from "../../styles/themed-styles";
 import { IPageProps } from "../props";
-import { loadedSession, loadSession } from "./sessionActions";
+import { loadedSession, loadSession, selectWorkItem } from "./sessionActions";
 
 interface ISessionParams {
     id: string;
 }
 
 interface ISessionProps extends IPageProps<ISessionParams> {
+    loading: boolean;
     session: ISession;
     workItems: IWorkItem[];
     cardSet: ICardSet;
@@ -28,8 +31,13 @@ interface ISessionProps extends IPageProps<ISessionParams> {
 
 const Actions = {
     loadSession,
-    loadedSession
+    loadedSession,
+    selectWorkItem
 };
+
+const Votes = styled.div`
+    display: flex;
+`;
 
 class Session extends React.Component<ISessionProps & typeof Actions, { flipped: boolean }> {
     constructor(props: any) {
@@ -45,9 +53,9 @@ class Session extends React.Component<ISessionProps & typeof Actions, { flipped:
     }
 
     render(): JSX.Element {
-        const { cardSet, session, workItems, selectedWorkItem } = this.props;
+        const { cardSet, session, loading, workItems, selectedWorkItem } = this.props;
 
-        if (!session) {
+        if (loading || !session) {
             return (
                 <div>
                     <Spinner />
@@ -58,7 +66,7 @@ class Session extends React.Component<ISessionProps & typeof Actions, { flipped:
         return (
             <div>
                 <Header
-                    title={`Session ${this.props.match.params.id}`}
+                    title={session.name}
                     buttons={(
                         <>
                             <DefaultButton
@@ -100,6 +108,8 @@ class Session extends React.Component<ISessionProps & typeof Actions, { flipped:
                                     id={workItem.id}
                                     title={workItem.title}
                                     estimate={12}
+                                    // tslint:disable-next-line:jsx-no-lambda
+                                    onClick={() => this.props.selectWorkItem(workItem.id)}
                                 />
                             ))}
                         </>
@@ -116,17 +126,24 @@ class Session extends React.Component<ISessionProps & typeof Actions, { flipped:
 
                             <SubTitle>Other votes</SubTitle>
 
-                            <Card
-                                // tslint:disable-next-line:jsx-no-lambda
-                                onClick={() => this.setState({ flipped: !this.state.flipped })}
-                                front={{
-                                    label: "front"
-                                }}
-                                back={{
-                                    label: "back"
-                                }}
-                                flipped={this.state.flipped}
-                            />
+                            <Votes>
+                                <Vote
+                                    identity={{
+                                        id: "123",
+                                        displayName: "John Doe"
+                                    }}
+                                    estimate={cardSet.cards[0]}
+                                    revealed={false}
+                                />
+                                <Vote
+                                    identity={{
+                                        id: "123",
+                                        displayName: "Christopher Schleiden"
+                                    }}
+                                    estimate={cardSet.cards[0]}
+                                    revealed={false}
+                                />
+                            </Votes>
 
                             <SubTitle>Your vote</SubTitle>
 
@@ -159,6 +176,7 @@ class Session extends React.Component<ISessionProps & typeof Actions, { flipped:
 export default connect(
     (state: IState) => {
         return {
+            loading: state.session.loading,
             session: state.session.session,
             cardSet: state.session.cardSet,
             workItems: state.session.workItems,

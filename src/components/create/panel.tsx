@@ -1,13 +1,47 @@
-import { ChoiceGroup, Dropdown, IChoiceGroupOption, IDropdownOption, Label, Panel, PanelType, TextField } from "office-ui-fabric-react";
+import { ChoiceGroup, Dropdown, IChoiceGroupOption, IDropdownOption, IRenderFunction, Label, Panel, PanelType, TextField, TooltipHost } from "office-ui-fabric-react";
 import * as React from "react";
 import { connect } from "react-redux";
 import { ICardSet } from "../../model/cards";
-import { SessionSource } from "../../model/session";
-import { create, init, setIteration, setName, setSource, setTeam } from "../../pages/create/createActions";
+import { SessionMode, SessionSource } from "../../model/session";
+import { create, init, setCardSet, setIteration, setMode, setName, setSource, setTeam } from "../../pages/create/createActions";
 import { IState } from "../../reducer";
 import { IIteration, ITeam } from "../../services/teams";
 import styled from "../../styles/themed-styles";
 import { DefaultButton, PrimaryButton } from "../buttons";
+import { getIconForMode } from "../cardIcon";
+import { CardSetPicker } from "./cardSetPicker";
+
+const { icon: onlineIcon, description: onlineDescription } = getIconForMode(SessionMode.Online);
+const { icon: offlineIcon, description: offlineDescription } = getIconForMode(SessionMode.Offline);
+
+const renderOptionWithTooltip: IRenderFunction<IChoiceGroupOption> = (option, defaultRender) => {
+    return (
+        <TooltipHost content={option!.title}>
+            {defaultRender!(option)}
+        </TooltipHost>
+    );
+};
+
+const modeOptions: IChoiceGroupOption[] = [
+    {
+        iconProps: {
+            iconName: onlineIcon
+        },
+        key: SessionMode.Online.toString(),
+        text: "Online",
+        title: onlineDescription,
+        onRenderField: renderOptionWithTooltip
+    },
+    {
+        iconProps: {
+            iconName: offlineIcon
+        },
+        key: SessionMode.Offline.toString(),
+        text: "Offline",
+        title: offlineDescription,
+        onRenderField: renderOptionWithTooltip
+    }
+];
 
 const sourceOptions: IChoiceGroupOption[] = [
     {
@@ -15,19 +49,25 @@ const sourceOptions: IChoiceGroupOption[] = [
             iconName: "Sprint"
         },
         key: SessionSource.Sprint.toString(),
-        text: "Sprint"
+        text: "Sprint",
+        onRenderField: renderOptionWithTooltip
     },
     {
         iconProps: {
             iconName: "QueryList"
         },
         key: SessionSource.Query.toString(),
-        text: "Query"
+        text: "Query",
+        onRenderField: renderOptionWithTooltip
     }
 ];
 
 const FooterButton = styled.span`
     margin-right: 8px;
+`;
+
+const Group = styled.div`
+    margin-bottom: 20px;
 `;
 
 export interface ICreatePanelOwnProps {
@@ -36,6 +76,7 @@ export interface ICreatePanelOwnProps {
 
 interface ICreatePanelProps {
     name: string;
+    mode: SessionMode;
     source: SessionSource;
     isValid: boolean;
 
@@ -50,10 +91,12 @@ interface ICreatePanelProps {
 
 const Actions = {
     onInit: init,
+    onSetMode: setMode,
     onSetName: setName,
     onSetSource: setSource,
     onSetTeam: setTeam,
     onSetIteration: setIteration,
+    onSetCardSet: setCardSet,
     onCreate: create
 };
 
@@ -63,7 +106,7 @@ class CreatePanel extends React.Component<ICreatePanelProps & typeof Actions & I
     }
 
     public render(): JSX.Element {
-        const { name, source, onDismiss, onSetName, cardSets } = this.props;
+        const { name, mode, source, onDismiss, onSetName, cardSets } = this.props;
 
         return (
             <Panel
@@ -77,28 +120,38 @@ class CreatePanel extends React.Component<ICreatePanelProps & typeof Actions & I
                 onDismiss={onDismiss}
             >
                 <div>
-                    <TextField
-                        onChanged={onSetName}
-                        label="Name"
-                        value={name}
-                    />
+                    <Group>
+                        <TextField
+                            onChanged={onSetName}
+                            label="Name"
+                            value={name}
+                        />
+                    </Group>
 
-                    <Label>Work items</Label>
-                    <ChoiceGroup
-                        selectedKey={source.toString()}
-                        onChanged={this.onChangeSource}
-                        options={sourceOptions}
-                    />
+                    <Group>
+                        <Label>Mode</Label>
+                        <ChoiceGroup
+                            selectedKey={mode.toString()}
+                            onChanged={this.onChangeMode}
+                            options={modeOptions}
+                        />
+                    </Group>
 
-                    {this.renderSourceSelection()}
+                    <Group>
+                        <Label>Work items</Label>
+                        <ChoiceGroup
+                            selectedKey={source.toString()}
+                            onChanged={this.onChangeSource}
+                            options={sourceOptions}
+                        />
 
-                    <Label>Cards</Label>
-                    <Dropdown
-                        options={cardSets && cardSets.map(cs => ({
-                            key: cs.id,
-                            text: cs.name
-                        })) || []}
-                    />
+                        {this.renderSourceSelection()}
+                    </Group>
+
+                    <Group>
+                        <Label>Cards</Label>
+                        <CardSetPicker cardSets={cardSets} selectedCardSetId={cardSets && cardSets[0].id || ""} onChange={this.onChangeCardSet} />
+                    </Group>
                 </div>
             </Panel>
         );
@@ -171,6 +224,10 @@ class CreatePanel extends React.Component<ICreatePanelProps & typeof Actions & I
         );
     }
 
+    private onChangeMode = (option: IChoiceGroupOption) => {
+        const { onSetMode } = this.props;
+        onSetMode(parseInt(option.key, 10) as SessionMode);
+    }
     private onChangeSource = (option: IChoiceGroupOption) => {
         const { onSetSource } = this.props;
         onSetSource(parseInt(option.key, 10) as SessionSource);
@@ -186,6 +243,11 @@ class CreatePanel extends React.Component<ICreatePanelProps & typeof Actions & I
         onSetIteration(option.key as string);
     }
 
+    private onChangeCardSet = (cardSet: ICardSet) => {
+        const { onSetCardSet } = this.props;
+        onSetCardSet(cardSet.id);
+    }
+
     private onCreate = () => {
         const { onCreate } = this.props;
         onCreate();
@@ -195,6 +257,7 @@ class CreatePanel extends React.Component<ICreatePanelProps & typeof Actions & I
 export default connect(
     (state: IState) => ({
         name: state.create.session.name,
+        mode: state.create.session.mode,
         source: state.create.session.source,
         isValid: state.create.session.name !== "",
 

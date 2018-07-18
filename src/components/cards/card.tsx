@@ -1,10 +1,37 @@
 import * as React from "react";
 import styled, { css } from "../../styles/themed-styles";
 
-const cardWidth = 50;
-const cardHeight = 75;
+function getWidth(size: CardSize): number {
+    switch (size) {
+        case CardSize.small:
+            return 15;
 
-const Base = styled.button`
+        case CardSize.medium:
+            return 50;
+    }
+}
+
+function getHeight(size: CardSize): number {
+    switch (size) {
+        case CardSize.small:
+            return 22;
+
+        case CardSize.medium:
+            return 75;
+    }
+}
+
+function getFontSize(size: CardSize): number {
+    switch (size) {
+        case CardSize.small:
+            return 12;
+
+        case CardSize.medium:
+            return 24;
+    }
+}
+
+const BaseButton = styled.button`
     border: none;
     background: transparent;
     cursor: pointer;
@@ -16,27 +43,42 @@ const Base = styled.button`
     transform-style: preserve-3d;
 `;
 
-const Flip = styled.div`
+const Base = styled.div`
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    padding: 0;
+    outline: none;
+    
+    perspective: 1000;
+    transform: perspective(1000px);
+    transform-style: preserve-3d;
+`;
+
+const Flip = styled.div<{
+    size: CardSize;
+}>`
     transition: 0.6s;
 	transform-style: preserve-3d;
     
 	position: relative;
 
-    width: ${cardWidth}px;
-    height: ${cardHeight}px;
+    width: ${props => getWidth(props.size)}px;
+    height: ${props => getHeight(props.size)}px;
 
     margin: 5px;
 `;
 
 const CardFrame = styled.div<{
     flipped: boolean;
+    size: CardSize;
 }>`
     display: block;
-    width:  ${cardWidth}px;
-    height: ${cardHeight}px;
-    line-height: ${cardHeight - 1}px;   
+    width: ${props => getWidth(props.size)}px;
+    height: ${props => getHeight(props.size)}px;
+    line-height: ${props => getHeight(props.size) - 1}px;   
     border-radius: 10px;
-    font-size: x-large;
+    font-size: ${props => getFontSize(props.size)}px;
     text-align: center;
 
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.08);
@@ -75,11 +117,16 @@ export enum CardSize {
     medium
 }
 
+export enum CardState {
+
+}
+
 export interface ICardData {
     label: string;
 }
 
 export interface ICardComponentProps {
+    state?: CardState;
     size?: CardSize;
 
     front: ICardData;
@@ -92,21 +139,28 @@ export interface ICardComponentProps {
 
 export class Card extends React.Component<ICardComponentProps> {
     render(): JSX.Element {
-        const { front, back, flipped = false, onClick } = this.props;
+        const { front, back, flipped = false, onClick, size = CardSize.medium } = this.props;
+
+        let BaseElement: any;
+        if (onClick) {
+            BaseElement = BaseButton;
+        } else {
+            BaseElement = Base;
+        }
 
         return (
-            <Base onClick={onClick}>
-                <Flip>
-                    <Front flipped={flipped}>
+            <BaseElement onClick={onClick}>
+                <Flip size={size}>
+                    <Front flipped={flipped} size={size}>
                         {this.renderCard(front)}
                     </Front>
                     {back && (
-                        <Back flipped={flipped}>
+                        <Back flipped={flipped} size={size}>
                             {this.renderCard(back)}
                         </Back>
                     )}
                 </Flip>
-            </Base>
+            </BaseElement>
         );
     }
 

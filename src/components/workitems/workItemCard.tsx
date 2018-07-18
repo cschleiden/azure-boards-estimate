@@ -10,6 +10,8 @@ export interface IWorkItemCardProps {
     estimate?: number;
 
     selected: boolean;
+
+    onClick: () => void;
 }
 
 const Card = styled.div<{
@@ -57,10 +59,10 @@ const Estimate = styled.div`
 
 export class WorkItemCard extends React.Component<IWorkItemCardProps> {
     render(): JSX.Element {
-        const { id, estimate, title, selected } = this.props;
+        const { id, estimate, title, selected, onClick } = this.props;
 
         return (
-            <Card selected={selected}>
+            <Card selected={selected} onClick={onClick}>
                 <Info>
                     <WorkItemTypeIcon />
                     <Id>{id}</Id>

@@ -8,7 +8,7 @@ import * as Actions from "./sessionActions";
 export const initialState = {
     session: null as (ISession | null),
     cardSet: null as (ICardSet | null),
-    workItems: null as (IWorkItem[] | null),
+    workItems: [] as IWorkItem[],
     selectedWorkItem: null as (IWorkItem | null),
     loading: false
 }
@@ -28,7 +28,16 @@ const loadedSession = reducerAction(
         state.session = session;
         state.cardSet = cardSet;
         state.workItems = workItems;
-        state.selectedWorkItem = null;
+        state.selectedWorkItem = workItems[0];
+        state.loading = false;
+    }
+);
+
+const selectWorkItem = reducerAction(
+    Actions.selectWorkItem,
+    (state: ISessionState, id) => {
+        const workItem = state.workItems.find(x => x.id === id);
+        state.selectedWorkItem = workItem!;
     }
 );
 
@@ -38,6 +47,7 @@ export default <TPayload>(
 ) => {
     return reducerMap(action, state, {
         [Actions.loadSession.type]: loadSession,
-        [Actions.loadedSession.type]: loadedSession
+        [Actions.loadedSession.type]: loadedSession,
+        [Actions.selectWorkItem.type]: selectWorkItem
     });
 };

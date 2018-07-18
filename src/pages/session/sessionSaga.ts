@@ -45,4 +45,7 @@ export function* sessionSaga(action: ReturnType<typeof loadSession>) {
     const workItems: IWorkItem[] = yield call([workItemService, workItemService.getWorkItems], workItemIds);
 
     yield put(loadedSession({ session, cardSet, workItems }));
+
+    // Start channel?
+
 }

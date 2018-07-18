@@ -70,5 +70,32 @@ export const defaultCardSets: ICardSet[] = [
                 value: null
             }
         ]
+    },
+    {
+        id: "tshirts",
+        type: CardSetType.Ordinal,
+        name: "T-Shirts",
+        cards: [
+            {
+                display: "XS",
+                value: "XS"
+            },
+            {
+                display: "S",
+                value: "S"
+            },
+            {
+                display: "M",
+                value: "M"
+            },
+            {
+                display: "L",
+                value: "L"
+            },
+            {
+                display: "XL",
+                value: "XL"
+            },
+        ]
     }
 ]

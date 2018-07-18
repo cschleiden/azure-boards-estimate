@@ -14,6 +14,14 @@ export interface IVoteProps {
 
 export const X = styled.div`
     display: flex;
+    flex-direction: column;
+
+    align-items: center;
+`;
+
+export const Identity = styled.div`
+    margin-left: 10px;
+    font-size: 14px;
 `;
 
 export class Vote extends React.Component<IVoteProps> {
@@ -24,7 +32,7 @@ export class Vote extends React.Component<IVoteProps> {
             <X>
                 <Card
                     front={{
-                        label: "X"
+                        label: "..."
                     }}
                     back={{
                         label: estimate && estimate.display
@@ -32,7 +40,9 @@ export class Vote extends React.Component<IVoteProps> {
                     flipped={revealed}
                 />
 
-                {identity.displayName}
+                <Identity>
+                    {identity.displayName}
+                </Identity>
             </X>
         );
     }

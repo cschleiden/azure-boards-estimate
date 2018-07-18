@@ -1,3 +1,8 @@
+export enum SessionMode {
+    Online,
+    Offline
+}
+
 export enum SessionSource {
     Sprint,
     Query,
@@ -8,6 +13,8 @@ export interface ISession {
     id: string;
 
     name: string;
+
+    mode: SessionMode;
 
     version: number;
 

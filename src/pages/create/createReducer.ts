@@ -1,13 +1,15 @@
 import { Action } from "typescript-fsa";
 import reducerMap, { reducerAction } from "../../lib/reducerMap";
 import { ICardSet } from "../../model/cards";
-import { ISession, SessionSource } from "../../model/session";
+import { ISession, SessionMode, SessionSource } from "../../model/session";
 import { IIteration, ITeam } from "../../services/teams";
 import * as Actions from "./createActions";
 
 const initialState = {
     session: {
         id: "",
+        cardSet: "",
+        mode: SessionMode.Online,
         name: "",
         source: SessionSource.Sprint,
         createdAt: new Date(),
@@ -27,36 +29,44 @@ const initialState = {
 
 export type ICreateSessionState = typeof initialState;
 
-const setName = reducerAction(Actions.setName, (state: ICreateSessionState, payload) => {
-    state.session.name = payload;
+const setName = reducerAction(Actions.setName, (state: ICreateSessionState, name) => {
+    state.session.name = name;
 });
 
-const setSource = reducerAction(Actions.setSource, (state: ICreateSessionState, payload) => {
-    state.session.source = payload;
+const setMode = reducerAction(Actions.setMode, (state: ICreateSessionState, mode) => {
+    state.session.mode = mode;
 });
 
-const create = reducerAction(Actions.create, (state: ICreateSessionState, payload) => {
+const setSource = reducerAction(Actions.setSource, (state: ICreateSessionState, source) => {
+    state.session.source = source;
+});
+
+const setCardSet = reducerAction(Actions.setCardSet, (s: ICreateSessionState, cardSet) => {
+    s.session.cardSet = cardSet;
+});
+
+const create = reducerAction(Actions.create, (state: ICreateSessionState) => {
     state.isCreating = true;
 });
 
-const setCardSets = reducerAction(Actions.setCardSets, (s: ICreateSessionState, p) => {
-    s.cardSets = p;
+const setCardSets = reducerAction(Actions.setCardSets, (s: ICreateSessionState, cardSets) => {
+    s.cardSets = cardSets;
 });
 
-const setTeams = reducerAction(Actions.setTeams, (state: ICreateSessionState, payload) => {
-    state.teams = payload;
+const setTeams = reducerAction(Actions.setTeams, (state: ICreateSessionState, teams) => {
+    state.teams = teams;
 });
 
-const setTeam = reducerAction(Actions.setTeam, (state: ICreateSessionState, payload) => {
-    state.team = payload;
+const setTeam = reducerAction(Actions.setTeam, (state: ICreateSessionState, team) => {
+    state.team = team;
 });
 
-const setIterations = reducerAction(Actions.setIterations, (state: ICreateSessionState, payload) => {
-    state.iterations = payload;
+const setIterations = reducerAction(Actions.setIterations, (state: ICreateSessionState, iterations) => {
+    state.iterations = iterations;
 });
 
-const setIteration = reducerAction(Actions.setIteration, (state: ICreateSessionState, payload) => {
-    state.iteration = payload;
+const setIteration = reducerAction(Actions.setIteration, (state: ICreateSessionState, iteration) => {
+    state.iteration = iteration;
 });
 
 export default <TPayload>(
@@ -65,6 +75,8 @@ export default <TPayload>(
 
     return reducerMap(action, state, {
         [Actions.setName.type]: setName,
+        [Actions.setCardSet.type]: setCardSet,
+        [Actions.setMode.type]: setMode,
         [Actions.setSource.type]: setSource,
         [Actions.create.type]: create,
 
