@@ -18,6 +18,10 @@ class ServiceRegistry implements IServiceRegistry {
 
     public getService<TService extends IService>(id: string): TService {
         if (!this.servicesInstances[id]) {
+            if (!this.services[id]) {
+                throw new Error(`Can't find service with id ${id}`);
+            }
+
             this.servicesInstances[id] = new this.services[id];
         }
 

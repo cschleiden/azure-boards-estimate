@@ -1,6 +1,5 @@
 export interface ICard {
     display: string;
-
     value: number | string | null;
 }
 

@@ -1,4 +1,4 @@
-import { IEstimate } from "../../model/estimate";
+import { IEstimate, ISessionEstimates } from "../../model/estimate";
 
 export type IHandler<TPayload> = (payload: TPayload) => void;
 
@@ -47,6 +47,6 @@ export interface IChannel {
 
     setWorkItem: IOperation<ISetWorkItemPayload>;
 
-    start(): Promise<void>;
+    start(sessionId: string): Promise<ISessionEstimates>;
     end(): Promise<void>;
 }

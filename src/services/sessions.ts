@@ -30,9 +30,9 @@ export class MockSessionService implements ISessionService {
             createdBy: "Christopher Schleiden",
             mode: SessionMode.Offline,
             name: "Distributed Team",
-            source: SessionSource.Query,
+            source: SessionSource.Ids,
             sourceData: "123",
-            cardSet: "default",
+            cardSet: "tshirts",
             version: 1
         }
     ];

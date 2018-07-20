@@ -9,7 +9,7 @@ export interface IVoteProps {
 
     estimate: ICard;
 
-    revealed: false;
+    revealed: boolean;
 }
 
 export const X = styled.div`
@@ -38,6 +38,7 @@ export class Vote extends React.Component<IVoteProps> {
                         label: estimate && estimate.display
                     }}
                     flipped={revealed}
+                    disabled={true}
                 />
 
                 <Identity>

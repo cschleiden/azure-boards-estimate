@@ -3,28 +3,32 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { DefaultButton, MoreButton } from "../../components/buttons";
 import { Card } from "../../components/cards/card";
-import { Vote } from "../../components/cards/vote";
 import { Header } from "../../components/header";
 import { Splitter } from "../../components/splitter";
 import { SubTitle } from "../../components/subtitle";
+import { Votes } from "../../components/votes";
 import { WorkItemCard } from "../../components/workitems/workItemCard";
 import { WorkItemHeader } from "../../components/workitems/workItemHeader";
 import { ICard, ICardSet } from "../../model/cards";
-import { IWorkItem } from "../../model/IWorkItem";
+import { ISessionEstimates } from "../../model/estimate";
+import { IIdentity } from "../../model/identity";
 import { ISession } from "../../model/session";
+import { IWorkItem } from "../../model/workitem";
 import { IState } from "../../reducer";
 import styled from "../../styles/themed-styles";
 import { IPageProps } from "../props";
-import { loadedSession, loadSession, selectWorkItem } from "./sessionActions";
+import { estimate, loadedSession, loadSession, selectWorkItem } from "./sessionActions";
 
 interface ISessionParams {
     id: string;
 }
 
 interface ISessionProps extends IPageProps<ISessionParams> {
+    identity: IIdentity;
     loading: boolean;
     session: ISession;
     workItems: IWorkItem[];
+    estimates: ISessionEstimates;
     cardSet: ICardSet;
     selectedWorkItem: IWorkItem | null;
 }
@@ -32,10 +36,11 @@ interface ISessionProps extends IPageProps<ISessionParams> {
 const Actions = {
     loadSession,
     loadedSession,
-    selectWorkItem
+    selectWorkItem,
+    estimate
 };
 
-const Votes = styled.div`
+const CardContainer = styled.div`
     display: flex;
 `;
 
@@ -53,7 +58,7 @@ class Session extends React.Component<ISessionProps & typeof Actions, { flipped:
     }
 
     render(): JSX.Element {
-        const { cardSet, session, loading, workItems, selectedWorkItem } = this.props;
+        const { cardSet, estimates, session, loading, workItems, selectedWorkItem } = this.props;
 
         if (loading || !session) {
             return (
@@ -120,41 +125,27 @@ class Session extends React.Component<ISessionProps & typeof Actions, { flipped:
                                 <WorkItemHeader
                                     id={selectedWorkItem.id}
                                     title={selectedWorkItem.title}
-                                    description=""
+                                    description={selectedWorkItem.description}
                                 />
                             )}
 
                             <SubTitle>Other votes</SubTitle>
-
-                            <Votes>
-                                <Vote
-                                    identity={{
-                                        id: "123",
-                                        displayName: "John Doe"
-                                    }}
-                                    estimate={cardSet.cards[0]}
-                                    revealed={false}
-                                />
-                                <Vote
-                                    identity={{
-                                        id: "123",
-                                        displayName: "Christopher Schleiden"
-                                    }}
-                                    estimate={cardSet.cards[0]}
-                                    revealed={false}
-                                />
-                            </Votes>
+                            <Votes cardSet={cardSet} estimates={estimates} workItemId={selectedWorkItem!.id} />
 
                             <SubTitle>Your vote</SubTitle>
 
-                            {cardSet && cardSet.cards.map(this.renderCard)}
+                            <CardContainer>
+                                {cardSet && cardSet.cards.map(this.renderCard)}
+                            </CardContainer>
                         </>
                     )} />
             </div>
         );
     }
 
-    private renderCard(card: ICard): JSX.Element {
+    private renderCard = (card: ICard): JSX.Element => {
+        const { identity, selectedWorkItem } = this.props;
+
         return (
             <Card
                 key={card.display}
@@ -162,6 +153,14 @@ class Session extends React.Component<ISessionProps & typeof Actions, { flipped:
                     label: card.display
                 }}
                 flipped={false}
+                // tslint:disable-next-line:jsx-no-lambda
+                onClick={() => {
+                    this.props.estimate({
+                        identity,
+                        workItemId: selectedWorkItem!.id,
+                        estimate: card.display
+                    });
+                }}
             />
         );
     }
@@ -176,10 +175,12 @@ class Session extends React.Component<ISessionProps & typeof Actions, { flipped:
 export default connect(
     (state: IState) => {
         return {
+            identity: state.init.currentIdentity,
             loading: state.session.loading,
             session: state.session.session,
             cardSet: state.session.cardSet,
             workItems: state.session.workItems,
+            estimates: state.session.estimates,
             selectedWorkItem: state.session.selectedWorkItem
         };
     },

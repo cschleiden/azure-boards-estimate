@@ -1,12 +1,14 @@
-import { call, put, takeLatest } from "redux-saga/effects";
+import { call, fork, put, takeLatest } from "redux-saga/effects";
 import { ICardSet } from "../../model/cards";
-import { IWorkItem } from "../../model/IWorkItem";
+import { ISessionEstimates } from "../../model/estimate";
 import { ISession, SessionSource } from "../../model/session";
+import { IWorkItem } from "../../model/workitem";
 import { CardSetServiceId, ICardSetService } from "../../services/cardSets";
 import { Services } from "../../services/services";
 import { ISessionService, SessionServiceId } from "../../services/sessions";
 import { ISprintService, SprintServiceId } from "../../services/sprints";
 import { IWorkItemService, WorkItemServiceId } from "../../services/workItems";
+import { channelSaga } from "./channelSaga";
 import { loadedSession, loadSession } from "./sessionActions";
 
 export function* rootSessionSaga() {
@@ -44,8 +46,7 @@ export function* sessionSaga(action: ReturnType<typeof loadSession>) {
     const workItemService = Services.getService<IWorkItemService>(WorkItemServiceId);
     const workItems: IWorkItem[] = yield call([workItemService, workItemService.getWorkItems], workItemIds);
 
-    yield put(loadedSession({ session, cardSet, workItems }));
+    const estimates: ISessionEstimates = yield fork(channelSaga, session);
 
-    // Start channel?
-
+    yield put(loadedSession({ session, cardSet, workItems, estimates }));
 }

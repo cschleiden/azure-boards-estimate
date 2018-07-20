@@ -18,7 +18,6 @@ class App extends React.Component {
             <Route exact={true} path="/" component={HomePage} />
           </Switch>
 
-
           <Route exact={true} path="/session/:id" component={Session} />
         </RootStyle>
       </Router>

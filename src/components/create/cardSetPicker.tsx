@@ -7,6 +7,7 @@ import { Card, CardSize } from "../cards/card";
 
 const CardContainer = styled.div`
     display: flex;
+    flex-wrap: wrap;
 `;
 
 export interface ICardSetPickerProps {
@@ -41,6 +42,7 @@ export class CardSetPicker extends React.Component<ICardSetPickerProps> {
                 {cardSet.cards.map(c => (
                     <Card
                         key={c.display}
+                        disabled={true}
                         size={CardSize.small}
                         front={{
                             label: c.display

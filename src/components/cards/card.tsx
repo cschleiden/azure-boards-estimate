@@ -4,7 +4,7 @@ import styled, { css } from "../../styles/themed-styles";
 function getWidth(size: CardSize): number {
     switch (size) {
         case CardSize.small:
-            return 15;
+            return 20;
 
         case CardSize.medium:
             return 50;
@@ -14,7 +14,7 @@ function getWidth(size: CardSize): number {
 function getHeight(size: CardSize): number {
     switch (size) {
         case CardSize.small:
-            return 22;
+            return 30;
 
         case CardSize.medium:
             return 75;
@@ -34,7 +34,6 @@ function getFontSize(size: CardSize): number {
 const BaseButton = styled.button`
     border: none;
     background: transparent;
-    cursor: pointer;
     padding: 0;
     outline: none;
     
@@ -46,7 +45,6 @@ const BaseButton = styled.button`
 const Base = styled.div`
     border: none;
     background: transparent;
-    cursor: pointer;
     padding: 0;
     outline: none;
     
@@ -58,7 +56,7 @@ const Base = styled.div`
 const Flip = styled.div<{
     size: CardSize;
 }>`
-    transition: 0.6s;
+    transition: 0.3s;
 	transform-style: preserve-3d;
     
 	position: relative;
@@ -72,6 +70,7 @@ const Flip = styled.div<{
 const CardFrame = styled.div<{
     flipped: boolean;
     size: CardSize;
+    disabled?: boolean;
 }>`
     display: block;
     width: ${props => getWidth(props.size)}px;
@@ -86,13 +85,15 @@ const CardFrame = styled.div<{
     
     user-select: none;
 
-    transition: linear all 0.6s;
+    transition: linear all 0.2s;
     backface-visibility: hidden;    
     transform-style: preserve-3d;
 
 	position: absolute;
 	top: 0;
-	left: 0;
+    left: 0;
+    
+    ${props => !props.disabled && css`cursor: pointer;`}
 `;
 
 const Front = CardFrame.extend`
@@ -100,6 +101,12 @@ const Front = CardFrame.extend`
 
     ${props => props.flipped && css`
         transform: rotateY(180deg);
+    `}
+
+    ${props => !props.disabled && css`
+        &:hover {
+            background-color: red;
+        }
     `}
 `;
 
@@ -134,12 +141,14 @@ export interface ICardComponentProps {
 
     flipped?: boolean;
 
+    disabled?: boolean;
+
     onClick?: () => void;
 }
 
 export class Card extends React.Component<ICardComponentProps> {
     render(): JSX.Element {
-        const { front, back, flipped = false, onClick, size = CardSize.medium } = this.props;
+        const { front, back, disabled = false, flipped = false, onClick, size = CardSize.medium } = this.props;
 
         let BaseElement: any;
         if (onClick) {
@@ -151,11 +160,11 @@ export class Card extends React.Component<ICardComponentProps> {
         return (
             <BaseElement onClick={onClick}>
                 <Flip size={size}>
-                    <Front flipped={flipped} size={size}>
+                    <Front flipped={flipped} size={size} disabled={disabled}>
                         {this.renderCard(front)}
                     </Front>
                     {back && (
-                        <Back flipped={flipped} size={size}>
+                        <Back flipped={flipped} size={size} disabled={disabled}>
                             {this.renderCard(back)}
                         </Back>
                     )}

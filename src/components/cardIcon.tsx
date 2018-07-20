@@ -56,7 +56,7 @@ export function getIconForSource(source: SessionSource): string {
             return "QueryList";
 
         case SessionSource.Ids:
-            return "";
+            return "WorkItem";
     }
 }
 
