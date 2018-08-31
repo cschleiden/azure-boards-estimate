@@ -5,7 +5,7 @@ import { ISessionEstimates } from "../../model/estimate";
 import { ISession } from "../../model/session";
 import { IChannel } from "../../services/channels/channels";
 import { getChannel } from "./channelFactory";
-import { estimate, estimateSet, selectWorkItem, workItemSelected } from "./sessionActions";
+import { estimate, estimateSet, selectWorkItem, userJoined, workItemSelected } from "./sessionActions";
 
 export function* channelSaga(session: ISession) {
     const channel: IChannel = yield call(getChannel, session.id, session.mode);
@@ -60,6 +60,10 @@ export function subscribe(channel: IChannel) {
             // TODO: Check sessionId
 
             emit(estimateSet(payload.estimate));
+        });
+
+        channel.join.attachHandler(payload => {
+            emit(userJoined(payload));
         });
 
         // tslint:disable-next-line:no-empty

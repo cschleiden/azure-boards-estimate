@@ -57,6 +57,13 @@ class Session extends React.Component<ISessionProps & typeof Actions, { flipped:
         this.props.loadSession(this.props.match.params.id);
     }
 
+    componentWillReceiveProps() {
+        // tslint:disable-next-line:no-console
+        console.timeEnd("start");
+        // tslint:disable-next-line:no-console
+        console.log("end");
+    }
+
     render(): JSX.Element {
         const { cardSet, estimates, session, loading, workItems, selectedWorkItem } = this.props;
 
@@ -155,6 +162,11 @@ class Session extends React.Component<ISessionProps & typeof Actions, { flipped:
                 flipped={false}
                 // tslint:disable-next-line:jsx-no-lambda
                 onClick={() => {
+                    // tslint:disable-next-line:no-console                
+                    console.time("start");
+                    // tslint:disable-next-line:no-console
+                    console.log("start");
+
                     this.props.estimate({
                         identity,
                         workItemId: selectedWorkItem!.id,

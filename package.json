@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@aspnet/signalr": "^1.0.2",
+    "@aspnet/signalr": "^1.0.3",
     "@types/node": "^10.3.5",
     "@types/prop-types": "^15.5.3",
     "@types/react-redux": "^6.0.2",
