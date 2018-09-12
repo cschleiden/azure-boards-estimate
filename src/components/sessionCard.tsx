@@ -3,6 +3,7 @@ import * as React from "react";
 import { ISession } from "../model/session";
 import styled from "../styles/themed-styles";
 import { CardIcon } from "./cardIcon";
+import { makeUrlSafe } from "../lib/urlSafe";
 
 const CardFrame = styled.a`
     text-decoration: none;
@@ -55,7 +56,7 @@ export class SessionCard extends React.Component<ICardProps> {
         const { session: { id, mode, name, source } } = this.props;
 
         return (
-            <CardFrame href={`/session/${id}`} onClick={this.navigate}>
+            <CardFrame href={`/session/${id}/${makeUrlSafe(name)}`} onClick={this.navigate}>
                 <CardTitle>{name}</CardTitle>
 
                 <CardMode>
@@ -66,9 +67,9 @@ export class SessionCard extends React.Component<ICardProps> {
     }
 
     private navigate = (e: React.MouseEvent<HTMLAnchorElement>) => {
-        const { history, session: { id } } = this.props;
+        const { history, session: { id, name } } = this.props;
 
-        history.push(`/session/${id}`);
+        history.push(`/session/${id}/${makeUrlSafe(name)}`);
         e.preventDefault();
     }
 }

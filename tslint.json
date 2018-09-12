@@ -13,7 +13,8 @@
     },
     "member-access": false,
     "object-literal-sort-keys": false,
-    "array-type": false 
+    "array-type": false,
+    "ordered-imports": false
   },
   "linterOptions": {
     "exclude": [

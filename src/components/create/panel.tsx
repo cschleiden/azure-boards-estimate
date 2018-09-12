@@ -9,6 +9,7 @@ import { IIteration, ITeam } from "../../services/teams";
 import styled from "../../styles/themed-styles";
 import { DefaultButton, PrimaryButton } from "../buttons";
 import { getIconForMode } from "../cardIcon";
+import { Title } from "../title";
 import { CardSetPicker } from "./cardSetPicker";
 
 const { icon: onlineIcon, description: onlineDescription } = getIconForMode(SessionMode.Online);
@@ -62,12 +63,39 @@ const sourceOptions: IChoiceGroupOption[] = [
     }
 ];
 
+const Header = styled.div`
+    padding: 40px;
+`;
+
+const HeaderTitle = Title.extend`
+    font-size: 21px;
+    font-weight: semi-bold;
+`;
+
+const Footer = styled.div`
+    display: flex;
+    justify-content: flex-end;
+`;
+
 const FooterButton = styled.span`
-    margin-right: 8px;
+    margin-left: 8px;
 `;
 
 const Group = styled.div`
     margin-bottom: 20px;
+`;
+
+const CPanel = styled(Panel)`
+    margin: 20px;
+    
+    .ms-Panel-main {        
+        border-radius: 6px;        
+        box-shadow: 0px 25.6px 57.6px rgba(0, 0, 0, 0.22), 0px 4.8px 14.4px rgba(0, 0, 0, 0.18);    
+    }
+
+    .ms-Panel-contentInner {
+        top: 84px;
+    }
 `;
 
 export interface ICreatePanelOwnProps {
@@ -110,12 +138,12 @@ class CreatePanel extends React.Component<ICreatePanelProps & typeof Actions & I
         const { name, cardSet, mode, source, onDismiss, onSetName, cardSets } = this.props;
 
         return (
-            <Panel
-                headerText="Create new session"
+            <CPanel
                 hasCloseButton={true}
                 isOpen={true}
                 type={PanelType.custom}
                 customWidth="400px"
+                onRenderNavigation={this.renderHeader}
                 onRenderFooterContent={this.renderFooter}
                 isFooterAtBottom={true}
                 onDismiss={onDismiss}
@@ -154,7 +182,7 @@ class CreatePanel extends React.Component<ICreatePanelProps & typeof Actions & I
                         <CardSetPicker cardSets={cardSets} selectedCardSetId={cardSet || ""} onChange={this.onChangeCardSet} />
                     </Group>
                 </div>
-            </Panel>
+            </CPanel>
         );
     }
 
@@ -207,11 +235,20 @@ class CreatePanel extends React.Component<ICreatePanelProps & typeof Actions & I
         }
     }
 
+    private renderHeader = () => {
+        return (
+            <Header>
+                <HeaderTitle>Create new session</HeaderTitle>
+            </Header>
+        );
+    }
+
     private renderFooter = () => {
         const { isValid, onDismiss } = this.props;
 
         return (
-            <div>
+            <Footer>
+                <DefaultButton onClick={onDismiss}>Cancel</DefaultButton>
                 <FooterButton>
                     <PrimaryButton
                         onClick={this.onCreate}
@@ -220,8 +257,7 @@ class CreatePanel extends React.Component<ICreatePanelProps & typeof Actions & I
                         Create
                     </PrimaryButton>
                 </FooterButton>
-                <DefaultButton onClick={onDismiss}>Cancel</DefaultButton>
-            </div>
+            </Footer>
         );
     }
 

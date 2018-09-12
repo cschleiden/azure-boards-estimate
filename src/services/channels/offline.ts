@@ -10,7 +10,18 @@ export class OfflineChannel implements IChannel {
     });
 
     setWorkItem = defineOperation<ISetWorkItemPayload>(async p => {
-        // Ignore
+        const { workItemId } = p;
+
+        // After switching the work item, we need to replay all estimates for the work item
+        const estimates = await this.service.getEstimates(this.sessionId);
+        if (estimates[workItemId]) {
+            for (const estimate of estimates[workItemId]) {
+                this.estimate.incoming({
+                    sessionId: this.sessionId,
+                    estimate
+                });
+            }
+        }
     });
 
     join = defineOperation<IUserInfo>(async p => {
@@ -22,22 +33,7 @@ export class OfflineChannel implements IChannel {
 
     async start(sessionId: string): Promise<void> {
         this.sessionId = sessionId;
-
         this.service = Services.getService<IEstimationService>(EstimationServiceId);
-        const estimates = await this.service.getEstimates(this.sessionId);
-
-        // Fire estimate events for each work item
-        const workItemIds = Object.keys(estimates).map(x => Number(x));
-        for (const workItemId of workItemIds) {
-            const estimatesForWorkItem = estimates[workItemId];
-
-            for (const estimate of estimatesForWorkItem) {
-                this.estimate.incoming({
-                    sessionId: this.sessionId,
-                    estimate
-                });
-            }
-        }
     }
 
     end(): Promise<void> {

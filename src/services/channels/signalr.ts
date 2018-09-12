@@ -1,6 +1,8 @@
 import * as signalR from "@aspnet/signalr";
 import { IUserInfo } from "../../model/user";
 import { defineOperation, IChannel, IEstimatePayload, ISetWorkItemPayload } from "./channels";
+import { Services } from "../services";
+import { IdentityServiceId, IIdentityService } from "../identity";
 
 // TODO: Make configurable
 const baseUrl = "https://localhost:44334";
@@ -16,7 +18,7 @@ const enum Action {
 
 export class SignalRChannel implements IChannel {
     estimate = defineOperation<IEstimatePayload>(async p => {
-        await this.connection.send("estimate", p.sessionId, p.estimate);
+        await this.sendToOtherClients(Action.Estimate, p);
     });
 
     setWorkItem = defineOperation<ISetWorkItemPayload>(async p => {
@@ -34,7 +36,7 @@ export class SignalRChannel implements IChannel {
         this.sessionId = sessionId;
 
         this.connection = new signalR.HubConnectionBuilder()
-            .withUrl(`${baseUrl}/estimate`)
+            .withUrl(`${baseUrl}/estimate?sessionId=${this.sessionId}&tfId=${"f6642bc9-e18c-4dcd-975b-55b4d857eb02"}`)
             .configureLogging(signalR.LogLevel.Information)
             .build();
 
@@ -46,9 +48,8 @@ export class SignalRChannel implements IChannel {
         });
 
         // Tell other clients about us
-        await this.sendToOtherClients(Action.Join, {
-            // TODO: Include our data
-        });
+        const identityService = Services.getService<IIdentityService>(IdentityServiceId);
+        await this.sendToOtherClients(Action.Join, await identityService.getCurrentIdentity());
     }
 
     async end(): Promise<void> {
