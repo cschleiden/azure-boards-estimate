@@ -5,10 +5,12 @@ import { defineOperation, IChannel, IEstimatePayload, ISetWorkItemPayload } from
 
 export class OfflineChannel implements IChannel {
     estimate = defineOperation<IEstimatePayload>(async p => {
-        this.estimate.incoming(p);
+        // Store estimate
+        this.service.estimate(this.sessionId, p.estimate);
     });
 
     setWorkItem = defineOperation<ISetWorkItemPayload>(async p => {
+        // Ignore
     });
 
     join = defineOperation<IUserInfo>(async p => {
@@ -16,12 +18,13 @@ export class OfflineChannel implements IChannel {
     });
 
     private sessionId: string;
+    private service: IEstimationService;
 
     async start(sessionId: string): Promise<void> {
         this.sessionId = sessionId;
 
-        const service = Services.getService<IEstimationService>(EstimationServiceId);
-        const estimates = await service.getEstimates(this.sessionId);
+        this.service = Services.getService<IEstimationService>(EstimationServiceId);
+        const estimates = await this.service.getEstimates(this.sessionId);
 
         // Fire estimate events for each work item
         const workItemIds = Object.keys(estimates).map(x => Number(x));

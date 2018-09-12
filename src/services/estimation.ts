@@ -33,6 +33,6 @@ export class MockEstimationService implements IEstimationService {
     }
 
     async getEstimates(sessionId: string): Promise<ISessionEstimates> {
-        return this.storage[sessionId];
+        return this.storage[sessionId] || {};
     }
 }
