@@ -1,15 +1,16 @@
 import * as signalR from "@aspnet/signalr";
+import { IEstimate } from "../../model/estimate";
 import { IUserInfo } from "../../model/user";
-import { defineOperation, IChannel, IEstimatePayload, ISetWorkItemPayload } from "./channels";
-import { Services } from "../services";
 import { IdentityServiceId, IIdentityService } from "../identity";
+import { Services } from "../services";
+import { defineIncomingOperation, defineOperation, IChannel } from "./channels";
 
 // TODO: Make configurable
 const baseUrl = "https://localhost:44334";
 
 const enum Action {
     Join = "join",
-    Leave = "leave",
+    Left = "left",
     Estimate = "estimate",
     Reveal = "reveal",
     Add = "add",
@@ -17,17 +18,19 @@ const enum Action {
 };
 
 export class SignalRChannel implements IChannel {
-    estimate = defineOperation<IEstimatePayload>(async p => {
-        await this.sendToOtherClients(Action.Estimate, p);
+    estimate = defineOperation<IEstimate>(async estimate => {
+        await this.sendToOtherClients(Action.Estimate, estimate);
     });
 
-    setWorkItem = defineOperation<ISetWorkItemPayload>(async p => {
-        await this.sendToOtherClients(Action.Switch, p.workItemId);
+    setWorkItem = defineOperation<number>(async workItemId => {
+        await this.sendToOtherClients(Action.Switch, workItemId);
     });
 
-    join = defineOperation<IUserInfo>(async p => {
-        await this.sendToOtherClients(Action.Join, p);
+    join = defineOperation<IUserInfo>(async userInfo => {
+        await this.connection.send(Action.Join, this.sessionId, userInfo);
     });
+
+    left = defineIncomingOperation<string>();
 
     private connection: signalR.HubConnection;
     private sessionId: string;
@@ -35,21 +38,28 @@ export class SignalRChannel implements IChannel {
     async start(sessionId: string): Promise<void> {
         this.sessionId = sessionId;
 
+        const identityService = Services.getService<IIdentityService>(IdentityServiceId);
+        const identity = await identityService.getCurrentIdentity();
+
         this.connection = new signalR.HubConnectionBuilder()
-            .withUrl(`${baseUrl}/estimate?sessionId=${this.sessionId}&tfId=${"f6642bc9-e18c-4dcd-975b-55b4d857eb02"}`)
+            .withUrl(`${baseUrl}/estimate?sessionId=${this.sessionId}&tfId=${identity.id}`)
             .configureLogging(signalR.LogLevel.Information)
             .build();
 
+        // Hook up handler for all messages the server sends
         this.connection.on("broadcast", this.onReceive);
 
+        // Start connection
         await this.connection.start().catch(err => {
             // tslint:disable-next-line:no-console
             console.error(err.toString())
         });
 
-        // Tell other clients about us
-        const identityService = Services.getService<IIdentityService>(IdentityServiceId);
-        await this.sendToOtherClients(Action.Join, await identityService.getCurrentIdentity());
+        // Say hello to other clients
+        await this.join({
+            tfId: identity.id,
+            name: identity.displayName
+        });
     }
 
     async end(): Promise<void> {
@@ -60,7 +70,7 @@ export class SignalRChannel implements IChannel {
         this.connection.send("broadcast", this.sessionId, action, payload);
     }
 
-    private onReceive = (sessionId: string, action: Action, payload: any) => {
+    private onReceive = (action: Action, payload: any) => {
         switch (action) {
             case Action.Estimate: {
                 // Received estimate from another player
@@ -69,8 +79,23 @@ export class SignalRChannel implements IChannel {
             }
 
             case Action.Join: {
+                // Another user has joined
                 this.join.incoming(payload);
                 break;
+            }
+
+            case Action.Switch: {
+                this.setWorkItem.incoming(payload);
+            }
+
+            case Action.Left: {
+                this.left.incoming(payload);
+                break;
+            }
+
+            default: {
+                // tslint:disable-next-line:no-console
+                console.error("Unknown action received: " + action);
             }
         }
     };

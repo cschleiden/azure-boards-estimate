@@ -1,25 +1,21 @@
 import { IUserInfo } from "../../model/user";
 import { EstimationServiceId, IEstimationService } from "../estimation";
 import { Services } from "../services";
-import { defineOperation, IChannel, IEstimatePayload, ISetWorkItemPayload } from "./channels";
+import { defineIncomingOperation, defineOperation, IChannel } from "./channels";
+import { IEstimate } from "../../model/estimate";
 
 export class OfflineChannel implements IChannel {
-    estimate = defineOperation<IEstimatePayload>(async p => {
+    estimate = defineOperation<IEstimate>(async estimate => {
         // Store estimate
-        this.service.estimate(this.sessionId, p.estimate);
+        this.service.estimate(this.sessionId, estimate);
     });
 
-    setWorkItem = defineOperation<ISetWorkItemPayload>(async p => {
-        const { workItemId } = p;
-
+    setWorkItem = defineOperation<number>(async workItemId => {
         // After switching the work item, we need to replay all estimates for the work item
         const estimates = await this.service.getEstimates(this.sessionId);
         if (estimates[workItemId]) {
             for (const estimate of estimates[workItemId]) {
-                this.estimate.incoming({
-                    sessionId: this.sessionId,
-                    estimate
-                });
+                this.estimate.incoming(estimate);
             }
         }
     });
@@ -27,6 +23,8 @@ export class OfflineChannel implements IChannel {
     join = defineOperation<IUserInfo>(async p => {
         // Do nothing for this data provider.
     });
+
+    left = defineIncomingOperation<string>();
 
     private sessionId: string;
     private service: IEstimationService;

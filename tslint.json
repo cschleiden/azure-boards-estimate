@@ -14,7 +14,8 @@
     "member-access": false,
     "object-literal-sort-keys": false,
     "array-type": false,
-    "ordered-imports": false
+    "ordered-imports": false,
+    "no-shadowed-variable": false
   },
   "linterOptions": {
     "exclude": [

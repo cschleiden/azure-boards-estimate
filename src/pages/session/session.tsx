@@ -2,22 +2,18 @@ import { Spinner } from "office-ui-fabric-react";
 import * as React from "react";
 import { connect } from "react-redux";
 import { DefaultButton, MoreButton } from "../../components/buttons";
-import { Card } from "../../components/cards/card";
 import { Header } from "../../components/header";
 import { Splitter } from "../../components/splitter";
-import { SubTitle } from "../../components/subtitle";
-import { Votes } from "../../components/votes";
 import { WorkItemCard } from "../../components/workitems/workItemCard";
-import { WorkItemHeader } from "../../components/workitems/workItemHeader";
-import { ICard, ICardSet } from "../../model/cards";
+import { ICardSet } from "../../model/cards";
 import { ISessionEstimates } from "../../model/estimate";
 import { IIdentity } from "../../model/identity";
 import { ISession } from "../../model/session";
 import { IWorkItem } from "../../model/workitem";
 import { IState } from "../../reducer";
-import styled from "../../styles/themed-styles";
 import { IPageProps } from "../props";
-import { estimate, loadedSession, loadSession, selectWorkItem } from "./sessionActions";
+import WorkItemView from "./components/workItemView";
+import { loadedSession, leaveSession, loadSession, selectWorkItem } from "./sessionActions";
 
 interface ISessionParams {
     id: string;
@@ -37,12 +33,9 @@ const Actions = {
     loadSession,
     loadedSession,
     selectWorkItem,
-    estimate
+    leaveSession
 };
 
-const CardContainer = styled.div`
-    display: flex;
-`;
 
 class Session extends React.Component<ISessionProps & typeof Actions, { flipped: boolean }> {
     constructor(props: any) {
@@ -57,15 +50,8 @@ class Session extends React.Component<ISessionProps & typeof Actions, { flipped:
         this.props.loadSession(this.props.match.params.id);
     }
 
-    componentWillReceiveProps() {
-        // tslint:disable-next-line:no-console
-        console.timeEnd("start");
-        // tslint:disable-next-line:no-console
-        console.log("end");
-    }
-
     render(): JSX.Element {
-        const { cardSet, estimates, session, loading, workItems, selectedWorkItem } = this.props;
+        const { session, loading, workItems, selectedWorkItem, leaveSession } = this.props;
 
         if (loading || !session) {
             return (
@@ -85,7 +71,7 @@ class Session extends React.Component<ISessionProps & typeof Actions, { flipped:
                                 iconProps={{
                                     iconName: "Leave"
                                 }}
-                                onClick={this.leave}
+                                onClick={leaveSession}
                             >
                                 Leave session
                             </DefaultButton>
@@ -128,58 +114,11 @@ class Session extends React.Component<ISessionProps & typeof Actions, { flipped:
                     )}
                     right={(
                         <>
-                            {selectedWorkItem && (
-                                <WorkItemHeader
-                                    id={selectedWorkItem.id}
-                                    title={selectedWorkItem.title}
-                                    description={selectedWorkItem.description}
-                                />
-                            )}
-
-                            <SubTitle>Other votes</SubTitle>
-                            <Votes cardSet={cardSet} estimates={estimates} workItemId={selectedWorkItem!.id} />
-
-                            <SubTitle>Your vote</SubTitle>
-
-                            <CardContainer>
-                                {cardSet && cardSet.cards.map(this.renderCard)}
-                            </CardContainer>
+                            {!!selectedWorkItem && <WorkItemView />}
                         </>
                     )} />
             </div>
         );
-    }
-
-    private renderCard = (card: ICard): JSX.Element => {
-        const { identity, selectedWorkItem } = this.props;
-
-        return (
-            <Card
-                key={card.display}
-                front={{
-                    label: card.display
-                }}
-                flipped={false}
-                // tslint:disable-next-line:jsx-no-lambda
-                onClick={() => {
-                    // tslint:disable-next-line:no-console                
-                    console.time("start");
-                    // tslint:disable-next-line:no-console
-                    console.log("start");
-
-                    this.props.estimate({
-                        identity,
-                        workItemId: selectedWorkItem!.id,
-                        estimate: card.display
-                    });
-                }}
-            />
-        );
-    }
-
-    private leave = () => {
-        const { history } = this.props;
-        history.push("/");
     }
 }
 

@@ -1,6 +1,7 @@
-import { call, fork, put, takeLatest } from "redux-saga/effects";
+import { Task } from "redux-saga";
+import { call, cancel, fork, put, take, takeLatest } from "redux-saga/effects";
+import history from "../../lib/history";
 import { ICardSet } from "../../model/cards";
-import { ISessionEstimates } from "../../model/estimate";
 import { ISession, SessionSource } from "../../model/session";
 import { IWorkItem } from "../../model/workitem";
 import { CardSetServiceId, ICardSetService } from "../../services/cardSets";
@@ -9,7 +10,7 @@ import { ISessionService, SessionServiceId } from "../../services/sessions";
 import { ISprintService, SprintServiceId } from "../../services/sprints";
 import { IWorkItemService, WorkItemServiceId } from "../../services/workItems";
 import { channelSaga } from "./channelSaga";
-import { loadedSession, loadSession } from "./sessionActions";
+import { endSession, leaveSession, loadedSession, loadSession } from "./sessionActions";
 
 export function* rootSessionSaga() {
     yield takeLatest(loadSession.type, sessionSaga);
@@ -46,7 +47,21 @@ export function* sessionSaga(action: ReturnType<typeof loadSession>) {
     const workItemService = Services.getService<IWorkItemService>(WorkItemServiceId);
     const workItems: IWorkItem[] = yield call([workItemService, workItemService.getWorkItems], workItemIds);
 
-    const estimates: ISessionEstimates = yield fork(channelSaga, session);
+    // Start communication channel
+    const channelTask: Task = yield fork(channelSaga, session);
 
-    yield put(loadedSession({ session, cardSet, workItems, estimates }));
+    // Session is now loaded
+    yield put(loadedSession({ session, cardSet, workItems, estimates: {} }));
+
+    // Wait for leave or end
+    const a: ReturnType<typeof leaveSession> | ReturnType<typeof endSession> = yield take([leaveSession.type, endSession.type]);
+    switch (a.type) {
+        case leaveSession.type: {
+            yield cancel(channelTask);
+
+            // Navigate back to session list
+            history.push("/");
+            break;
+        }
+    }
 }

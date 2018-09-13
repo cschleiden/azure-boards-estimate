@@ -1,12 +1,11 @@
 import * as React from "react";
 import { ICardSet } from "../model/cards";
-import { ISessionEstimates } from "../model/estimate";
+import { IEstimate } from "../model/estimate";
 import styled from "../styles/themed-styles";
 import { Vote } from "./cards/vote";
 
 export interface IVotesProps {
-    workItemId: number;
-    estimates: ISessionEstimates;
+    estimates: IEstimate[];
     cardSet: ICardSet;
 
     revealed?: boolean;
@@ -18,10 +17,9 @@ const VoteList = styled.div`
 
 export class Votes extends React.Component<IVotesProps> {
     render(): JSX.Element {
-        const { workItemId, estimates, cardSet, revealed } = this.props;
+        const { estimates, cardSet, revealed } = this.props;
 
-        let votes = estimates && estimates[workItemId] || [];
-        votes = votes.slice(0);
+        const votes = estimates.slice(0);
         votes.sort((a, b) => a.identity.displayName.localeCompare(b.identity.displayName));
 
         return (
