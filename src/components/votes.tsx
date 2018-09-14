@@ -28,7 +28,7 @@ export class Votes extends React.Component<IVotesProps> {
                     <Vote
                         key={vote.identity.id}
                         identity={vote.identity}
-                        estimate={cardSet.cards.find(x => x.value === vote.estimate)!}
+                        card={cardSet.cards.find(x => x.identifier === vote.cardIdentifier)!}
                         revealed={!!revealed}
                     />
                 ))}

@@ -1,5 +1,5 @@
 export interface ICard {
-    display: string;
+    identifier: string;
     value: number | string | null;
 }
 
@@ -25,47 +25,47 @@ export const defaultCardSets: ICardSet[] = [
         name: "Default",
         cards: [
             {
-                display: "1",
+                identifier: "1",
                 value: 1
             },
             {
-                display: "2",
+                identifier: "2",
                 value: 2
             },
             {
-                display: "3",
+                identifier: "3",
                 value: 3
             },
             {
-                display: "5",
+                identifier: "5",
                 value: 5
             },
             {
-                display: "8",
+                identifier: "8",
                 value: 8
             },
             {
-                display: "13",
+                identifier: "13",
                 value: 13
             },
             {
-                display: "20",
+                identifier: "20",
                 value: 20
             },
             {
-                display: "40",
+                identifier: "40",
                 value: 40
             },
             {
-                display: "?",
+                identifier: "?",
                 value: null
             },
             {
-                display: "∞",
+                identifier: "∞",
                 value: null
             },
             {
-                display: "☕",
+                identifier: "☕",
                 value: null
             }
         ]
@@ -76,23 +76,23 @@ export const defaultCardSets: ICardSet[] = [
         name: "T-Shirts",
         cards: [
             {
-                display: "XS",
+                identifier: "XS",
                 value: "XS"
             },
             {
-                display: "S",
+                identifier: "S",
                 value: "S"
             },
             {
-                display: "M",
+                identifier: "M",
                 value: "M"
             },
             {
-                display: "L",
+                identifier: "L",
                 value: "L"
             },
             {
-                display: "XL",
+                identifier: "XL",
                 value: "XL"
             },
         ]

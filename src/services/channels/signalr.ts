@@ -26,6 +26,10 @@ export class SignalRChannel implements IChannel {
         await this.sendToOtherClients(Action.Switch, workItemId);
     });
 
+    revealed = defineOperation<void>(async () => {
+        await this.sendToOtherClients(Action.Reveal, null);
+    });
+
     join = defineOperation<IUserInfo>(async userInfo => {
         await this.connection.send(Action.Join, this.sessionId, userInfo);
     });
@@ -93,8 +97,12 @@ export class SignalRChannel implements IChannel {
                 break;
             }
 
+            case Action.Reveal: {
+                this.revealed.incoming(payload);
+                break;
+            }
+
             default: {
-                // tslint:disable-next-line:no-console
                 console.error("Unknown action received: " + action);
             }
         }

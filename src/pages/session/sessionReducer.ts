@@ -13,7 +13,8 @@ export const initialState = {
     selectedWorkItem: null as (IWorkItem | null),
     ownEstimate: null as (IEstimate | null),
     estimates: {} as ISessionEstimates,
-    loading: false
+    loading: false,
+    revealed: false
 }
 
 export type ISessionState = typeof initialState;
@@ -35,6 +36,18 @@ const loadedSession = reducerAction(
     }
 );
 
+const leaveSession = reducerAction(
+    Actions.leaveSession,
+    (state: ISessionState) => {
+        state.session = null;
+        state.cardSet = null;
+        state.workItems = [];
+        state.estimates = {};
+        state.ownEstimate = null;
+        state.selectedWorkItem = null;
+    }
+)
+
 const workItemSelected = reducerAction(
     Actions.selectWorkItem,
     (state: ISessionState, id) => {
@@ -44,6 +57,7 @@ const workItemSelected = reducerAction(
         }
 
         state.selectedWorkItem = workItem;
+        state.revealed = false;
     }
 );
 
@@ -54,6 +68,16 @@ const estimate = reducerAction(
     Actions.estimate,
     (state: ISessionState, estimate) => {
         state.ownEstimate = estimate;
+    }
+);
+
+/**
+ * 
+ */
+const revealed = reducerAction(
+    Actions.revealed,
+    (state: ISessionState) => {
+        state.revealed = true;
     }
 );
 
@@ -91,7 +115,9 @@ export default <TPayload>(
     return reducerMap(action, state, {
         [Actions.loadSession.type]: loadSession,
         [Actions.loadedSession.type]: loadedSession,
+        [Actions.leaveSession.type]: leaveSession,
         [Actions.workItemSelected.type]: workItemSelected,
+        [Actions.revealed.type]: revealed,
         [Actions.estimateSet.type]: estimateSet,
         [Actions.estimate.type]: estimate
     });

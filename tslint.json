@@ -15,7 +15,8 @@
     "object-literal-sort-keys": false,
     "array-type": false,
     "ordered-imports": false,
-    "no-shadowed-variable": false
+    "no-shadowed-variable": false,
+    "no-console": false
   },
   "linterOptions": {
     "exclude": [

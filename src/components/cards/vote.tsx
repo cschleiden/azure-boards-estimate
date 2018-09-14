@@ -7,12 +7,12 @@ import { Card } from "./card";
 export interface IVoteProps {
     identity: IIdentity;
 
-    estimate: ICard;
+    card: ICard;
 
     revealed: boolean;
 }
 
-export const X = styled.div`
+export const VoteContainer = styled.div`
     display: flex;
     flex-direction: column;
 
@@ -20,22 +20,21 @@ export const X = styled.div`
 `;
 
 export const Identity = styled.div`
-    margin-left: 10px;
     font-size: 14px;
 `;
 
 export class Vote extends React.Component<IVoteProps> {
     render(): JSX.Element {
-        const { identity, estimate, revealed } = this.props;
+        const { identity, card, revealed } = this.props;
 
         return (
-            <X>
+            <VoteContainer>
                 <Card
                     front={{
                         label: "..."
                     }}
                     back={{
-                        label: estimate && estimate.display
+                        label: card && card.identifier
                     }}
                     flipped={revealed}
                     disabled={true}
@@ -44,7 +43,7 @@ export class Vote extends React.Component<IVoteProps> {
                 <Identity>
                     {identity.displayName}
                 </Identity>
-            </X>
+            </VoteContainer>
         );
     }
 }

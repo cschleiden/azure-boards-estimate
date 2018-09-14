@@ -41,11 +41,11 @@ export class CardSetPicker extends React.Component<ICardSetPickerProps> {
             <CardContainer>
                 {cardSet.cards.map(c => (
                     <Card
-                        key={c.display}
+                        key={c.identifier}
                         disabled={true}
                         size={CardSize.small}
                         front={{
-                            label: c.display
+                            label: c.identifier
                         }}
                     />
                 ))}

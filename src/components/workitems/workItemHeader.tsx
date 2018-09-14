@@ -23,13 +23,20 @@ const Header = styled.div`
     margin-bottom: 20px;
 `;
 
-const Info = styled.div`
+const Info = styled.a`
     display: flex;
     align-items: center;
 
     color: rgba(0,0,0,.55);
     font-size: 14px;
     margin-right: 5px;
+
+    text-decoration: none;
+    text-transform: capitalize;
+
+    &:hover {
+        text-decoration: underline;
+    }
 `;
 
 const Title = styled.div`
@@ -46,6 +53,10 @@ const Description = styled.div`
     padding: 10px;
 `;
 
+const Estimate = styled.div`
+
+`;
+
 export class WorkItemHeader extends React.Component<IWorkItemHeaderProps> {
     render(): JSX.Element {
         const { description, id, title } = this.props;
@@ -53,9 +64,9 @@ export class WorkItemHeader extends React.Component<IWorkItemHeaderProps> {
         return (
             <Base>
                 <Header>
-                    <Info>
+                    <Info href="_workitems/edit/42">
                         <WorkItemTypeIcon />
-                        User Story {id}
+                        USER STORY {id}
                     </Info>
                     <Title>{title}</Title>
                 </Header>
@@ -63,6 +74,10 @@ export class WorkItemHeader extends React.Component<IWorkItemHeaderProps> {
                 <Description>
                     {description}
                 </Description>
+
+                <Estimate>
+                    <label>Storypoints</label>: {"42"}
+                </Estimate>
             </Base>
         );
     }

@@ -20,6 +20,12 @@ export const endSession = factory<void>("end");
 
 export const selectWorkItem = factory<number>("selectWorkItem");
 export const workItemSelected = factory<number>("workItemSelected");
+
 export const estimate = factory<IEstimate>("estimate");
+
+export const reveal = factory<void>("reveal");
+export const revealed = factory<void>("revealed");
+
 export const estimateSet = factory<IEstimate>("estimateSet");
+
 export const userJoined = factory<IUserInfo>("userJoined");

@@ -64,6 +64,11 @@ export interface IChannel {
      */
     setWorkItem: IBiDirectional<number>;
 
+    /**
+     * Reveal all votes
+     */
+    revealed: IBiDirectional<void>;
+
     join: IBiDirectional<IUserInfo>;
 
     left: IIncoming<string>;

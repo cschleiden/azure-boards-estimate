@@ -3,7 +3,7 @@ import { IIdentity } from "./identity";
 export interface IEstimate {
     identity: IIdentity;
     workItemId: number;
-    estimate: string;
+    cardIdentifier: string;
 }
 
 export interface ISessionEstimates {

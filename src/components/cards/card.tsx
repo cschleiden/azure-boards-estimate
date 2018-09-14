@@ -158,7 +158,7 @@ export class Card extends React.Component<ICardComponentProps> {
         }
 
         return (
-            <BaseElement onClick={onClick}>
+            <BaseElement disabled={disabled} onClick={onClick}>
                 <Flip size={size}>
                     <Front flipped={flipped} size={size} disabled={disabled}>
                         {this.renderCard(front)}
