@@ -113,18 +113,18 @@
   resolved "https://registry.yarnpkg.com/@types/jest/-/jest-23.1.1.tgz#c54ab1a5f41aa693c0957222dd10414416d0c87b"
 
 "@types/jquery@*", "@types/jquery@>=2.0.48":
-  version "3.3.4"
-  resolved "https://registry.yarnpkg.com/@types/jquery/-/jquery-3.3.4.tgz#f1850fb9a70041a14ace4f81a7ed782db8548317"
+  version "3.3.9"
+  resolved "https://registry.yarnpkg.com/@types/jquery/-/jquery-3.3.9.tgz#91f2aaf5c1e91fd79598fc00ecb4504d78b51fd7"
 
 "@types/jqueryui@>=1.11.34":
-  version "1.12.2"
-  resolved "https://registry.yarnpkg.com/@types/jqueryui/-/jqueryui-1.12.2.tgz#8daa7ffa16880c78b1662ff287df058a2aceb651"
+  version "1.12.4"
+  resolved "https://registry.yarnpkg.com/@types/jqueryui/-/jqueryui-1.12.4.tgz#a9344871b83cb3d83926615efc4007060bb646d7"
   dependencies:
     "@types/jquery" "*"
 
 "@types/knockout@^3.4.49":
-  version "3.4.56"
-  resolved "https://registry.yarnpkg.com/@types/knockout/-/knockout-3.4.56.tgz#89debf410ca128259eabb5a743b83dca35db73ec"
+  version "3.4.59"
+  resolved "https://registry.yarnpkg.com/@types/knockout/-/knockout-3.4.59.tgz#87911eee72222141c76f6fc7c63115815b049fef"
 
 "@types/mousetrap@~1.5.34":
   version "1.5.34"
@@ -140,7 +140,7 @@
 
 "@types/q@0.0.32":
   version "0.0.32"
-  resolved "https://registry.yarnpkg.com/@types/q/-/q-0.0.32.tgz#bd284e57c84f1325da702babfc82a5328190c0c5"
+  resolved "http://registry.npmjs.org/@types/q/-/q-0.0.32.tgz#bd284e57c84f1325da702babfc82a5328190c0c5"
 
 "@types/react-dom@^16.0.6":
   version "16.0.6"
@@ -178,14 +178,8 @@
     csstype "^2.2.0"
 
 "@types/react@^15.6.12":
-  version "15.6.17"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-15.6.17.tgz#018eea18361d8c4b83f66a5a297cf187a96ed070"
-
-"@types/redux@^3.6.0":
-  version "3.6.0"
-  resolved "https://registry.yarnpkg.com/@types/redux/-/redux-3.6.0.tgz#f1ebe1e5411518072e4fdfca5c76e16e74c1399a"
-  dependencies:
-    redux "*"
+  version "15.6.19"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-15.6.19.tgz#a5de18afe65b0f29767328836b48c498a5d3a91b"
 
 "@types/requirejs@>=2.1.28":
   version "2.1.31"
@@ -198,11 +192,11 @@
     "@uifabric/styling" ">=5.30.1 <6.0.0"
     tslib "^1.7.1"
 
-"@uifabric/icons@>=6.0.1 <7.0.0":
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/@uifabric/icons/-/icons-6.0.1.tgz#6870a661216b6858db7e179cac62fb16b91aa361"
+"@uifabric/icons@>=6.1.0 <7.0.0":
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/@uifabric/icons/-/icons-6.1.0.tgz#3c23f889318547bb286f376d9dbf0e4e1623ff79"
   dependencies:
-    "@uifabric/styling" ">=6.0.3 <7.0.0"
+    "@uifabric/styling" ">=6.17.0 <7.0.0"
     tslib "^1.7.1"
 
 "@uifabric/merge-styles@>=5.14.1 <6.0.0", "@uifabric/merge-styles@>=5.17.1 <6.0.0":
@@ -211,9 +205,9 @@
   dependencies:
     tslib "^1.7.1"
 
-"@uifabric/merge-styles@>=6.2.1 <7.0.0":
-  version "6.2.1"
-  resolved "https://registry.yarnpkg.com/@uifabric/merge-styles/-/merge-styles-6.2.1.tgz#b7f7eff2ff7c7a92da62249104376411c63e3136"
+"@uifabric/merge-styles@>=6.8.4 <7.0.0":
+  version "6.8.4"
+  resolved "https://registry.yarnpkg.com/@uifabric/merge-styles/-/merge-styles-6.8.4.tgz#7eaf6999072ffa37bd9fd1144813a9c2d78db204"
   dependencies:
     tslib "^1.7.1"
 
@@ -226,13 +220,13 @@
     "@uifabric/utilities" ">=5.33.0 <6.0.0"
     tslib "^1.7.1"
 
-"@uifabric/styling@>=6.0.3 <7.0.0", "@uifabric/styling@>=6.3.0 <7.0.0":
-  version "6.3.0"
-  resolved "https://registry.yarnpkg.com/@uifabric/styling/-/styling-6.3.0.tgz#d57540073d793a4186a01f853e82b2eb04559dc8"
+"@uifabric/styling@>=6.17.0 <7.0.0", "@uifabric/styling@>=6.25.0 <7.0.0":
+  version "6.25.0"
+  resolved "https://registry.yarnpkg.com/@uifabric/styling/-/styling-6.25.0.tgz#7cf195661cab2f4330a2371ee0034bd03591216f"
   dependencies:
     "@microsoft/load-themed-styles" "^1.7.13"
-    "@uifabric/merge-styles" ">=6.2.1 <7.0.0"
-    "@uifabric/utilities" ">=6.7.1 <7.0.0"
+    "@uifabric/merge-styles" ">=6.8.4 <7.0.0"
+    "@uifabric/utilities" ">=6.19.1 <7.0.0"
     tslib "^1.7.1"
 
 "@uifabric/utilities@>=5.23.0 <6.0.0", "@uifabric/utilities@>=5.33.0 <6.0.0":
@@ -243,11 +237,11 @@
     prop-types "^15.5.10"
     tslib "^1.7.1"
 
-"@uifabric/utilities@>=6.7.1 <7.0.0":
-  version "6.7.1"
-  resolved "https://registry.yarnpkg.com/@uifabric/utilities/-/utilities-6.7.1.tgz#9d3d086079af5fbcf39751c338f0223d3615f3aa"
+"@uifabric/utilities@>=6.19.1 <7.0.0":
+  version "6.19.1"
+  resolved "https://registry.yarnpkg.com/@uifabric/utilities/-/utilities-6.19.1.tgz#4ec6a800993df412aeb2bdd16180741b5f5d8791"
   dependencies:
-    "@uifabric/merge-styles" ">=6.2.1 <7.0.0"
+    "@uifabric/merge-styles" ">=6.8.4 <7.0.0"
     prop-types "^15.5.10"
     tslib "^1.7.1"
 
@@ -2810,7 +2804,7 @@ fb-watchman@^2.0.0:
   dependencies:
     bser "^2.0.0"
 
-fbjs@^0.8.16, fbjs@^0.8.5, fbjs@^0.8.9:
+fbjs@^0.8.16, fbjs@^0.8.5:
   version "0.8.17"
   resolved "https://registry.yarnpkg.com/fbjs/-/fbjs-0.8.17.tgz#c4d598ead6949112653d6588b01a5cdcd9f90fdd"
   dependencies:
@@ -3308,10 +3302,6 @@ hmac-drbg@^1.0.0:
     hash.js "^1.0.3"
     minimalistic-assert "^1.0.0"
     minimalistic-crypto-utils "^1.0.1"
-
-hoist-non-react-statics@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-1.2.0.tgz#aa448cf0986d55cc40773b17174b7dd066cb7cfb"
 
 hoist-non-react-statics@^2.5.0:
   version "2.5.5"
@@ -5093,15 +5083,15 @@ obuf@^1.0.0, obuf@^1.1.1:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/obuf/-/obuf-1.1.2.tgz#09bea3343d41859ebd446292d11c9d4db619084e"
 
-office-ui-fabric-react@6.18.2:
-  version "6.18.2"
-  resolved "https://registry.yarnpkg.com/office-ui-fabric-react/-/office-ui-fabric-react-6.18.2.tgz#f6ccd8dcd4083df4473223e0768d8c1a11f0bef2"
+office-ui-fabric-react@6.71.0:
+  version "6.71.0"
+  resolved "https://registry.yarnpkg.com/office-ui-fabric-react/-/office-ui-fabric-react-6.71.0.tgz#eb3aeb4c4aeec3c3169f78f14f74e5bd0389604b"
   dependencies:
     "@microsoft/load-themed-styles" "^1.7.13"
-    "@uifabric/icons" ">=6.0.1 <7.0.0"
-    "@uifabric/merge-styles" ">=6.2.1 <7.0.0"
-    "@uifabric/styling" ">=6.3.0 <7.0.0"
-    "@uifabric/utilities" ">=6.7.1 <7.0.0"
+    "@uifabric/icons" ">=6.1.0 <7.0.0"
+    "@uifabric/merge-styles" ">=6.8.4 <7.0.0"
+    "@uifabric/styling" ">=6.25.0 <7.0.0"
+    "@uifabric/utilities" ">=6.19.1 <7.0.0"
     prop-types "^15.5.10"
     tslib "^1.7.1"
 
@@ -5932,7 +5922,7 @@ react-dev-utils@^5.0.1:
     strip-ansi "3.0.1"
     text-table "0.2.0"
 
-react-dom@16.4.1, "react-dom@^15.3.2 || ^16.0.0":
+react-dom@16.4.1:
   version "16.4.1"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.4.1.tgz#7f8b0223b3a5fbe205116c56deb85de32685dad6"
   dependencies:
@@ -5983,9 +5973,9 @@ react-router@^4.3.1:
     prop-types "^15.6.1"
     warning "^4.0.1"
 
-react-scripts-ts@2.16.0:
-  version "2.16.0"
-  resolved "https://registry.yarnpkg.com/react-scripts-ts/-/react-scripts-ts-2.16.0.tgz#45f831a12139c3b59d6bb729c1b6ef51e0f22908"
+react-scripts-ts@2.17.0:
+  version "2.17.0"
+  resolved "https://registry.yarnpkg.com/react-scripts-ts/-/react-scripts-ts-2.17.0.tgz#398bae19a30c9b39b3dfe0720ebb40c60c2f6574"
   dependencies:
     autoprefixer "7.1.6"
     babel-jest "^22.1.0"
@@ -6027,7 +6017,7 @@ react-scripts-ts@2.16.0:
   optionalDependencies:
     fsevents "^1.1.3"
 
-react@16.4.1, "react@^15.3.2 || ^16.0.0":
+react@16.4.1:
   version "16.4.1"
   resolved "https://registry.yarnpkg.com/react/-/react-16.4.1.tgz#de51ba5764b5dbcd1f9079037b862bd26b82fe32"
   dependencies:
@@ -6144,20 +6134,11 @@ reduce-function-call@^1.0.1:
   dependencies:
     balanced-match "^0.4.2"
 
-redux-saga-devtools@0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/redux-saga-devtools/-/redux-saga-devtools-0.3.0.tgz#720aa90e0e85c55fba73524a600538e4df673fc2"
-  dependencies:
-    prop-types "^15.5.10"
-    react "^15.3.2 || ^16.0.0"
-    react-dom "^15.3.2 || ^16.0.0"
-    styled-components "^2.2.4"
-
 redux-saga@0.16.0:
   version "0.16.0"
   resolved "https://registry.yarnpkg.com/redux-saga/-/redux-saga-0.16.0.tgz#0a231db0a1489301dd980f6f2f88d8ced418f724"
 
-redux@*, redux@^4.0.0:
+redux@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/redux/-/redux-4.0.0.tgz#aa698a92b729315d22b34a0553d7e6533555cc03"
   dependencies:
@@ -6934,26 +6915,9 @@ styled-components@3.3.3:
     stylis-rule-sheet "^0.0.10"
     supports-color "^3.2.3"
 
-styled-components@^2.2.4:
-  version "2.4.1"
-  resolved "https://registry.yarnpkg.com/styled-components/-/styled-components-2.4.1.tgz#663bd0485d4b6ab46f946210dc03d2398d1ade74"
-  dependencies:
-    buffer "^5.0.3"
-    css-to-react-native "^2.0.3"
-    fbjs "^0.8.9"
-    hoist-non-react-statics "^1.2.0"
-    is-plain-object "^2.0.1"
-    prop-types "^15.5.4"
-    stylis "^3.4.0"
-    supports-color "^3.2.3"
-
 stylis-rule-sheet@^0.0.10:
   version "0.0.10"
   resolved "https://registry.yarnpkg.com/stylis-rule-sheet/-/stylis-rule-sheet-0.0.10.tgz#44e64a2b076643f4b52e5ff71efc04d8c3c4a430"
-
-stylis@^3.4.0:
-  version "3.5.3"
-  resolved "https://registry.yarnpkg.com/stylis/-/stylis-3.5.3.tgz#99fdc46afba6af4deff570825994181a5e6ce546"
 
 stylis@^3.5.0:
   version "3.5.1"
@@ -7296,7 +7260,7 @@ typescript-fsa@^3.0.0-beta-2:
   version "3.0.0-beta-2"
   resolved "https://registry.yarnpkg.com/typescript-fsa/-/typescript-fsa-3.0.0-beta-2.tgz#1cc1d0c014c025fd51cba097776033ac4b6b753c"
 
-typescript@^2.9.2:
+typescript@2.9.2:
   version "2.9.2"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.9.2.tgz#1cbf61d05d6b96269244eb6a3bce4bd914e0f00c"
 
@@ -7568,8 +7532,8 @@ vss-ui@^4.134.1:
     tslib "~1.7.1"
 
 vss-web-extension-sdk@^5.134.0:
-  version "5.134.0"
-  resolved "https://registry.yarnpkg.com/vss-web-extension-sdk/-/vss-web-extension-sdk-5.134.0.tgz#094626bc4c762dd0797a7e6deaa417b4744d21b9"
+  version "5.140.0"
+  resolved "https://registry.yarnpkg.com/vss-web-extension-sdk/-/vss-web-extension-sdk-5.140.0.tgz#32db806a6c768f58fcf0961b69a202b85be14f65"
   dependencies:
     "@types/jquery" ">=2.0.48"
     "@types/jqueryui" ">=1.11.34"

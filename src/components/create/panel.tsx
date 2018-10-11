@@ -15,7 +15,7 @@ import { CardSetPicker } from "./cardSetPicker";
 const { icon: onlineIcon, description: onlineDescription } = getIconForMode(SessionMode.Online);
 const { icon: offlineIcon, description: offlineDescription } = getIconForMode(SessionMode.Offline);
 
-const renderOptionWithTooltip: IRenderFunction<IChoiceGroupOption> = (option, defaultRender) => {
+const renderOptionWithTooltip: IRenderFunction<IChoiceGroupOption> = (option: any, defaultRender: any) => {
     return (
         <TooltipHost content={option!.title}>
             {defaultRender!(option)}
@@ -195,6 +195,7 @@ class CreatePanel extends React.Component<ICreatePanelProps & typeof Actions & I
                     <div>
                         <Dropdown
                             label="Query"
+                            options={[]}
                         />
                     </div>
                 );
