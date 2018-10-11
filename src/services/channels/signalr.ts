@@ -5,8 +5,7 @@ import { IdentityServiceId, IIdentityService } from "../identity";
 import { Services } from "../services";
 import { defineIncomingOperation, defineOperation, IChannel } from "./channels";
 
-// TODO: Make configurable
-const baseUrl = "https://localhost:44334";
+const baseUrl = "https://estimate-backend.azurewebsites.net/";
 
 const enum Action {
     Join = "join",
