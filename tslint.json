@@ -16,7 +16,8 @@
     "array-type": false,
     "ordered-imports": false,
     "no-shadowed-variable": false,
-    "no-console": false
+    "no-console": false,
+    "max-classes-per-file": false
   },
   "linterOptions": {
     "exclude": [

@@ -19,7 +19,6 @@ export class MockCardSetService implements ICardSetService {
     }
 }
 
-// tslint:disable-next-line:max-classes-per-file
 export class CardSetService implements ICardSetService {
     getSet(cardSetId: string): Promise<ICardSet> {
         throw new Error("Method not implemented.");

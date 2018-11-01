@@ -1,3 +1,9 @@
+import { CoreRestClient } from "azure-devops-extension-api/clients/Core";
+import { WorkRestClient } from "azure-devops-extension-api/clients/Work";
+import { getClient } from "azure-devops-extension-api/extensions/Client";
+import { CommonServiceIds, IProjectPageService } from "azure-devops-extension-api/extensions/CommonServices";
+import { TeamContext } from "azure-devops-extension-api/types/Core";
+import * as DevOps from "azure-devops-extension-sdk";
 import { IService } from "./services";
 
 export interface ITeam {
@@ -47,5 +53,33 @@ export class MockTeamService implements ITeamService {
                 name: "Sprint 137"
             }
         ];
+    }
+}
+
+export class TeamService implements ITeamService {
+    public async getAllTeams(): Promise<ITeam[]> {
+        const client = getClient(CoreRestClient);
+        const teams = await client.getAllTeams();
+        return teams.map(({ id, name }) => ({
+            id, name
+        }));
+    }
+
+    public async getIterationsForTeam(teamId: string): Promise<IIteration[]> {
+        const projectService = await DevOps.getService<IProjectPageService>(CommonServiceIds.ProjectPageService);
+        const project = await projectService.getProject();
+        if (!project) {
+            throw new Error("Project is required");
+        }
+
+        const client = getClient(WorkRestClient);
+        const teamIterations = await client.getTeamIterations({
+            projectId: project.id,
+            teamId
+        } as TeamContext);
+
+        return teamIterations.map(({ id, name }) => ({
+            id, name
+        }));
     }
 }

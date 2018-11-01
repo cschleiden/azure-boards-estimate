@@ -1,0 +1,66 @@
+{
+    "manifestVersion": 1,
+    "version": "0.0.1",
+    "name": "Estimate",
+    "scopes": [
+        "vso.work",
+        "vso.work_write"
+    ],
+    "description": "",
+    "publisher": "cschleiden",
+    "id": "estimate",
+    
+    "targets": [
+        {
+            "id": "Microsoft.VisualStudio.Services"
+        }
+    ],
+    "demands": [
+        "api-version/3.0"
+    ],
+    "galleryFlags": [
+        "Preview"
+    ],
+    "tags": [
+        "Planning Poker",
+        "Estimate"
+    ],
+    "content": {        
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/cschleiden/azure-boards-estimate"
+    },
+    "links": {
+        "support": {
+            "url": "mailto:christopher.schleiden@microsoft.com"
+        }
+    },
+    "branding": {
+        "color": "rgb(220, 235, 252)",
+        "theme": "light"
+    },
+    "categories": [
+        "Plan and track"
+    ],
+    "files": [
+        {
+            "path": "../build",
+            "addressable": true
+        }
+    ],
+    "contributions": [
+        {
+            "id": "manage-templates-hub",
+            "type": "ms.vss-web.hub",
+            "targets": [
+                "ms.vss-web.work-hub-group"
+            ],
+            "properties": {
+                "name": "Estimate",
+                "order": 100,
+                "uri": "index.html"
+            }
+        }
+    ]
+}

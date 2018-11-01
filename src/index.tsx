@@ -1,3 +1,6 @@
+//
+// Main entry point for the extension
+//
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Provider } from "react-redux";
@@ -12,11 +15,11 @@ import { rootReducer } from "./reducer";
 import registerServiceWorker from "./registerServiceWorker";
 import "./services/registration";
 
+import * as DevOps from "azure-devops-extension-sdk";
+
 const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-// tslint:disable-next-line:no-string-literal
-// const monitor = window["__SAGA_MONITOR_EXTENSION__"]
-const sagaMiddleware = createSagaMiddleware(/* { sagaMonitor: monitor } */);
+const sagaMiddleware = createSagaMiddleware();
 
 const store = createStore(
   rootReducer,
@@ -36,7 +39,8 @@ ReactDOM.render(
   <Provider store={store}>
     <App />
   </Provider>,
-  document.getElementById("root") as HTMLElement
+  document.getElementById("root") as HTMLElement,
+  () => DevOps.init()
 );
 
 registerServiceWorker();
