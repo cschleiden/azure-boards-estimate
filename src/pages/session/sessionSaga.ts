@@ -30,8 +30,10 @@ export function* sessionSaga(action: ReturnType<typeof loadSession>) {
     switch (session.source) {
         case SessionSource.Sprint: {
             const sprintService = Services.getService<ISprintService>(SprintServiceId);
-            // TODO: Split team id            
-            workItemIds = yield call([sprintService, sprintService.getWorkItems], session.sourceData, session.sourceData);
+            // TODO: Split team id
+            const [projectId, teamId] = (session.sourceData as string).split(";");
+
+            workItemIds = yield call([sprintService, sprintService.getWorkItems], projectId, teamId, session.sourceData);
             break;
         }
 

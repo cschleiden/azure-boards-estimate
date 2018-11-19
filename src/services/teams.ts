@@ -1,8 +1,6 @@
-import { CoreRestClient } from "azure-devops-extension-api/clients/Core";
-import { WorkRestClient } from "azure-devops-extension-api/clients/Work";
-import { getClient } from "azure-devops-extension-api/extensions/Client";
-import { CommonServiceIds, IProjectPageService } from "azure-devops-extension-api/extensions/CommonServices";
-import { TeamContext } from "azure-devops-extension-api/types/Core";
+import { CoreRestClient, TeamContext } from "azure-devops-extension-api/Core";
+import { WorkRestClient } from "azure-devops-extension-api/Work";
+import { getClient, CommonServiceIds, IProjectPageService } from "azure-devops-extension-api";
 import * as DevOps from "azure-devops-extension-sdk";
 import { IService } from "./services";
 

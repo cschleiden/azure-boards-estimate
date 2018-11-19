@@ -7,7 +7,7 @@ import { defineIncomingOperation, defineOperation, IChannel } from "./channels";
 
 const baseUrl = "https://estimate-backend.azurewebsites.net/";
 
-const enum Action {
+enum Action {
     Join = "join",
     Left = "left",
     Estimate = "estimate",

@@ -9,7 +9,6 @@
     "description": "",
     "publisher": "cschleiden",
     "id": "estimate",
-    
     "targets": [
         {
             "id": "Microsoft.VisualStudio.Services"
@@ -25,8 +24,7 @@
         "Planning Poker",
         "Estimate"
     ],
-    "content": {        
-    },
+    "content": {},
     "repository": {
         "type": "git",
         "url": "https://github.com/cschleiden/azure-boards-estimate"
@@ -45,7 +43,7 @@
     ],
     "files": [
         {
-            "path": "../build",
+            "path": "./build",
             "addressable": true
         }
     ],
@@ -59,7 +57,7 @@
             "properties": {
                 "name": "Estimate",
                 "order": 100,
-                "uri": "index.html"
+                "uri": "build/index.html"
             }
         }
     ]

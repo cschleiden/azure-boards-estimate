@@ -1,20 +1,18 @@
-import { CoreRestClient } from "azure-devops-extension-api/clients/Core";
-import { WorkItemTrackingRestClient } from "azure-devops-extension-api/clients/WorkItemTracking";
-import { WorkItemTrackingProcessDefinitionsRestClient } from "azure-devops-extension-api/clients/WorkItemTrackingProcessDefinitions";
-import { getClient } from "azure-devops-extension-api/extensions/Client";
-import { WorkItemBatchGetRequest, WorkItemErrorPolicy, WorkItemExpand } from "azure-devops-extension-api/types/WorkItemTracking";
-import { GetWorkItemTypeExpand, Page } from "azure-devops-extension-api/types/WorkItemTrackingProcessDefinitions";
+import { getClient } from "azure-devops-extension-api";
+import { CoreRestClient } from "azure-devops-extension-api/Core";
+import { GetWorkItemTypeExpand, Page, WorkItemTrackingProcessRestClient } from "azure-devops-extension-api/WorkItemTrackingProcess";
+import { WorkItemTrackingRestClient, WorkItemExpand, WorkItemErrorPolicy, WorkItemBatchGetRequest } from "azure-devops-extension-api/WorkItemTracking";
 import { IWorkItem } from "../model/workitem";
 import { IService } from "./services";
 
 export interface IWorkItemService extends IService {
-    getWorkItems(projectId: string, workItemIds: number[]): Promise<IWorkItem[]>;
+    getWorkItems(workItemIds: number[]): Promise<IWorkItem[]>;
 }
 
 export const WorkItemServiceId = "WorkItemService";
 
 export class MockWorkItemService implements IWorkItemService {
-    async getWorkItems(projectId: string, workItemIds: number[]): Promise<IWorkItem[]> {
+    async getWorkItems(workItemIds: number[]): Promise<IWorkItem[]> {
         return [
             {
                 project: "AgileGit",
@@ -42,7 +40,7 @@ export class MockWorkItemService implements IWorkItemService {
 }
 
 export class WorkItemService implements IWorkItemService {
-    async getWorkItems(projectId: string, workItemIds: number[]): Promise<IWorkItem[]> {
+    async getWorkItems(workItemIds: number[]): Promise<IWorkItem[]> {
         // Get all work items
         const workItemTrackingClient = getClient(WorkItemTrackingRestClient);
         const workItems = await workItemTrackingClient.getWorkItemsBatch({
@@ -81,7 +79,7 @@ export class WorkItemService implements IWorkItemService {
         }
 
         const coreClient = getClient(CoreRestClient);
-        const processClient = getClient(WorkItemTrackingProcessDefinitionsRestClient);
+        const processClient = getClient(WorkItemTrackingProcessRestClient);
 
         await Promise.all(Array.from(foo.entries()).map(async ([projectName, projectInfo]) => {
             // Get id for project
@@ -94,7 +92,7 @@ export class WorkItemService implements IWorkItemService {
 
             // Get work item type definitions            
             await Promise.all(Array.from(projectInfo.workItemTypes.keys()).map(async (workItemTypeName) => {
-                const workItemType = await processClient.getWorkItemType(processTypeId, workItemTypeName, GetWorkItemTypeExpand.Layout);
+                const workItemType = await processClient.getProcessWorkItemType(processTypeId, workItemTypeName, GetWorkItemTypeExpand.Layout);
 
                 // Look for the first page and get the first HTML control
                 const descriptionRefName = this._getDescription(workItemType.layout.pages);
