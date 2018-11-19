@@ -33,7 +33,7 @@ export function* sessionSaga(action: ReturnType<typeof loadSession>) {
             // TODO: Split team id
             const [projectId, teamId] = (session.sourceData as string).split(";");
 
-            workItemIds = yield call([sprintService, sprintService.getWorkItems], projectId, teamId, session.sourceData);
+            workItemIds = yield call([sprintService, sprintService.getWorkItems], projectId, teamId, session.sourceData as string);
             break;
         }
 

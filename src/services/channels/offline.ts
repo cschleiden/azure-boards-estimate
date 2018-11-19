@@ -35,12 +35,16 @@ export class OfflineChannel implements IChannel {
 
     left = defineIncomingOperation<string>();
 
-    private sessionId: string;
+    private sessionId: string = "";
     private estimationService: IEstimationService;
+
+    constructor() {
+        this.estimationService = Services.getService<IEstimationService>(EstimationServiceId);
+    }
 
     async start(sessionId: string): Promise<void> {
         this.sessionId = sessionId;
-        this.estimationService = Services.getService<IEstimationService>(EstimationServiceId);
+
     }
 
     end(): Promise<void> {

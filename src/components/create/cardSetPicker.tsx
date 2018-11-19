@@ -1,4 +1,4 @@
-import { Dropdown, IDropdownOption } from "office-ui-fabric-react";
+import { Dropdown, IDropdownOption, IRenderFunction } from "office-ui-fabric-react";
 import { ISelectableOption } from "office-ui-fabric-react/lib/utilities/selectableOption/SelectableOption.types";
 import * as React from "react";
 import { ICardSet } from "../../model/cards";
@@ -30,8 +30,8 @@ export class CardSetPicker extends React.Component<ICardSetPickerProps> {
                     text: cs.name,
                     ...cs
                 })) || []}
-                onRenderOption={this.renderCardSet}
-                onChanged={this.onChange}
+                onRenderOption={this.renderCardSet as IRenderFunction<ISelectableOption>}
+                onChanged={this.onChange as (option: IDropdownOption) => void}
             />
         );
     }

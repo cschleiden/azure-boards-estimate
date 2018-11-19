@@ -1,8 +1,9 @@
 {
     "manifestVersion": 1,
-    "version": "0.0.1",
+    "version": "0.0.3",
     "name": "Estimate",
     "scopes": [
+        "vso.project",
         "vso.work",
         "vso.work_write"
     ],
@@ -39,20 +40,14 @@
         "theme": "light"
     },
     "categories": [
-        "Plan and track"
-    ],
-    "files": [
-        {
-            "path": "./build",
-            "addressable": true
-        }
-    ],
+        "Azure Boards"
+    ],    
     "contributions": [
         {
-            "id": "manage-templates-hub",
+            "id": "estimate-hub",
             "type": "ms.vss-web.hub",
             "targets": [
-                "ms.vss-web.work-hub-group"
+                "ms.vss-work-web.work-hub-group"
             ],
             "properties": {
                 "name": "Estimate",

@@ -1,0 +1,16 @@
+{
+    "galleryFlags": [
+        "Public",
+        "Preview"
+    ],
+    "files": [
+        {
+            "path": "../build",
+            "addressable": true
+        },
+        {
+            "path": "../marketplace",
+            "addressable": true
+        }
+    ]
+}

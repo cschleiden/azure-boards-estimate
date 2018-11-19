@@ -30,13 +30,15 @@ export class SignalRChannel implements IChannel {
     });
 
     join = defineOperation<IUserInfo>(async userInfo => {
-        await this.connection.send(Action.Join, this.sessionId, userInfo);
+        if (this.connection) {
+            await this.connection.send(Action.Join, this.sessionId, userInfo);
+        }
     });
 
     left = defineIncomingOperation<string>();
 
-    private connection: signalR.HubConnection;
-    private sessionId: string;
+    private connection: signalR.HubConnection | undefined;
+    private sessionId: string = "";
 
     async start(sessionId: string): Promise<void> {
         this.sessionId = sessionId;
@@ -66,11 +68,15 @@ export class SignalRChannel implements IChannel {
     }
 
     async end(): Promise<void> {
-        await this.connection.stop();
+        if (this.connection) {
+            await this.connection.stop();
+        }
     }
 
     async sendToOtherClients<TPayload>(action: Action, payload: TPayload) {
-        this.connection.send("broadcast", this.sessionId, action, payload);
+        if (this.connection) {
+            this.connection.send("broadcast", this.sessionId, action, payload);
+        }
     }
 
     private onReceive = (action: Action, payload: any) => {
