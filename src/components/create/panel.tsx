@@ -309,7 +309,7 @@ export default connect(
     team: state.create.team,
     iteration: state.create.iteration,
 
-    cardSets: state.create.cardSets
+    cardSets: state.create.cardSets || []
   }),
   Actions
 )(CreatePanel);

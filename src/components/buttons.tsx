@@ -1,20 +1,27 @@
-import { DefaultButton as OfficeFabricDefaultButton, IButtonProps, PrimaryButton as OfficeFabricPrimaryButton } from "office-ui-fabric-react";
+import { Button, IButtonProps } from "azure-devops-ui/Button";
+import { IMenuButtonProps, MenuButton } from "azure-devops-ui/Menu";
 import * as React from "react";
 import styled from "../styles/themed-styles";
 
-export const DefaultButton = styled((props: IButtonProps) => <OfficeFabricDefaultButton {...props} />)`
-    border-radius: 2px;
+export const DefaultButton = styled((props: IButtonProps) => (
+  <Button {...props} />
+))`
+  border-radius: 2px;
 `;
 
-export const PrimaryButton = styled((props: IButtonProps) => <OfficeFabricPrimaryButton {...props} />)`
-    border-radius: 2px;
+export const PrimaryButton = styled((props: IButtonProps) => (
+  <Button {...props} primary />
+))`
+  border-radius: 2px;
 `;
 
-export const MoreButton = DefaultButton.extend`
-    min-width: 0;
-    padding: 4px !important;
+export const MoreButton = styled((props: IMenuButtonProps) => (
+  <MenuButton {...props} />
+))`
+  min-width: 0;
+  padding: 4px !important;
 
-    & i:last-of-type {
-        display: none;
-    }
+  & i:last-of-type {
+    display: none;
+  }
 `;

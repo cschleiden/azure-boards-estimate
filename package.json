@@ -20,9 +20,11 @@
     "vss-ui": "^4.134.1"
   },
   "scripts": {
-    "start": "react-scripts-ts start",
-    "build": "react-scripts-ts build",
-    "test": "react-scripts-ts test --env=jsdom",
+    "watch": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "start": "react-scripts start",
     "package-dev": "tfx extension create --manifest-globs azure-devops-extension.json --overrides-file ./configs/dev.json",
     "package-release": "tfx extension create --manifest-globs azure-devops-extension.json --overrides-file ./configs/release.json"
   },
@@ -35,9 +37,16 @@
     "@types/react-dom": "^16.0.6",
     "@types/react-redux": "^6.0.2",
     "@types/react-router-dom": "^4.2.7",
+    "base64-inline-loader": "^1.1.1",
     "node-sass": "^4.10.0",
-    "react-scripts-ts": "^3.1.0",
+    "react-scripts-azure-devops": "file:../../repos/create-react-app/packages/react-scripts",
     "tfx-cli": "0.6.3",
     "typescript": "^3.1.6"
-  }
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }
