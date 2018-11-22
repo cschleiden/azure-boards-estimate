@@ -1,75 +1,54 @@
 import { History } from "history";
 import * as React from "react";
-import { ISession } from "../model/session";
-import styled from "../styles/themed-styles";
-import { CardIcon } from "./cardIcon";
 import { makeUrlSafe } from "../lib/urlSafe";
+import { ISession } from "../model/session";
+import { CardIcon } from "./cardIcon";
+import "./sessionCard.scss";
+import { Button } from "azure-devops-ui/Button";
 
-const CardFrame = styled.a`
-    text-decoration: none;
-    color: black;
-    transition: background-color .5s ease;
-    border-radius: 4px;
-    height: 100px;
-    max-width: 440px;
-    min-width: 200px;
-    flex-basis: 200px;
-    margin-right: 32px;
-    margin-bottom: 32px;
-    background-color: rgb(248, 248, 248);
-    padding: 20px;
-    cursor: pointer;
+const CardTitle: React.StatelessComponent = props => (
+  <h2 className="session-card--title">{props.children}</h2>
+);
 
-    display: flex;
-    flex-direction: column; 
-
-    &:hover {
-        background-color: rgb(234, 234, 234);
-    }
-
-    &:hover, &:active, &:visited {
-        color: black;
-        text-decoration: none;
-    }
-`;
-
-const CardTitle = styled.h2`
-    font-weight: 600;
-    font-size: 18px;
-    margin: 0;
-`;
-
-const CardMode = styled.div`
-    flex-grow: 1;
-    display: flex;
-    align-items: flex-end;
-    justify-content: flex-end;
-`;
+const CardMode: React.StatelessComponent = props => (
+  <div className="session-card--mode">{props.children}</div>
+);
 
 export interface ICardProps {
-    history: History;
-    session: ISession;
+  history: History;
+  session: ISession;
 }
 
 export class SessionCard extends React.Component<ICardProps> {
-    render(): JSX.Element {
-        const { session: { id, mode, name, source } } = this.props;
+  render(): JSX.Element {
+    const {
+      session: { id, mode, name, source }
+    } = this.props;
 
-        return (
-            <CardFrame href={`/session/${id}/${makeUrlSafe(name)}`} onClick={this.navigate}>
-                <CardTitle>{name}</CardTitle>
+    return (
+      <Button
+        className="session-card"
+        href={`/session/${id}/${makeUrlSafe(name)}`}
+        onClick={this.navigate}
+      >
+        <div className="session-card--content">
+          <CardTitle>{name}</CardTitle>
 
-                <CardMode>
-                    <CardIcon mode={mode} source={source} />
-                </CardMode>
-            </CardFrame>
-        );
-    }
+          <CardMode>
+            <CardIcon mode={mode} source={source} />
+          </CardMode>
+        </div>
+      </Button>
+    );
+  }
 
-    private navigate = (e: React.MouseEvent<HTMLAnchorElement>) => {
-        const { history, session: { id, name } } = this.props;
+  private navigate = (e: React.MouseEvent | React.KeyboardEvent) => {
+    const {
+      history,
+      session: { id, name }
+    } = this.props;
 
-        history.push(`/session/${id}/${makeUrlSafe(name)}`);
-        e.preventDefault();
-    }
+    history.push(`/session/${id}/${makeUrlSafe(name)}`);
+    e.preventDefault();
+  };
 }

@@ -1,0 +1,12 @@
+@import "azure-devops-ui/Core/_platformCommon.scss";
+
+.title {
+    color: $primary-text;
+
+    font-size: 28px;
+    line-height: 40px;
+    margin: 0; 
+    padding: 0;
+
+    flex-grow: 1;
+}

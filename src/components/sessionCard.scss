@@ -1,0 +1,41 @@
+@import "azure-devops-ui/Core/_platformCommon.scss";
+
+.session-card {
+    height: 100px;
+    max-width: 440px;
+    min-width: 220px;    
+    flex-basis: 220px;
+    margin-right: 32px;
+    margin-bottom: 32px;
+    cursor: pointer;
+    
+    .session-card--content {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+    }
+
+    &:hover,
+    &:active,
+    &:visited {
+        color: black;
+        text-decoration: none;
+    }
+
+    #{&}--title {
+        justify-self: flex-start;
+        color: $primary-text;
+
+        font-weight: 600;
+        font-size: 18px;
+        margin: 0;
+    }
+
+    #{&}--mode {
+        color: $primary-text;
+        flex-grow: 1;
+        display: flex;
+        align-items: flex-end;
+        justify-content: flex-end;
+    }
+}

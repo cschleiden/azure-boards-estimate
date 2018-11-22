@@ -1,12 +1,6 @@
-import styled from "../styles/themed-styles";
+import * as React from "react";
+import "./title.scss";
 
-export const Title = styled.h1`
-    font-family: "Segoe UI";
-    font-weight: bold;
-    font-size: 28px;
-    line-height: 40px;
-    margin: 0; 
-    padding: 0;
-
-    flex-grow: 1;
-`;
+export const Title: React.StatelessComponent<{}> = props => (
+  <h1 className="title">{props.children}</h1>
+);
