@@ -1,4 +1,8 @@
-import { Dropdown, IDropdownOption, IRenderFunction } from "office-ui-fabric-react";
+import {
+    Dropdown,
+    IDropdownOption,
+    IRenderFunction
+} from "office-ui-fabric-react";
 import { ISelectableOption } from "office-ui-fabric-react/lib/utilities/selectableOption/SelectableOption.types";
 import * as React from "react";
 import { ICardSet } from "../../model/cards";
@@ -25,12 +29,18 @@ export class CardSetPicker extends React.Component<ICardSetPickerProps> {
         return (
             <Dropdown
                 selectedKey={selectedCardSetId}
-                options={cardSets && cardSets.map(cs => ({
-                    key: cs.id,
-                    text: cs.name,
-                    ...cs
-                })) || []}
-                onRenderOption={this.renderCardSet as IRenderFunction<ISelectableOption>}
+                options={
+                    (cardSets &&
+                        cardSets.map(cs => ({
+                            key: cs.id,
+                            text: cs.name,
+                            ...cs
+                        }))) ||
+                    []
+                }
+                onRenderOption={
+                    this.renderCardSet as IRenderFunction<ISelectableOption>
+                }
                 onChanged={this.onChange as (option: IDropdownOption) => void}
             />
         );
@@ -51,10 +61,10 @@ export class CardSetPicker extends React.Component<ICardSetPickerProps> {
                 ))}
             </CardContainer>
         );
-    }
+    };
 
     private onChange = (cardSet: IDropdownOption & ICardSet) => {
         const { onChange } = this.props;
         onChange(cardSet);
-    }
+    };
 }

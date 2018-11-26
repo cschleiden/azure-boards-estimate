@@ -21,7 +21,13 @@ export class SessionList extends React.Component<ICardListProps> {
 
         return (
             <List>
-                {sessions.map(session => <SessionCard key={session.id} session={session} history={history} />)}
+                {sessions.map(session => (
+                    <SessionCard
+                        key={session.id}
+                        session={session}
+                        history={history}
+                    />
+                ))}
             </List>
         );
     }

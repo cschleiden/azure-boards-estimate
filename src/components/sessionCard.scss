@@ -1,14 +1,21 @@
 @import "azure-devops-ui/Core/_platformCommon.scss";
 
 .session-card {
-    height: 100px;
+    height: 120px;
     max-width: 440px;
-    min-width: 220px;    
+    min-width: 220px;
     flex-basis: 220px;
     margin-right: 32px;
     margin-bottom: 32px;
     cursor: pointer;
-    
+
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+    align-items: stretch;
+
+    padding: 10px;
+
     .session-card--content {
         display: flex;
         flex-direction: column;
@@ -22,7 +29,7 @@
         text-decoration: none;
     }
 
-    #{&}--title {
+    &--title {
         justify-self: flex-start;
         color: $primary-text;
 
@@ -31,7 +38,7 @@
         margin: 0;
     }
 
-    #{&}--mode {
+    &--mode {
         color: $primary-text;
         flex-grow: 1;
         display: flex;

@@ -15,7 +15,6 @@
     "react-router-dom": "4.3.1",
     "redux": "^4.0.0",
     "redux-saga": "0.16.0",
-    "styled-components": "3.3.3",
     "typescript-fsa": "^3.0.0-beta-2",
     "vss-ui": "^4.134.1"
   },

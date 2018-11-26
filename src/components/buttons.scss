@@ -1,0 +1,21 @@
+.menu-button {
+    min-width: 0;
+
+    & span {
+        padding-right: 0;
+    }
+
+    & span:first-of-type {
+        padding-right: 0 !important;
+    }
+
+    & span:last-of-type {
+        display: none;
+    }
+}
+
+.icon-button {
+    i {
+        padding-right: 10px;
+    }
+}

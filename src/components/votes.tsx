@@ -20,7 +20,9 @@ export class Votes extends React.Component<IVotesProps> {
         const { estimates, cardSet, revealed } = this.props;
 
         const votes = estimates.slice(0);
-        votes.sort((a, b) => a.identity.displayName.localeCompare(b.identity.displayName));
+        votes.sort((a, b) =>
+            a.identity.displayName.localeCompare(b.identity.displayName)
+        );
 
         return (
             <VoteList>
@@ -28,14 +30,16 @@ export class Votes extends React.Component<IVotesProps> {
                     <Vote
                         key={vote.identity.id}
                         identity={vote.identity}
-                        card={cardSet.cards.find(x => x.identifier === vote.cardIdentifier)!}
+                        card={
+                            cardSet.cards.find(
+                                x => x.identifier === vote.cardIdentifier
+                            )!
+                        }
                         revealed={!!revealed}
                     />
                 ))}
 
-                {(!votes || votes.length === 0) && (
-                    <div>No votes yet</div>
-                )}
+                {(!votes || votes.length === 0) && <div>No votes yet</div>}
             </VoteList>
         );
     }

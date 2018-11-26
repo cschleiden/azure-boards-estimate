@@ -13,9 +13,12 @@ export interface IInternalIncoming<TPayload> extends IIncoming<TPayload> {
 
 export type IOutgoing<TPayload> = (payload: TPayload) => Promise<void>;
 
-export type IBiDirectional<TPayload> = IIncoming<TPayload> & IOutgoing<TPayload>;
+export type IBiDirectional<TPayload> = IIncoming<TPayload> &
+    IOutgoing<TPayload>;
 
-export function defineIncomingOperation<TPayload>(): IInternalIncoming<TPayload> {
+export function defineIncomingOperation<TPayload>(): IInternalIncoming<
+    TPayload
+> {
     const handlers: IHandler<TPayload>[] = [];
 
     return {
@@ -31,28 +34,26 @@ export function defineIncomingOperation<TPayload>(): IInternalIncoming<TPayload>
 }
 
 export function defineOperation<TPayload>(
-    invoke: (payload: TPayload) => Promise<void>): IInternalIncoming<TPayload> & IOutgoing<TPayload> {
+    invoke: (payload: TPayload) => Promise<void>
+): IInternalIncoming<TPayload> & IOutgoing<TPayload> {
     const handlers: IHandler<TPayload>[] = [];
 
     const f = (payload: TPayload): Promise<void> => invoke(payload);
 
-    return Object.assign(
-        f,
-        {
-            attachHandler: (handler: IHandler<TPayload>): void => {
-                handlers.push(handler);
-            },
-            incoming: (payload: TPayload) => {
-                for (const handler of handlers) {
-                    handler(payload);
-                }
+    return Object.assign(f, {
+        attachHandler: (handler: IHandler<TPayload>): void => {
+            handlers.push(handler);
+        },
+        incoming: (payload: TPayload) => {
+            for (const handler of handlers) {
+                handler(payload);
             }
         }
-    )
+    });
 }
 
 export interface IChannel {
-    /** 
+    /**
      * Receive an estimate from another client, or
      * send an estimate to the other clients.
      */
@@ -75,7 +76,7 @@ export interface IChannel {
 
     /**
      * Start a connection for the given session
-     * 
+     *
      * @param sessionId Id of the session
      */
     start(sessionId: string): Promise<void>;

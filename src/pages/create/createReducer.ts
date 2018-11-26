@@ -17,62 +17,89 @@ const initialState = {
         version: 1
     } as ISession,
 
-    teams: null as (ITeam[] | null),
-    iterations: null as (IIteration[] | null),
-    cardSets: null as (ICardSet[] | null),
+    teams: null as ITeam[] | null,
+    iterations: null as IIteration[] | null,
+    cardSets: null as ICardSet[] | null,
 
     team: "",
     iteration: "",
 
     isCreating: false
-}
+};
 
 export type ICreateSessionState = typeof initialState;
 
-const setName = reducerAction(Actions.setName, (state: ICreateSessionState, name) => {
-    state.session.name = name;
-});
+const setName = reducerAction(
+    Actions.setName,
+    (state: ICreateSessionState, name) => {
+        state.session.name = name;
+    }
+);
 
-const setMode = reducerAction(Actions.setMode, (state: ICreateSessionState, mode) => {
-    state.session.mode = mode;
-});
+const setMode = reducerAction(
+    Actions.setMode,
+    (state: ICreateSessionState, mode) => {
+        state.session.mode = mode;
+    }
+);
 
-const setSource = reducerAction(Actions.setSource, (state: ICreateSessionState, source) => {
-    state.session.source = source;
-});
+const setSource = reducerAction(
+    Actions.setSource,
+    (state: ICreateSessionState, source) => {
+        state.session.source = source;
+    }
+);
 
-const setCardSet = reducerAction(Actions.setCardSet, (s: ICreateSessionState, cardSet) => {
-    s.session.cardSet = cardSet;
-});
+const setCardSet = reducerAction(
+    Actions.setCardSet,
+    (s: ICreateSessionState, cardSet) => {
+        s.session.cardSet = cardSet;
+    }
+);
 
 const create = reducerAction(Actions.create, (state: ICreateSessionState) => {
     state.isCreating = true;
 });
 
-const setCardSets = reducerAction(Actions.setCardSets, (s: ICreateSessionState, cardSets) => {
-    s.cardSets = cardSets;
-});
+const setCardSets = reducerAction(
+    Actions.setCardSets,
+    (s: ICreateSessionState, cardSets) => {
+        s.cardSets = cardSets;
+    }
+);
 
-const setTeams = reducerAction(Actions.setTeams, (state: ICreateSessionState, teams) => {
-    state.teams = teams;
-});
+const setTeams = reducerAction(
+    Actions.setTeams,
+    (state: ICreateSessionState, teams) => {
+        state.teams = teams;
+    }
+);
 
-const setTeam = reducerAction(Actions.setTeam, (state: ICreateSessionState, team) => {
-    state.team = team;
-});
+const setTeam = reducerAction(
+    Actions.setTeam,
+    (state: ICreateSessionState, team) => {
+        state.team = team;
+    }
+);
 
-const setIterations = reducerAction(Actions.setIterations, (state: ICreateSessionState, iterations) => {
-    state.iterations = iterations;
-});
+const setIterations = reducerAction(
+    Actions.setIterations,
+    (state: ICreateSessionState, iterations) => {
+        state.iterations = iterations;
+    }
+);
 
-const setIteration = reducerAction(Actions.setIteration, (state: ICreateSessionState, iteration) => {
-    state.iteration = iteration;
-});
+const setIteration = reducerAction(
+    Actions.setIteration,
+    (state: ICreateSessionState, iteration) => {
+        state.iteration = iteration;
+    }
+);
 
 export default <TPayload>(
     state: ICreateSessionState = initialState,
-    action?: Action<TPayload>) => {
-
+    action?: Action<TPayload>
+) => {
     return reducerMap(action, state, {
         [Actions.setName.type]: setName,
         [Actions.setCardSet.type]: setCardSet,

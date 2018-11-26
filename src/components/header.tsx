@@ -1,5 +1,5 @@
 import * as React from "react";
-import styled from "../styles/themed-styles";
+import "./header.scss";
 import { Title } from "./title";
 
 export interface IHeaderProps {
@@ -8,30 +8,16 @@ export interface IHeaderProps {
     buttons: JSX.Element;
 }
 
-const HeaderArea = styled.div` 
-    display: flex;
-    margin: 20px 0;
-    line-height: 40px;
-`;
-
-const ActionArea = styled.div`    
-    display: flex;
-    justify-content: flex-end;
-    align-self: flex-center;
-`;
-
 export class Header extends React.Component<IHeaderProps> {
     render(): JSX.Element {
         const { title, buttons } = this.props;
 
         return (
-            <HeaderArea>
+            <div className="header">
                 <Title>{title}</Title>
 
-                <ActionArea>
-                    {buttons}
-                </ActionArea>
-            </HeaderArea>
+                <div className="header--actions">{buttons}</div>
+            </div>
         );
     }
 }

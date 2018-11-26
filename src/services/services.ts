@@ -1,6 +1,5 @@
 // tslint:disable-next-line:no-empty-interface
-export interface IService {
-}
+export interface IService {}
 
 export interface IServiceRegistry {
     registerService(id: string, service: IService): void;
@@ -22,7 +21,7 @@ class ServiceRegistry implements IServiceRegistry {
                 throw new Error(`Can't find service with id ${id}`);
             }
 
-            this.servicesInstances[id] = new this.services[id];
+            this.servicesInstances[id] = new this.services[id]();
         }
 
         return this.servicesInstances[id] as TService;

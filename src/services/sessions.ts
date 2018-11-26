@@ -52,11 +52,16 @@ export class MockSessionService implements ISessionService {
 
     async getSession(id: string): Promise<ISession | null> {
         const result = this.sessions.filter(s => s.id === id);
-        return result && result.length > 0 && result[0] || null;
+        return (result && result.length > 0 && result[0]) || null;
     }
 
     async saveSession(session: ISession): Promise<ISession> {
-        const savedSession = { ...session, id: Math.random().toString(36).substr(2, 5) };
+        const savedSession = {
+            ...session,
+            id: Math.random()
+                .toString(36)
+                .substr(2, 5)
+        };
         this.sessions.push(savedSession);
 
         localStorage.setItem("sessions", JSON.stringify(this.sessions));

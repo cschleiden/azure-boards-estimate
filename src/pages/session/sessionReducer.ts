@@ -7,15 +7,15 @@ import { IWorkItem } from "../../model/workitem";
 import * as Actions from "./sessionActions";
 
 export const initialState = {
-    session: null as (ISession | null),
-    cardSet: null as (ICardSet | null),
+    session: null as ISession | null,
+    cardSet: null as ICardSet | null,
     workItems: [] as IWorkItem[],
-    selectedWorkItem: null as (IWorkItem | null),
-    ownEstimate: null as (IEstimate | null),
+    selectedWorkItem: null as IWorkItem | null,
+    ownEstimate: null as IEstimate | null,
     estimates: {} as ISessionEstimates,
     loading: false,
     revealed: false
-}
+};
 
 export type ISessionState = typeof initialState;
 
@@ -46,7 +46,7 @@ const leaveSession = reducerAction(
         state.ownEstimate = null;
         state.selectedWorkItem = null;
     }
-)
+);
 
 const workItemSelected = reducerAction(
     Actions.selectWorkItem,
@@ -72,14 +72,11 @@ const estimate = reducerAction(
 );
 
 /**
- * 
+ *
  */
-const revealed = reducerAction(
-    Actions.revealed,
-    (state: ISessionState) => {
-        state.revealed = true;
-    }
-);
+const revealed = reducerAction(Actions.revealed, (state: ISessionState) => {
+    state.revealed = true;
+});
 
 /**
  * Remote estimate
@@ -90,15 +87,18 @@ const estimateSet = reducerAction(
         const { workItemId, identity } = estimate;
 
         if (!state.selectedWorkItem) {
-            // No selected work item, this means we have joined the session recently. Take the work item id of 
+            // No selected work item, this means we have joined the session recently. Take the work item id of
             // this estimate as the selected work item.
-            state.selectedWorkItem = state.workItems.find(x => x.id === workItemId) || null;
+            state.selectedWorkItem =
+                state.workItems.find(x => x.id === workItemId) || null;
         }
 
         if (!state.estimates[workItemId]) {
             state.estimates[workItemId] = [estimate];
         } else {
-            const idx = state.estimates[workItemId].findIndex(e => e.identity.id === identity.id);
+            const idx = state.estimates[workItemId].findIndex(
+                e => e.identity.id === identity.id
+            );
             if (idx === -1) {
                 state.estimates[workItemId].push(estimate);
             } else {
@@ -106,7 +106,7 @@ const estimateSet = reducerAction(
             }
         }
     }
-)
+);
 
 export default <TPayload>(
     state: ISessionState = initialState,

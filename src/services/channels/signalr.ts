@@ -14,7 +14,7 @@ enum Action {
     Reveal = "reveal",
     Add = "add",
     Switch = "switch"
-};
+}
 
 export class SignalRChannel implements IChannel {
     estimate = defineOperation<IEstimate>(async estimate => {
@@ -43,11 +43,17 @@ export class SignalRChannel implements IChannel {
     async start(sessionId: string): Promise<void> {
         this.sessionId = sessionId;
 
-        const identityService = Services.getService<IIdentityService>(IdentityServiceId);
+        const identityService = Services.getService<IIdentityService>(
+            IdentityServiceId
+        );
         const identity = await identityService.getCurrentIdentity();
 
         this.connection = new signalR.HubConnectionBuilder()
-            .withUrl(`${baseUrl}/estimate?sessionId=${this.sessionId}&tfId=${identity.id}`)
+            .withUrl(
+                `${baseUrl}/estimate?sessionId=${this.sessionId}&tfId=${
+                    identity.id
+                }`
+            )
             .configureLogging(signalR.LogLevel.Information)
             .build();
 
@@ -57,7 +63,7 @@ export class SignalRChannel implements IChannel {
         // Start connection
         await this.connection.start().catch(err => {
             // tslint:disable-next-line:no-console
-            console.error(err.toString())
+            console.error(err.toString());
         });
 
         // Say hello to other clients

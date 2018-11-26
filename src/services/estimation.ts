@@ -22,7 +22,9 @@ export class MockEstimationService implements IEstimationService {
             estimates = this.storage[sessionId][estimate.workItemId] = [];
         }
 
-        const idx = estimates.findIndex(x => x.identity.id === estimate.identity.id);
+        const idx = estimates.findIndex(
+            x => x.identity.id === estimate.identity.id
+        );
         if (idx !== -1) {
             estimates[idx] = estimate;
         } else {

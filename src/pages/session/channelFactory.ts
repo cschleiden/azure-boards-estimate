@@ -3,7 +3,10 @@ import { IChannel } from "../../services/channels/channels";
 import { OfflineChannel } from "../../services/channels/offline";
 import { SignalRChannel } from "../../services/channels/signalr";
 
-export async function getChannel(sessionId: string, mode: SessionMode): Promise<IChannel> {
+export async function getChannel(
+    sessionId: string,
+    mode: SessionMode
+): Promise<IChannel> {
     switch (mode) {
         case SessionMode.Online:
             // Try to create azure channel

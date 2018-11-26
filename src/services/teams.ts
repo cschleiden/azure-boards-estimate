@@ -1,6 +1,10 @@
 import { CoreRestClient, TeamContext } from "azure-devops-extension-api/Core";
 import { WorkRestClient } from "azure-devops-extension-api/Work";
-import { getClient, CommonServiceIds, IProjectPageService } from "azure-devops-extension-api";
+import {
+    getClient,
+    CommonServiceIds,
+    IProjectPageService
+} from "azure-devops-extension-api";
 import * as DevOps from "azure-devops-extension-sdk";
 import { IService } from "./services";
 
@@ -59,12 +63,15 @@ export class TeamService implements ITeamService {
         const client = getClient(CoreRestClient);
         const teams = await client.getAllTeams();
         return teams.map(({ id, name }) => ({
-            id, name
+            id,
+            name
         }));
     }
 
     public async getIterationsForTeam(teamId: string): Promise<IIteration[]> {
-        const projectService = await DevOps.getService<IProjectPageService>(CommonServiceIds.ProjectPageService);
+        const projectService = await DevOps.getService<IProjectPageService>(
+            CommonServiceIds.ProjectPageService
+        );
         const project = await projectService.getProject();
         if (!project) {
             throw new Error("Project is required");
@@ -77,7 +84,8 @@ export class TeamService implements ITeamService {
         } as TeamContext);
 
         return teamIterations.map(({ id, name }) => ({
-            id, name
+            id,
+            name
         }));
     }
 }

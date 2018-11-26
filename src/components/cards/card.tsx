@@ -1,5 +1,6 @@
+import "./card.scss";
 import * as React from "react";
-import styled, { css } from "../../styles/themed-styles";
+import { css } from "../../lib/css";
 
 function getWidth(size: CardSize): number {
     switch (size) {
@@ -31,102 +32,12 @@ function getFontSize(size: CardSize): number {
     }
 }
 
-const BaseButton = styled.button`
-    border: none;
-    background: transparent;
-    padding: 0;
-    outline: none;
-    
-    perspective: 1000;
-    transform: perspective(1000px);
-    transform-style: preserve-3d;
-`;
-
-const Base = styled.div`
-    border: none;
-    background: transparent;
-    padding: 0;
-    outline: none;
-    
-    perspective: 1000;
-    transform: perspective(1000px);
-    transform-style: preserve-3d;
-`;
-
-const Flip = styled.div<{
-    size: CardSize;
-}>`
-    transition: 0.3s;
-	transform-style: preserve-3d;
-    
-	position: relative;
-
-    width: ${props => getWidth(props.size)}px;
-    height: ${props => getHeight(props.size)}px;
-
-    margin: 5px;
-`;
-
-const CardFrame = styled.div<{
-    flipped: boolean;
-    size: CardSize;
-    disabled?: boolean;
-}>`
-    display: block;
-    width: ${props => getWidth(props.size)}px;
-    height: ${props => getHeight(props.size)}px;
-    line-height: ${props => getHeight(props.size) - 1}px;   
-    border-radius: 10px;
-    font-size: ${props => getFontSize(props.size)}px;
-    text-align: center;
-
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.08);
-    border-radius: 4px;
-    
-    user-select: none;
-
-    transition: linear all 0.2s;
-    backface-visibility: hidden;    
-    transform-style: preserve-3d;
-
-	position: absolute;
-	top: 0;
-    left: 0;
-    
-    ${props => !props.disabled && css`cursor: pointer;`}
-`;
-
-const Front = CardFrame.extend`
-    transform: rotateY(0deg);
-
-    ${props => props.flipped && css`
-        transform: rotateY(180deg);
-    `}
-
-    ${props => !props.disabled && css`
-        &:hover {
-            background-color: red;
-        }
-    `}
-`;
-
-
-const Back = CardFrame.extend`
-    transform: rotateY(-180deg);
-
-    ${props => props.flipped && css`
-        transform: rotateY(0deg);
-    `}
-`;
-
 export enum CardSize {
     small,
     medium
 }
 
-export enum CardState {
-
-}
+export enum CardState {}
 
 export interface ICardData {
     label: string;
@@ -148,34 +59,78 @@ export interface ICardComponentProps {
 
 export class Card extends React.Component<ICardComponentProps> {
     render(): JSX.Element {
-        const { front, back, disabled = false, flipped = false, onClick, size = CardSize.medium } = this.props;
+        const {
+            front,
+            back,
+            disabled = false,
+            flipped = false,
+            onClick,
+            size = CardSize.medium
+        } = this.props;
 
-        let BaseElement: any;
+        let BaseElement: string;
         if (onClick) {
-            BaseElement = BaseButton;
+            BaseElement = "button";
         } else {
-            BaseElement = Base;
+            BaseElement = "div";
         }
 
+        const cardClassNames = css(
+            flipped && "flipped",
+            disabled && "disabled"
+        );
+
+        const cardStyle: React.CSSProperties = {
+            width: getWidth(size),
+            height: getHeight(size),
+            lineHeight: `${getHeight(size) - 1}px`,
+            fontSize: getFontSize(size)
+        };
+
         return (
-            <BaseElement disabled={disabled} onClick={onClick}>
-                <Flip size={size}>
-                    <Front flipped={flipped} size={size} disabled={disabled}>
+            <BaseElement
+                className={css(
+                    onClick && "card--base-button",
+                    !onClick && "card--base"
+                )}
+                disabled={disabled}
+                onClick={onClick}
+            >
+                <div
+                    className="card--flip"
+                    style={{
+                        width: `${getWidth(size)}px`,
+                        height: `${getHeight(size)}px`
+                    }}
+                >
+                    <div
+                        className={css(
+                            "card--frame",
+                            "card--front",
+                            cardClassNames
+                        )}
+                        style={cardStyle}
+                    >
                         {this.renderCard(front)}
-                    </Front>
+                    </div>
                     {back && (
-                        <Back flipped={flipped} size={size} disabled={disabled}>
+                        <div
+                            className={css(
+                                "card--frame",
+                                "card--back",
+                                cardClassNames
+                            )}
+                            style={cardStyle}
+                        >
                             {this.renderCard(back)}
-                        </Back>
+                        </div>
                     )}
-                </Flip>
+                </div>
             </BaseElement>
         );
     }
 
     private renderCard(data: ICardData): JSX.Element {
-        return (
-            <>{data.label}</>
-        );
+        return <>{data.label}</>;
     }
 }

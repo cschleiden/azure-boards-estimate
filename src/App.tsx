@@ -11,31 +11,39 @@ import { RootStyle } from "./styles/root";
 
 // TODO: Quick hack
 DevOps.getService<IHostNavigationService>(
-  "ms.vss-features.host-navigation-service"
+    "ms.vss-features.host-navigation-service"
 ).then(navService => {
-  // Send navigation updates to host frame
-  history.listen(x => {
-    navService.replaceHash(x.hash);
-  });
+    // Send navigation updates to host frame
+    history.listen(x => {
+        navService.replaceHash(x.hash);
+    });
 });
 
 initializeIcons();
 
 class App extends React.Component {
-  public render() {
-    return (
-      <Router history={history}>
-        <RootStyle>
-          <Switch>
-            <Route exact={true} path="/create/:ids?" component={HomePage} />
-            <Route exact={true} path="/" component={HomePage} />
-          </Switch>
+    public render() {
+        return (
+            <Router history={history}>
+                <RootStyle>
+                    <Switch>
+                        <Route
+                            exact={true}
+                            path="/create/:ids?"
+                            component={HomePage}
+                        />
+                        <Route exact={true} path="/" component={HomePage} />
+                    </Switch>
 
-          <Route exact={true} path="/session/:id/:name?" component={Session} />
-        </RootStyle>
-      </Router>
-    );
-  }
+                    <Route
+                        exact={true}
+                        path="/session/:id/:name?"
+                        component={Session}
+                    />
+                </RootStyle>
+            </Router>
+        );
+    }
 }
 
 export default App;

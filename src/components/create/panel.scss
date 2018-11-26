@@ -1,0 +1,22 @@
+@import "azure-devops-ui/core/_platformCommon.scss";
+
+.create-panel {
+    &--content {
+        display: flex;
+        flex-grow: 1;
+        flex-direction: column;
+    }
+
+    &--footer {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    &--footer-button {
+        margin-left: 8px;
+    }
+
+    &--group {
+        margin-bottom: 20px;
+    }
+}

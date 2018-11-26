@@ -17,7 +17,9 @@ export class OfflineChannel implements IChannel {
         await this.setWorkItem.incoming(workItemId);
 
         // After switching the work item, we need to replay all estimates for the work item
-        const estimates = await this.estimationService.getEstimates(this.sessionId);
+        const estimates = await this.estimationService.getEstimates(
+            this.sessionId
+        );
         if (estimates[workItemId]) {
             for (const estimate of estimates[workItemId]) {
                 await this.estimate.incoming(estimate);
@@ -39,12 +41,13 @@ export class OfflineChannel implements IChannel {
     private estimationService: IEstimationService;
 
     constructor() {
-        this.estimationService = Services.getService<IEstimationService>(EstimationServiceId);
+        this.estimationService = Services.getService<IEstimationService>(
+            EstimationServiceId
+        );
     }
 
     async start(sessionId: string): Promise<void> {
         this.sessionId = sessionId;
-
     }
 
     end(): Promise<void> {

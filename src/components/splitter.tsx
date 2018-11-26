@@ -11,8 +11,7 @@ const Base = styled.div`
     min-height: 80vh;
 `;
 
-const Pane = styled.div`
-`;
+const Pane = styled.div``;
 
 const Left = Pane.extend`
     width: 200px;
@@ -36,12 +35,8 @@ export class Splitter extends React.Component<ISplitterProps> {
 
         return (
             <Base>
-                <Left>
-                    {left}
-                </Left>
-                <Right>
-                    {right}
-                </Right>
+                <Left>{left}</Left>
+                <Right>{right}</Right>
             </Base>
         );
     }

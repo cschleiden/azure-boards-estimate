@@ -26,4 +26,3 @@ export interface ISession {
 
     cardSet: string;
 }
-

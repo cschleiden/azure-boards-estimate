@@ -7,7 +7,7 @@ export const initialState = {
     sessions: [] as ISession[],
 
     loading: false
-}
+};
 
 export type ISessionsState = typeof initialState;
 

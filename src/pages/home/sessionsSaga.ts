@@ -9,8 +9,13 @@ export function* rootSessionsSaga() {
 }
 
 export function* initSaga() {
-    const sessionService = Services.getService<ISessionService>(SessionServiceId);
-    const sessions: ISession[] = yield call([sessionService, sessionService.getSessions]);
+    const sessionService = Services.getService<ISessionService>(
+        SessionServiceId
+    );
+    const sessions: ISession[] = yield call([
+        sessionService,
+        sessionService.getSessions
+    ]);
 
     yield put(populate(sessions));
 }

@@ -1,0 +1,11 @@
+.header {
+    display: flex;
+    margin: 20px 0;
+    line-height: 40px;
+}
+
+.header--actions {
+    display: flex;
+    justify-content: flex-end;
+    align-self: flex-center;
+}

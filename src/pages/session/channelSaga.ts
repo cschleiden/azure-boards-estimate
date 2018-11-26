@@ -1,12 +1,28 @@
 import { Channel, eventChannel, SagaIterator } from "redux-saga";
-import { all, call, cancelled, put, select, take, takeEvery } from "redux-saga/effects";
+import {
+    all,
+    call,
+    cancelled,
+    put,
+    select,
+    take,
+    takeEvery
+} from "redux-saga/effects";
 import { Action } from "typescript-fsa";
 import { IEstimate } from "../../model/estimate";
 import { ISession } from "../../model/session";
 import { IChannel } from "../../services/channels/channels";
 import { getChannel } from "./channelFactory";
 import { getOwnEstimate } from "./selector";
-import { estimate, estimateSet, reveal, revealed, selectWorkItem, userJoined, workItemSelected } from "./sessionActions";
+import {
+    estimate,
+    estimateSet,
+    reveal,
+    revealed,
+    selectWorkItem,
+    userJoined,
+    workItemSelected
+} from "./sessionActions";
 
 export function* channelSaga(session: ISession): SagaIterator {
     const channel: IChannel = yield call(getChannel, session.id, session.mode);
@@ -28,36 +44,34 @@ export function* channelSaga(session: ISession): SagaIterator {
  * Map user actions to outgoing channel calls
  */
 export function* channelSenderSaga(sessionId: string, channel: IChannel) {
-    yield takeEvery([
-        estimate.type,
-        selectWorkItem.type,
-        userJoined.type,
-        reveal.type
-    ], function* (action: Action<any>) {
-        switch (action.type) {
-            case estimate.type:
-                yield call([channel, channel.estimate], action.payload);
-                break;
+    yield takeEvery(
+        [estimate.type, selectWorkItem.type, userJoined.type, reveal.type],
+        function*(action: Action<any>) {
+            switch (action.type) {
+                case estimate.type:
+                    yield call([channel, channel.estimate], action.payload);
+                    break;
 
-            case selectWorkItem.type:
-                yield call([channel, channel.setWorkItem], action.payload);
-                break;
+                case selectWorkItem.type:
+                    yield call([channel, channel.setWorkItem], action.payload);
+                    break;
 
-            case userJoined.type: {
-                // New user has joined, re-send our estimate
-                const ownEstimate: IEstimate = yield select(getOwnEstimate);
-                if (ownEstimate) {
-                    yield call([channel, channel.estimate], ownEstimate);
+                case userJoined.type: {
+                    // New user has joined, re-send our estimate
+                    const ownEstimate: IEstimate = yield select(getOwnEstimate);
+                    if (ownEstimate) {
+                        yield call([channel, channel.estimate], ownEstimate);
+                    }
+                    break;
                 }
-                break;
-            }
 
-            case reveal.type: {
-                yield call([channel, channel.revealed], undefined);
-                break;
+                case reveal.type: {
+                    yield call([channel, channel.revealed], undefined);
+                    break;
+                }
             }
         }
-    });
+    );
 }
 
 export function* channelListenerSaga(channel: IChannel) {
@@ -84,9 +98,9 @@ export function subscribe(channel: IChannel) {
 
         channel.revealed.attachHandler(() => {
             emit(revealed());
-        })
+        });
 
         // tslint:disable-next-line:no-empty
-        return () => { };
+        return () => {};
     });
 }

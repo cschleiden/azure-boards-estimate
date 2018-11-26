@@ -1,0 +1,80 @@
+@import "azure-devops-ui/core/_platformCommon.scss";
+
+.card--base-button {
+    border: none;
+    background: $backgroundColor;
+    padding: 0;
+    outline: none;
+
+    perspective: 1000;
+    transform: perspective(1000px);
+    transform-style: preserve-3d;
+}
+
+.card--base {
+    border: none;
+    background: $backgroundColor;
+    padding: 0;
+    outline: none;
+
+    perspective: 1000;
+    transform: perspective(1000px);
+    transform-style: preserve-3d;
+}
+
+.card--flip {
+    transition: 0.3s;
+    transform-style: preserve-3d;
+
+    position: relative;
+
+    margin: 5px;
+}
+
+.card--frame {
+    display: block;
+    text-align: center;
+
+    box-shadow: 0 6.4px 14.4px 0 $calloutShadowColor;
+    border-radius: $radius-medium;
+
+    user-select: none;
+
+    transition: linear all 0.2s;
+    backface-visibility: hidden;
+    transform-style: preserve-3d;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    &:not(.disabled) {
+        cursor: pointer;
+    }
+
+    &.disabled {
+        pointer-events: none;
+    }
+
+    &.card--front {
+        transform: rotateY(0deg);
+
+        &.flipped {
+            transform: rotateY(180deg);
+        }
+
+        &:not(.disabled) {
+            &:hover {
+                background-color: red;
+            }
+        }
+    }
+
+    &.card--back {
+        transform: rotateY(-180deg);
+
+        &.flipped {
+            transform: rotateY(0deg);
+        }
+    }
+}

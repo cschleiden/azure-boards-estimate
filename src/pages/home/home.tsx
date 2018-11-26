@@ -10,82 +10,82 @@ import { IPageProps } from "../props";
 import { loadSessions } from "./sessionsActions";
 
 interface IHomePageProps extends IPageProps<{}> {
-  sessions: ISession[];
+    sessions: ISession[];
 }
 
 const Actions = {
-  onInit: loadSessions
+    onInit: loadSessions
 };
 
 class HomePage extends React.Component<IHomePageProps & typeof Actions> {
-  componentDidMount() {
-    this.props.onInit();
-  }
+    componentDidMount() {
+        this.props.onInit();
+    }
 
-  render(): JSX.Element {
-    const { history, match, sessions } = this.props;
+    render(): JSX.Element {
+        const { history, match, sessions } = this.props;
 
-    return (
-      <div>
-        <Header
-          title="Estimate"
-          buttons={
-            <>
-              <PrimaryButton
-                iconProps={{
-                  iconName: "Add"
-                }}
-                onClick={this.create}
-              >
-                Create Session
-              </PrimaryButton>
-              &nbsp;
-              <MoreButton
-                iconProps={{
-                  iconName: "More"
-                }}
-                contextualMenuProps={{
-                  menuProps: {
-                    id: "more-menu",
-                    items: [
-                      {
-                        id: "end",
-                        text: "Settings",
-                        iconProps: {
-                          iconName: "Settings"
-                        }
-                      }
-                    ]
-                  }
-                }}
-              />
-            </>
-          }
-        />
+        return (
+            <div>
+                <Header
+                    title="Estimate"
+                    buttons={
+                        <>
+                            <PrimaryButton
+                                iconProps={{
+                                    iconName: "Add"
+                                }}
+                                onClick={this.create}
+                            >
+                                Create Session
+                            </PrimaryButton>
+                            &nbsp;
+                            <MoreButton
+                                iconProps={{
+                                    iconName: "More"
+                                }}
+                                contextualMenuProps={{
+                                    menuProps: {
+                                        id: "more-menu",
+                                        items: [
+                                            {
+                                                id: "end",
+                                                text: "Settings",
+                                                iconProps: {
+                                                    iconName: "Settings"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }}
+                            />
+                        </>
+                    }
+                />
 
-        <SessionList history={history} sessions={sessions} />
+                <SessionList history={history} sessions={sessions} />
 
-        {match.path.indexOf("/create") !== -1 && (
-          <CreatePanel onDismiss={this.closeCreate} />
-        )}
-      </div>
-    );
-  }
+                {match.path.indexOf("/create") !== -1 && (
+                    <CreatePanel onDismiss={this.closeCreate} />
+                )}
+            </div>
+        );
+    }
 
-  private create = () => {
-    const { history } = this.props;
-    history.push("/create");
-  };
+    private create = () => {
+        const { history } = this.props;
+        history.push("/create");
+    };
 
-  private closeCreate = () => {
-    const { history } = this.props;
-    history.push("/");
-  };
+    private closeCreate = () => {
+        const { history } = this.props;
+        history.push("/");
+    };
 }
 
 export default connect(
-  (state: IState) => ({
-    sessions: state.sessions.sessions
-  }),
-  Actions
+    (state: IState) => ({
+        sessions: state.sessions.sessions
+    }),
+    Actions
 )(HomePage);

@@ -2,8 +2,7 @@ import * as React from "react";
 import styled from "../../styles/themed-styles";
 
 // tslint:disable-next-line:no-empty-interface
-export interface IWorkItemTypeIconProps {
-}
+export interface IWorkItemTypeIconProps {}
 
 const Icon = styled.img`
     width: 14px;
