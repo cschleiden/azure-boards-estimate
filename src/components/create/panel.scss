@@ -21,5 +21,12 @@
 
     &--group {
         margin-bottom: 20px;
+
+        &-label {
+            display: block;
+            padding: 5px 0;
+            font-size: $fontSizeML;
+            font-weight: $fontWeightSemiBold;
+        }
     }
 }

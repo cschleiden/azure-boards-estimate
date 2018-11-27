@@ -1,6 +1,4 @@
-import "./panel.scss";
-import { Button } from "azure-devops-ui/Button";
-import { Panel, PanelContent, PanelFooter } from "azure-devops-ui/Panel";
+import { Panel } from "azure-devops-ui/Panel";
 import { TextField } from "azure-devops-ui/TextField";
 import {
     ChoiceGroup,
@@ -8,7 +6,6 @@ import {
     IChoiceGroupOption,
     IDropdownOption,
     IRenderFunction,
-    Label,
     TooltipHost
 } from "office-ui-fabric-react";
 import * as React from "react";
@@ -27,9 +24,9 @@ import {
 } from "../../pages/create/createActions";
 import { IState } from "../../reducer";
 import { IIteration, ITeam } from "../../services/teams";
-import { PrimaryButton } from "../buttons";
 import { getIconForMode } from "../cardIcon";
 import { CardSetPicker } from "./cardSetPicker";
+import "./panel.scss";
 
 const { icon: onlineIcon, description: onlineDescription } = getIconForMode(
     SessionMode.Online
@@ -154,11 +151,17 @@ class CreatePanel extends React.Component<
             >
                 <div className="create-panel--content">
                     <div className="create-panel--group">
-                        <TextField onChange={this.onChangeName} value={name} />
+                        <TextField
+                            onChange={this.onChangeName}
+                            value={name}
+                            placeholder="Session title"
+                        />
                     </div>
 
                     <div className="create-panel--group">
-                        <Label>Mode</Label>
+                        <label className="create-panel--group-label">
+                            Mode
+                        </label>
                         <ChoiceGroup
                             selectedKey={mode.toString()}
                             onChanged={this.onChangeMode}
@@ -167,7 +170,9 @@ class CreatePanel extends React.Component<
                     </div>
 
                     <div className="create-panel--group">
-                        <Label>Work items</Label>
+                        <label className="create-panel--group-label">
+                            Work items
+                        </label>
                         <ChoiceGroup
                             selectedKey={source.toString()}
                             onChanged={this.onChangeSource}
@@ -178,12 +183,27 @@ class CreatePanel extends React.Component<
                     </div>
 
                     <div className="create-panel--group">
-                        <Label>Cards</Label>
+                        <label className="create-panel--group-label">
+                            Cards
+                        </label>
                         <CardSetPicker
                             cardSets={cardSets}
                             selectedCardSetId={cardSet || ""}
                             onChange={this.onChangeCardSet}
                         />
+                    </div>
+
+                    <div className="create-panel--group">
+                        <label className="create-panel--group-label">
+                            Estimation field
+                        </label>
+
+                        <i>
+                            Select which field to use for saving the estimated
+                            value
+                        </i>
+
+                        <Dropdown options={[]} />
                     </div>
                 </div>
             </Panel>
@@ -208,6 +228,7 @@ class CreatePanel extends React.Component<
                         <Dropdown
                             onChanged={this.onSetTeam}
                             label="Team"
+                            placeHolder="Select Team"
                             selectedKey={team}
                             disabled={teams === null}
                             options={
@@ -216,10 +237,7 @@ class CreatePanel extends React.Component<
                                         key: t.id,
                                         text: t.name
                                     }))) || [
-                                    {
-                                        key: "loading",
-                                        text: "Loading"
-                                    }
+                                    { key: "loading", text: "Loading" }
                                 ]
                             }
                         />
@@ -227,6 +245,7 @@ class CreatePanel extends React.Component<
                         <Dropdown
                             label="Sprint"
                             onChanged={this.onSetIteration}
+                            placeHolder="Select Sprint"
                             selectedKey={iteration}
                             disabled={iterations === null}
                             options={
@@ -235,10 +254,7 @@ class CreatePanel extends React.Component<
                                         key: t.id,
                                         text: t.name
                                     }))) || [
-                                    {
-                                        key: "loading",
-                                        text: "Loading"
-                                    }
+                                    { key: "loading", text: "Loading" }
                                 ]
                             }
                         />

@@ -8,7 +8,7 @@ export interface IWorkItemCardProps {
 
     title: string;
 
-    estimate?: number;
+    estimate?: string;
 
     selected: boolean;
 

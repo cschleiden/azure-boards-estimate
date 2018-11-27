@@ -59,6 +59,7 @@ class Session extends React.Component<
 
     render(): JSX.Element {
         const {
+            cardSet,
             session,
             loading,
             workItems,
@@ -124,7 +125,8 @@ class Session extends React.Component<
                                     }
                                     id={workItem.id}
                                     title={workItem.title}
-                                    estimate={12}
+                                    // TODO: Use real value
+                                    estimate={cardSet.cards[0].identifier}
                                     onClick={() =>
                                         this.props.selectWorkItem(workItem.id)
                                     }
