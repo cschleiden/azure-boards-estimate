@@ -1,7 +1,7 @@
+import "./votes.scss";
 import * as React from "react";
 import { ICardSet } from "../model/cards";
 import { IEstimate } from "../model/estimate";
-import styled from "../styles/themed-styles";
 import { Vote } from "./cards/vote";
 
 export interface IVotesProps {
@@ -10,10 +10,6 @@ export interface IVotesProps {
 
     revealed?: boolean;
 }
-
-const VoteList = styled.div`
-    display: flex;
-`;
 
 export class Votes extends React.Component<IVotesProps> {
     render(): JSX.Element {
@@ -25,7 +21,7 @@ export class Votes extends React.Component<IVotesProps> {
         );
 
         return (
-            <VoteList>
+            <div className="vote-list">
                 {votes.map(vote => (
                     <Vote
                         key={vote.identity.id}
@@ -40,7 +36,7 @@ export class Votes extends React.Component<IVotesProps> {
                 ))}
 
                 {(!votes || votes.length === 0) && <div>No votes yet</div>}
-            </VoteList>
+            </div>
         );
     }
 }

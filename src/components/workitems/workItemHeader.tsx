@@ -10,11 +10,13 @@ export interface IWorkItemHeaderProps {
     title: string;
 
     description: string;
+
+    estimate?: number;
 }
 
 export class WorkItemHeader extends React.Component<IWorkItemHeaderProps> {
     render(): JSX.Element {
-        const { description, id, title, typeName } = this.props;
+        const { description, id, title, typeName, estimate } = this.props;
 
         return (
             <div className="work-item-header">
@@ -30,11 +32,15 @@ export class WorkItemHeader extends React.Component<IWorkItemHeaderProps> {
                 </div>
 
                 <div className="work-item-header--description">
-                    {description}
+                    <div
+                        dangerouslySetInnerHTML={{
+                            __html: description
+                        }}
+                    />
                 </div>
 
                 <div className="work-item-header--estimate">
-                    <label>Storypoints</label>: {"42"}
+                    <label>Storypoints</label>: {estimate}
                 </div>
             </div>
         );

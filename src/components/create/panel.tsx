@@ -1,6 +1,6 @@
 import "./panel.scss";
 import { Button } from "azure-devops-ui/Button";
-import { Panel } from "azure-devops-ui/Panel";
+import { Panel, PanelContent, PanelFooter } from "azure-devops-ui/Panel";
 import { TextField } from "azure-devops-ui/TextField";
 import {
     ChoiceGroup,
@@ -134,15 +134,23 @@ class CreatePanel extends React.Component<
             mode,
             source,
             onDismiss,
-            onSetName,
-            cardSets
+            cardSets,
+            isValid
         } = this.props;
 
         return (
             <Panel
                 title="Create new session"
-                onRenderPanelFooter={this.renderFooter}
                 onDismiss={onDismiss}
+                footerButtonProps={[
+                    { onClick: onDismiss, text: "Cancel" },
+                    {
+                        onClick: this.onCreate,
+                        text: "Create",
+                        disabled: !isValid,
+                        primary: true
+                    }
+                ]}
             >
                 <div className="create-panel--content">
                     <div className="create-panel--group">
@@ -237,21 +245,6 @@ class CreatePanel extends React.Component<
                     </div>
                 );
         }
-    };
-
-    private renderFooter = () => {
-        const { isValid, onDismiss } = this.props;
-
-        return (
-            <div className="create-panel--footer">
-                <Button onClick={onDismiss}>Cancel</Button>
-                <div className="create-panel--footer-button">
-                    <PrimaryButton onClick={this.onCreate} disabled={!isValid}>
-                        Create
-                    </PrimaryButton>
-                </div>
-            </div>
-        );
     };
 
     private onChangeName = (ev: React.ChangeEvent, value: string) => {

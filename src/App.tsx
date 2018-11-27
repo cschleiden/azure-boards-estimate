@@ -7,7 +7,6 @@ import { Route, Router, Switch } from "react-router-dom";
 import history from "./lib/history";
 import HomePage from "./pages/home/home";
 import Session from "./pages/session/session";
-import { RootStyle } from "./styles/root";
 
 // TODO: Quick hack
 DevOps.getService<IHostNavigationService>(
@@ -25,7 +24,7 @@ class App extends React.Component {
     public render() {
         return (
             <Router history={history}>
-                <RootStyle>
+                <>
                     <Switch>
                         <Route
                             exact={true}
@@ -40,7 +39,7 @@ class App extends React.Component {
                         path="/session/:id/:name?"
                         component={Session}
                     />
-                </RootStyle>
+                </>
             </Router>
         );
     }

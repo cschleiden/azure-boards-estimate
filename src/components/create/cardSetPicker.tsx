@@ -1,3 +1,4 @@
+import "./cardSetPicker.scss";
 import {
     Dropdown,
     IDropdownOption,
@@ -6,13 +7,7 @@ import {
 import { ISelectableOption } from "office-ui-fabric-react/lib/utilities/selectableOption/SelectableOption.types";
 import * as React from "react";
 import { ICardSet } from "../../model/cards";
-import styled from "../../styles/themed-styles";
 import { Card, CardSize } from "../cards/card";
-
-const CardContainer = styled.div`
-    display: flex;
-    flex-wrap: wrap;
-`;
 
 export interface ICardSetPickerProps {
     cardSets: ICardSet[];
@@ -48,7 +43,7 @@ export class CardSetPicker extends React.Component<ICardSetPickerProps> {
 
     private renderCardSet = (cardSet: ISelectableOption & ICardSet) => {
         return (
-            <CardContainer>
+            <div className="card-set-picker">
                 {cardSet.cards.map(c => (
                     <Card
                         key={c.identifier}
@@ -59,7 +54,7 @@ export class CardSetPicker extends React.Component<ICardSetPickerProps> {
                         }}
                     />
                 ))}
-            </CardContainer>
+            </div>
         );
     };
 

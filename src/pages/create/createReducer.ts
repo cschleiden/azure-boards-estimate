@@ -77,8 +77,9 @@ const setTeams = reducerAction(
 
 const setTeam = reducerAction(
     Actions.setTeam,
-    (state: ICreateSessionState, team) => {
-        state.team = team;
+    (state: ICreateSessionState, teamId) => {
+        state.team = teamId;
+        state.session.sourceData = `${state.team};${state.iteration}`;
     }
 );
 
@@ -91,8 +92,9 @@ const setIterations = reducerAction(
 
 const setIteration = reducerAction(
     Actions.setIteration,
-    (state: ICreateSessionState, iteration) => {
-        state.iteration = iteration;
+    (state: ICreateSessionState, iterationId) => {
+        state.iteration = iterationId;
+        state.session.sourceData = `${state.team};${state.iteration}`;
     }
 );
 

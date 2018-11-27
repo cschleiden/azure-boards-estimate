@@ -8,6 +8,9 @@ import { ITeamService, TeamServiceId } from "../../services/teams";
 import { loadSessions } from "../home/sessionsActions";
 import * as Actions from "./createActions";
 import { ICreateSessionState } from "./createReducer";
+import { getService } from "azure-devops-extension-sdk";
+import { IProjectPageService } from "azure-devops-extension-api";
+import { ProjectInfo } from "azure-devops-extension-api/Core";
 
 export function* createSaga() {
     yield all([initSaga(), iterationSaga(), createSessionSaga()]);
@@ -22,9 +25,21 @@ export function* initSaga() {
 
 /** Load teams */
 export function* loadTeams() {
+    const projectService: IProjectPageService = yield call(
+        getService,
+        "ms.vss-tfs-web.tfs-page-data-service"
+    );
+    const projectInfo: ProjectInfo = yield call([
+        projectService,
+        projectService.getProject
+    ]);
+
     // TODO: Get source from state?
     const teamService = Services.getService<ITeamService>(TeamServiceId);
-    const teams = yield call([teamService, teamService.getAllTeams]);
+    const teams = yield call(
+        [teamService, teamService.getAllTeams],
+        projectInfo.id
+    );
     yield put(Actions.setTeams(teams));
 }
 

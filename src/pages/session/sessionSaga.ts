@@ -16,12 +16,26 @@ import {
     loadedSession,
     loadSession
 } from "./sessionActions";
+import { IProjectPageService } from "azure-devops-extension-api";
+import { getService } from "azure-devops-extension-sdk";
+import { ProjectInfo } from "azure-devops-extension-api/Core";
 
 export function* rootSessionSaga() {
     yield takeLatest(loadSession.type, sessionSaga);
 }
 
 export function* sessionSaga(action: ReturnType<typeof loadSession>) {
+    // Get project
+    const projectService: IProjectPageService = yield call(
+        getService,
+        "ms.vss-tfs-web.tfs-page-data-service"
+    );
+    const projectInfo: ProjectInfo = yield call([
+        projectService,
+        projectService.getProject
+    ]);
+
+    // Get session
     const sessionService = Services.getService<ISessionService>(
         SessionServiceId
     );
@@ -45,16 +59,16 @@ export function* sessionSaga(action: ReturnType<typeof loadSession>) {
             const sprintService = Services.getService<ISprintService>(
                 SprintServiceId
             );
-            // TODO: Split team id
-            const [projectId, teamId] = (session.sourceData as string).split(
+
+            const [teamId, iterationId] = (session.sourceData as string).split(
                 ";"
             );
 
             workItemIds = yield call(
                 [sprintService, sprintService.getWorkItems],
-                projectId,
+                projectInfo.id,
                 teamId,
-                session.sourceData as string
+                iterationId
             );
             break;
         }

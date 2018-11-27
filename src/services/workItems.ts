@@ -63,8 +63,8 @@ export class WorkItemService implements IWorkItemService {
                 "System.WorkItemType",
                 "System.TeamProject"
             ],
-            $expand: WorkItemExpand.None,
-            errorPolicy: WorkItemErrorPolicy.Omit
+            $expand: 0 /* None */,
+            errorPolicy: 2 /* Omit */
         } as WorkItemBatchGetRequest);
 
         const mappedWorkItems = workItems.map(wi => {
@@ -114,14 +114,27 @@ export class WorkItemService implements IWorkItemService {
                     );
                     const processTypeId = properties[0].value;
 
+                    const workItemTypes = await processClient.getProcessWorkItemTypes(
+                        processTypeId
+                    );
+                    const workItemTypeNameToRefNameMapping: {
+                        [name: string]: string;
+                    } = {};
+                    workItemTypes.forEach(x => {
+                        workItemTypeNameToRefNameMapping[x.name] =
+                            x.referenceName;
+                    });
+
                     // Get work item type definitions
                     await Promise.all(
                         Array.from(projectInfo.workItemTypes.keys()).map(
                             async workItemTypeName => {
                                 const workItemType = await processClient.getProcessWorkItemType(
                                     processTypeId,
-                                    workItemTypeName,
-                                    GetWorkItemTypeExpand.Layout
+                                    workItemTypeNameToRefNameMapping[
+                                        workItemTypeName
+                                    ],
+                                    4 /* GetWorkItemTypeExpand.Layout */
                                 );
 
                                 // Look for the first page and get the first HTML control
@@ -144,13 +157,13 @@ export class WorkItemService implements IWorkItemService {
             {
                 ids: workItemIds,
                 fields: Array.prototype.concat.apply(
-                    null,
+                    [],
                     Array.from(foo.values()).map(x =>
                         Array.from(x.workItemTypes.values())
                     )
                 ),
-                $expand: WorkItemExpand.None,
-                errorPolicy: WorkItemErrorPolicy.Omit
+                $expand: 0 /* WorkItemExpand.None */,
+                errorPolicy: 2 /* WorkItemErrorPolicy.Omit */
             } as WorkItemBatchGetRequest
         );
 

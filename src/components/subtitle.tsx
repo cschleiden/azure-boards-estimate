@@ -1,8 +1,6 @@
-import styled from "../styles/themed-styles";
+import * as React from "react";
+import "./subtitle.scss";
 
-export const SubTitle = styled.h2`
-    font-family: "Segoe UI";
-    font-size: 18px;
-    margin: 20px 0 10px;
-    padding: 0;
-`;
+export const SubTitle: React.StatelessComponent = props => (
+    <h2 className="subtitle">{props.children}</h2>
+);

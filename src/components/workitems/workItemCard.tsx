@@ -25,8 +25,10 @@ export class WorkItemCard extends React.Component<IWorkItemCardProps> {
                 onClick={onClick}
             >
                 <div className="work-item-card--info">
-                    <WorkItemTypeIcon />
-                    <div className="work-item-card--id">{id}</div>
+                    <div className="work-item-card--meta">
+                        <WorkItemTypeIcon />
+                        <div className="work-item-card--id">{id}</div>
+                    </div>
                     <div className="work-item-card--title">{title}</div>
                 </div>
 

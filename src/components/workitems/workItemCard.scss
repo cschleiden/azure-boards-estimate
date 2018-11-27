@@ -3,6 +3,9 @@
 .work-item-card {
     @include calloutStyles;
 
+    display: flex;
+    align-items: flex-end;
+
     // TODO use work item color
     border-left: 4px solid #0078d7;
     border-top-left-radius: 0;
@@ -24,6 +27,11 @@
     }
 
     &--info {
+        display: flex;
+        align-items: flex-start;
+    }
+
+    &--meta {
         display: flex;
         align-items: center;
     }

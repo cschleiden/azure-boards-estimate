@@ -1,14 +1,8 @@
 import { History } from "history";
 import * as React from "react";
 import { ISession } from "../model/session";
-import styled from "../styles/themed-styles";
 import { SessionCard } from "./sessionCard";
-
-const List = styled.ul`
-    display: flex;
-    padding: 0;
-    flex-wrap: wrap;
-`;
+import "./sessionList.scss";
 
 export interface ICardListProps {
     sessions: ISession[];
@@ -20,7 +14,7 @@ export class SessionList extends React.Component<ICardListProps> {
         const { history, sessions } = this.props;
 
         return (
-            <List>
+            <ul className="session-list">
                 {sessions.map(session => (
                     <SessionCard
                         key={session.id}
@@ -28,7 +22,7 @@ export class SessionList extends React.Component<ICardListProps> {
                         history={history}
                     />
                 ))}
-            </List>
+            </ul>
         );
     }
 }
