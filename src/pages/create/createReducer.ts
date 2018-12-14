@@ -23,6 +23,7 @@ const initialState = {
 
     team: "",
     iteration: "",
+    queryId: "",
 
     isCreating: false
 };
@@ -98,6 +99,14 @@ const setIteration = reducerAction(
     }
 );
 
+const setQuery = reducerAction(
+    Actions.setQuery,
+    (state: ICreateSessionState, queryId) => {
+        state.queryId = queryId;
+        state.session.sourceData = queryId;
+    }
+);
+
 export default <TPayload>(
     state: ICreateSessionState = initialState,
     action?: Action<TPayload>
@@ -113,6 +122,7 @@ export default <TPayload>(
         [Actions.setTeams.type]: setTeams,
         [Actions.setTeam.type]: setTeam,
         [Actions.setIterations.type]: setIterations,
-        [Actions.setIteration.type]: setIteration
+        [Actions.setIteration.type]: setIteration,
+        [Actions.setQuery.type]: setQuery
     });
 };

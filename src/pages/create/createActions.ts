@@ -17,5 +17,6 @@ export const setTeams = factory<ITeam[]>("setTeams");
 export const setTeam = factory<string>("setTeam");
 export const setIterations = factory<IIteration[]>("setIterations");
 export const setIteration = factory<string>("setIteration");
+export const setQuery = factory<string>("setQuery");
 
 export const create = factory<void>("create");

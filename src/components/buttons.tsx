@@ -1,5 +1,5 @@
 import { Button, IButtonProps } from "azure-devops-ui/Button";
-import { IMenuButtonProps, MenuButton } from "azure-devops-ui/Menu";
+export { MoreButton } from "azure-devops-ui/Menu";
 import * as React from "react";
 import "./buttons.scss";
 import { Icon, css } from "office-ui-fabric-react";
@@ -18,8 +18,4 @@ export const IconButton: React.StatelessComponent<IButtonProps> = ({
 
 export const PrimaryButton = (props: IButtonProps) => (
     <Button {...props} primary />
-);
-
-export const MoreButton = (props: IMenuButtonProps) => (
-    <MenuButton {...props} className="menu-button" />
 );

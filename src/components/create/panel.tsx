@@ -20,13 +20,16 @@ import {
     setMode,
     setName,
     setSource,
-    setTeam
+    setTeam,
+    setQuery
 } from "../../pages/create/createActions";
 import { IState } from "../../reducer";
 import { IIteration, ITeam } from "../../services/teams";
 import { getIconForMode } from "../cardIcon";
 import { CardSetPicker } from "./cardSetPicker";
 import "./panel.scss";
+import { isValid } from "../../pages/create/createSelector";
+import { QueryPicker } from "../controls/queryPicker";
 
 const { icon: onlineIcon, description: onlineDescription } = getIconForMode(
     SessionMode.Online
@@ -83,6 +86,14 @@ const sourceOptions: IChoiceGroupOption[] = [
         key: SessionSource.Query.toString(),
         text: "Query",
         onRenderField: renderOptionWithTooltip
+    },
+    {
+        iconProps: {
+            iconName: "WorkItem"
+        },
+        key: SessionSource.Ids.toString(),
+        text: "Work Items",
+        onRenderField: renderOptionWithTooltip
     }
 ];
 
@@ -102,6 +113,7 @@ interface ICreatePanelProps {
 
     team: string;
     iteration: string;
+    queryId: string;
 
     cardSets: ICardSet[];
 }
@@ -111,6 +123,7 @@ const Actions = {
     onSetMode: setMode,
     onSetName: setName,
     onSetSource: setSource,
+    onSetQuery: setQuery,
     onSetTeam: setTeam,
     onSetIteration: setIteration,
     onSetCardSet: setCardSet,
@@ -139,6 +152,7 @@ class CreatePanel extends React.Component<
             <Panel
                 title="Create new session"
                 onDismiss={onDismiss}
+                blurDismiss={false}
                 footerButtonProps={[
                     { onClick: onDismiss, text: "Cancel" },
                     {
@@ -211,13 +225,31 @@ class CreatePanel extends React.Component<
     }
 
     private renderSourceSelection = (): JSX.Element => {
-        const { iterations, source, teams, team, iteration } = this.props;
+        const {
+            iterations,
+            source,
+            teams,
+            team,
+            iteration,
+            queryId
+        } = this.props;
 
         switch (source) {
             case SessionSource.Query:
                 return (
                     <div>
-                        <Dropdown label="Query" options={[]} />
+                        <QueryPicker
+                            defaultSelectedQueryId={queryId || undefined}
+                            onChanged={this.onSetQuery}
+                        />
+                    </div>
+                );
+
+            case SessionSource.Ids:
+                return (
+                    <div>
+                        Go to the backlog or a query result and select
+                        "Estimate" from the context menu
                     </div>
                 );
 
@@ -287,6 +319,11 @@ class CreatePanel extends React.Component<
         onSetIteration(option.key as string);
     };
 
+    private onSetQuery = (queryId: string) => {
+        const { onSetQuery } = this.props;
+        onSetQuery(queryId);
+    };
+
     private onChangeCardSet = (cardSet: ICardSet) => {
         const { onSetCardSet } = this.props;
         onSetCardSet(cardSet.id);
@@ -304,13 +341,15 @@ export default connect(
         cardSet: state.create.session.cardSet,
         mode: state.create.session.mode,
         source: state.create.session.source,
-        isValid: state.create.session.name !== "",
+        isValid: isValid(state.create),
 
         teams: state.create.teams,
         iterations: state.create.iterations,
 
         team: state.create.team,
         iteration: state.create.iteration,
+
+        queryId: state.create.queryId,
 
         cardSets: state.create.cardSets || []
     }),

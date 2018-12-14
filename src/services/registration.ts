@@ -6,7 +6,11 @@ import {
     MockIdentityService
 } from "./identity";
 import { Services } from "./services";
-import { MockSessionService, SessionServiceId } from "./sessions";
+import {
+    MockSessionService,
+    SessionServiceId,
+    SessionService
+} from "./sessions";
 import { MockSprintService, SprintServiceId, SprintService } from "./sprints";
 import { TeamService, TeamServiceId, MockTeamService } from "./teams";
 import {
@@ -27,7 +31,7 @@ Services.registerService(SprintServiceId, MockSprintService);
 // Override with production services
 Services.registerService(IdentityServiceId, IdentityService);
 Services.registerService(TeamServiceId, TeamService);
-// Services.registerService(SessionServiceId, SessionService);
+Services.registerService(SessionServiceId, SessionService);
 // Services.registerService(CardSetServiceId, CardSetService);
 Services.registerService(WorkItemServiceId, WorkItemService);
 Services.registerService(SprintServiceId, SprintService);

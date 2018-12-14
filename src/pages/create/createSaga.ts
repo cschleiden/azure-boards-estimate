@@ -11,6 +11,7 @@ import { ICreateSessionState } from "./createReducer";
 import { getService } from "azure-devops-extension-sdk";
 import { IProjectPageService } from "azure-devops-extension-api";
 import { ProjectInfo } from "azure-devops-extension-api/Core";
+import { ISession } from "../../model/session";
 
 export function* createSaga() {
     yield all([initSaga(), iterationSaga(), createSessionSaga()]);
@@ -70,9 +71,15 @@ export function* createSessionSaga() {
     while (true) {
         yield take(Actions.create.type);
 
-        const { session }: ICreateSessionState = yield select<IState>(
-            x => x.create
-        );
+        let session: ISession = yield select<IState>(x => x.create.session);
+
+        // Generate new id
+        session = {
+            ...session,
+            id: Math.random()
+                .toString(36)
+                .substr(2, 5)
+        };
 
         // Save session
         const sessionService = Services.getService<ISessionService>(
@@ -80,6 +87,10 @@ export function* createSessionSaga() {
         );
         yield call([sessionService, sessionService.saveSession], session);
 
+        // Reset creation state
+        yield put(Actions.init());
+
+        // Refresh all sessions
         yield put(loadSessions());
 
         // Navigate to homepage
