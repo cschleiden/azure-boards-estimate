@@ -1,11 +1,18 @@
 import { Action } from "typescript-fsa";
+import { ILookup } from "../../lib/lookup";
 import reducerMap, { reducerAction } from "../../lib/reducerMap";
+import { IQuery } from "../../model/query";
 import { ISession } from "../../model/session";
+import { IIteration, ITeam } from "../../services/teams";
 import * as Actions from "./sessionsActions";
 
 export const initialState = {
     sessions: [] as ISession[],
     filteredSessions: null as ISession[] | null,
+
+    teamLookup: null as null | ILookup<ITeam>,
+    iterationLookup: null as null | ILookup<IIteration>,
+    queryLookup: null as null | ILookup<IQuery>,
 
     loading: false
 };
@@ -32,12 +39,37 @@ const filter = reducerAction(Actions.filter, (state: ISessionsState, query) => {
     }
 });
 
+const setIterationLookup = reducerAction(
+    Actions.setIterationLookup,
+    (state: ISessionsState, lookup) => {
+        state.iterationLookup = lookup;
+    }
+);
+
+const setTeamLookup = reducerAction(
+    Actions.setTeamLookup,
+    (state: ISessionsState, lookup) => {
+        state.teamLookup = lookup;
+    }
+);
+
+const setQueryLookup = reducerAction(
+    Actions.setQueryLookup,
+    (state: ISessionsState, lookup) => {
+        state.queryLookup = lookup;
+    }
+);
+
 export default <TPayload>(
     state: ISessionsState = initialState,
     action?: Action<TPayload>
 ) => {
     return reducerMap(action, state, {
         [Actions.populate.type]: populate,
-        [Actions.filter.type]: filter
+        [Actions.filter.type]: filter,
+
+        [Actions.setIterationLookup.type]: setIterationLookup,
+        [Actions.setTeamLookup.type]: setTeamLookup,
+        [Actions.setQueryLookup.type]: setQueryLookup
     });
 };

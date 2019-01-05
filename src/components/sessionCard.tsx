@@ -1,10 +1,10 @@
+import { Button } from "azure-devops-ui/Button";
 import { History } from "history";
 import * as React from "react";
 import { makeUrlSafe } from "../lib/urlSafe";
-import { ISession } from "../model/session";
+import { ISessionDisplay, ISessionInfo } from "../model/session";
 import { CardIcon } from "./cardIcon";
 import "./sessionCard.scss";
-import { Button } from "azure-devops-ui/Button";
 
 const CardTitle: React.StatelessComponent = props => (
     <h2 className="session-card--title">{props.children}</h2>
@@ -14,15 +14,31 @@ const CardMode: React.StatelessComponent = props => (
     <div className="session-card--mode">{props.children}</div>
 );
 
+const CardInfo: React.StatelessComponent<{
+    sessionInfo: ISessionInfo[];
+}> = props => (
+    <div className="session-card--info">
+        {props.sessionInfo.map(info => (
+            <dl key={info.label}>
+                <dt>{info.label}</dt>
+                <dd>{info.value}</dd>
+            </dl>
+        ))}
+    </div>
+);
+
 export interface ICardProps {
     history: History;
-    session: ISession;
+    session: ISessionDisplay;
 }
 
 export class SessionCard extends React.Component<ICardProps> {
     render(): JSX.Element {
         const {
-            session: { id, mode, name, source }
+            session: {
+                session: { id, mode, name, source, sourceData },
+                sessionInfo
+            }
         } = this.props;
 
         return (
@@ -33,6 +49,8 @@ export class SessionCard extends React.Component<ICardProps> {
             >
                 <div className="session-card--content">
                     <CardTitle>{name}</CardTitle>
+
+                    <CardInfo sessionInfo={sessionInfo} />
 
                     <CardMode>
                         <CardIcon mode={mode} source={source} />
@@ -45,7 +63,9 @@ export class SessionCard extends React.Component<ICardProps> {
     private navigate = (e: React.MouseEvent | React.KeyboardEvent) => {
         const {
             history,
-            session: { id, name }
+            session: {
+                session: { id, name }
+            }
         } = this.props;
 
         history.push(`/session/${id}/${makeUrlSafe(name)}`);

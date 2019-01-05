@@ -1,5 +1,9 @@
+import { IProjectPageService } from "azure-devops-extension-api";
+import { ProjectInfo } from "azure-devops-extension-api/Core";
+import { getService } from "azure-devops-extension-sdk";
 import { all, call, put, select, take } from "redux-saga/effects";
 import history from "../../lib/history";
+import { ISession } from "../../model/session";
 import { IState } from "../../reducer";
 import { CardSetServiceId, ICardSetService } from "../../services/cardSets";
 import { Services } from "../../services/services";
@@ -7,11 +11,6 @@ import { ISessionService, SessionServiceId } from "../../services/sessions";
 import { ITeamService, TeamServiceId } from "../../services/teams";
 import { loadSessions } from "../home/sessionsActions";
 import * as Actions from "./createActions";
-import { ICreateSessionState } from "./createReducer";
-import { getService } from "azure-devops-extension-sdk";
-import { IProjectPageService } from "azure-devops-extension-api";
-import { ProjectInfo } from "azure-devops-extension-api/Core";
-import { ISession } from "../../model/session";
 
 export function* createSaga() {
     yield all([initSaga(), iterationSaga(), createSessionSaga()]);
@@ -88,7 +87,7 @@ export function* createSessionSaga() {
         yield call([sessionService, sessionService.saveSession], session);
 
         // Reset creation state
-        yield put(Actions.init());
+        yield put(Actions.reset());
 
         // Refresh all sessions
         yield put(loadSessions());

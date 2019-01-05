@@ -4,4 +4,7 @@ export interface IWorkItem {
     title: string;
     description: string;
     workItemType: string;
+
+    icon?: string;
+    color?: string;
 }

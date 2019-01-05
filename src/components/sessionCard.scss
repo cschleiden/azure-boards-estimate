@@ -1,7 +1,7 @@
 @import "azure-devops-ui/Core/_platformCommon.scss";
 
 .session-card {
-    height: 120px;
+    min-height: 120px;
     max-width: 440px;
     min-width: 220px;
     flex-basis: 220px;
@@ -46,5 +46,24 @@
         display: flex;
         align-items: flex-end;
         justify-content: flex-end;
+    }
+
+    .session-card--info {
+        padding: 10px 0;
+
+        dl {
+            display: flex;
+            flex-direction: row;
+            margin: 5px 0 0 0;
+
+            dt {
+                font-weight: normal;
+                width: 30%;
+            }
+
+            dd {
+                margin: 0;
+            }
+        }
     }
 }

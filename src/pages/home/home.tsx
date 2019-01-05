@@ -1,3 +1,4 @@
+import { Card } from "azure-devops-ui/Card";
 import { ConditionalChildren } from "azure-devops-ui/ConditionalChildren";
 import { ObservableValue } from "azure-devops-ui/Core/Observable";
 import { FilterBar } from "azure-devops-ui/FilterBar";
@@ -7,18 +8,18 @@ import { Page } from "azure-devops-ui/Page";
 import { Tab, TabBar } from "azure-devops-ui/Tabs";
 import { KeywordFilterBarItem } from "azure-devops-ui/TextFilterBarItem";
 import { Filter } from "azure-devops-ui/Utilities/Filter";
-import { Card } from "azure-devops-ui/Card";
 import * as React from "react";
 import { connect } from "react-redux";
 import CreatePanel from "../../components/create/panel";
 import { SessionList } from "../../components/sessionList";
-import { ISession } from "../../model/session";
+import { ISessionDisplay } from "../../model/session";
 import { IState } from "../../reducer";
 import { IPageProps } from "../props";
-import { loadSessions, filter } from "./sessionsActions";
+import { filter, loadSessions } from "./sessionsActions";
+import { getDisplaySessions } from "./sessionsSelectors";
 
 interface IHomePageProps extends IPageProps<{}> {
-    sessions: ISession[];
+    sessions: ISessionDisplay[];
 }
 
 const Actions = {
@@ -131,11 +132,13 @@ class HomePage extends React.Component<IHomePageProps & typeof Actions> {
 
 export default connect(
     (state: IState) => ({
-        sessions:
+        sessions: getDisplaySessions(
+            state.sessions,
             (state.sessions.filteredSessions &&
                 state.sessions.filteredSessions.length > 0 &&
                 state.sessions.filteredSessions) ||
-            state.sessions.sessions
+                state.sessions.sessions
+        )
     }),
     Actions
 )(HomePage);

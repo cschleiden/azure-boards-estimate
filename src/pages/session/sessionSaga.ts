@@ -1,3 +1,6 @@
+import { IProjectPageService } from "azure-devops-extension-api";
+import { ProjectInfo } from "azure-devops-extension-api/Core";
+import { getService } from "azure-devops-extension-sdk";
 import { Task } from "redux-saga";
 import { call, cancel, fork, put, take, takeLatest } from "redux-saga/effects";
 import history from "../../lib/history";
@@ -5,6 +8,7 @@ import { ICardSet } from "../../model/cards";
 import { ISession, SessionSource } from "../../model/session";
 import { IWorkItem } from "../../model/workitem";
 import { CardSetServiceId, ICardSetService } from "../../services/cardSets";
+import { IQueriesService, QueriesServiceId } from "../../services/queries";
 import { Services } from "../../services/services";
 import { ISessionService, SessionServiceId } from "../../services/sessions";
 import { ISprintService, SprintServiceId } from "../../services/sprints";
@@ -16,9 +20,6 @@ import {
     loadedSession,
     loadSession
 } from "./sessionActions";
-import { IProjectPageService } from "azure-devops-extension-api";
-import { getService } from "azure-devops-extension-sdk";
-import { ProjectInfo } from "azure-devops-extension-api/Core";
 
 export function* rootSessionSaga() {
     yield takeLatest(loadSession.type, sessionSaga);
@@ -52,7 +53,7 @@ export function* sessionSaga(action: ReturnType<typeof loadSession>) {
     );
 
     // Load work items
-    let workItemIds: number[];
+    let workItemIds: number[] = [];
 
     switch (session.source) {
         case SessionSource.Sprint: {
@@ -60,21 +61,42 @@ export function* sessionSaga(action: ReturnType<typeof loadSession>) {
                 SprintServiceId
             );
 
-            const [teamId, iterationId] = (session.sourceData as string).split(
-                ";"
-            );
+            if (session.sourceData) {
+                const [
+                    teamId,
+                    iterationId
+                ] = (session.sourceData as string).split(";");
 
-            workItemIds = yield call(
-                [sprintService, sprintService.getWorkItems],
-                projectInfo.id,
-                teamId,
-                iterationId
-            );
+                if (teamId && iterationId) {
+                    workItemIds = yield call(
+                        [sprintService, sprintService.getWorkItems],
+                        projectInfo.id,
+                        teamId,
+                        iterationId
+                    );
+                }
+            }
             break;
         }
 
         case SessionSource.Ids: {
-            workItemIds = session.sourceData as number[];
+            if (Array.isArray(session.sourceData)) {
+                workItemIds = session.sourceData as number[];
+            }
+            break;
+        }
+
+        case SessionSource.Query: {
+            if (session.sourceData) {
+                const queriesService = Services.getService<IQueriesService>(
+                    QueriesServiceId
+                );
+                workItemIds = yield call(
+                    [queriesService, queriesService.runQuery],
+                    projectInfo.id,
+                    session.sourceData as string
+                );
+            }
             break;
         }
 
@@ -104,12 +126,19 @@ export function* sessionSaga(action: ReturnType<typeof loadSession>) {
         endSession.type
     ]);
     switch (a.type) {
-        case leaveSession.type: {
-            yield cancel(channelTask);
-
-            // Navigate back to session list
-            history.push("/");
+        case endSession.type: {
+            const sessionService = Services.getService<ISessionService>(
+                SessionServiceId
+            );
+            yield call(
+                [sessionService, sessionService.removeSession],
+                session.id
+            );
             break;
         }
     }
+
+    yield cancel(channelTask);
+    // Navigate back to session list
+    history.push("/");
 }

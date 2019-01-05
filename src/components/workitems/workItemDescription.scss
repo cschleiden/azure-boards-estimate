@@ -1,0 +1,10 @@
+@import "azure-devops-ui/core/_platformCommon.scss";
+
+.work-item-description {
+    border-radius: 6px;
+    background-color: $neutral-4;
+
+    padding: 10px;
+
+    min-height: 60px;
+}

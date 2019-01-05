@@ -26,3 +26,13 @@ export interface ISession {
 
     cardSet: string;
 }
+
+export interface ISessionInfo {
+    label: string;
+    value: string;
+}
+
+export interface ISessionDisplay {
+    session: ISession;
+    sessionInfo: ISessionInfo[];
+}

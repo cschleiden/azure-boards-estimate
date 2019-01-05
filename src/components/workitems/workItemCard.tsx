@@ -2,11 +2,12 @@ import "./workItemCard.scss";
 import * as React from "react";
 import { WorkItemTypeIcon } from "./typeIcon";
 import { css } from "../../lib/css";
+import { Card } from "azure-devops-ui/Card";
+import { TitleSize } from "azure-devops-ui/Header";
+import { IWorkItem } from "../../model/workitem";
 
 export interface IWorkItemCardProps {
-    id: number;
-
-    title: string;
+    workItem: IWorkItem;
 
     estimate?: string;
 
@@ -17,23 +18,33 @@ export interface IWorkItemCardProps {
 
 export class WorkItemCard extends React.Component<IWorkItemCardProps> {
     render(): JSX.Element {
-        const { id, estimate, title, selected, onClick } = this.props;
+        const {
+            workItem: { id, title, icon, color },
+            estimate,
+            selected,
+            onClick
+        } = this.props;
 
         return (
-            <div
-                className={css("work-item-card", selected && "selected")}
-                onClick={onClick}
+            <Card
+                className={css(
+                    "bolt-card-white",
+                    "work-item-card",
+                    selected && "selected"
+                )}
             >
-                <div className="work-item-card--info">
-                    <div className="work-item-card--meta">
-                        <WorkItemTypeIcon />
-                        <div className="work-item-card--id">{id}</div>
+                <div className="flex-grow" onClick={onClick}>
+                    <div className="work-item-card--info">
+                        <div className="work-item-card--meta">
+                            <WorkItemTypeIcon icon={icon} color={color} />
+                            <div className="work-item-card--id">{id}</div>
+                        </div>
+                        <div className="work-item-card--title">{title}</div>
                     </div>
-                    <div className="work-item-card--title">{title}</div>
-                </div>
 
-                <div className="work-item-card--estimate">{estimate}</div>
-            </div>
+                    <div className="work-item-card--estimate">{estimate}</div>
+                </div>
+            </Card>
         );
     }
 }

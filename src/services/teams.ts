@@ -22,38 +22,6 @@ export interface ITeamService extends IService {
 
 export const TeamServiceId = "TeamService";
 
-export class MockTeamService implements ITeamService {
-    public async getAllTeams(): Promise<ITeam[]> {
-        return [
-            {
-                id: "1",
-                name: "Team Green"
-            },
-            {
-                id: "2",
-                name: "Team Blue"
-            },
-            {
-                id: "3",
-                name: "Team Red"
-            }
-        ];
-    }
-
-    public async getIterationsForTeam(teamId: string): Promise<IIteration[]> {
-        return [
-            {
-                id: "i1",
-                name: "Sprint 136"
-            },
-            {
-                id: "i2",
-                name: "Sprint 137"
-            }
-        ];
-    }
-}
-
 export class TeamService implements ITeamService {
     public async getAllTeams(projectId: string): Promise<ITeam[]> {
         const client = getClient(CoreRestClient);

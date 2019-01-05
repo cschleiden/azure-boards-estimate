@@ -107,11 +107,22 @@ const setQuery = reducerAction(
     }
 );
 
+const reset = reducerAction(Actions.reset, (state: ICreateSessionState) => {
+    // Reset but keep preloaded data
+    Object.assign(state, {
+        ...initialState,
+        teams: state.teams,
+        cardSets: state.cardSets
+    });
+});
+
 export default <TPayload>(
     state: ICreateSessionState = initialState,
     action?: Action<TPayload>
 ) => {
     return reducerMap(action, state, {
+        [Actions.reset.type]: reset,
+
         [Actions.setName.type]: setName,
         [Actions.setCardSet.type]: setCardSet,
         [Actions.setMode.type]: setMode,

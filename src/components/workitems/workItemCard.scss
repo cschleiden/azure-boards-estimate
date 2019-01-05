@@ -1,29 +1,20 @@
 @import "azure-devops-ui/core/_platformCommon.scss";
 
 .work-item-card {
-    @include calloutStyles;
-
-    display: flex;
-    align-items: flex-end;
-
-    // TODO use work item color
-    border-left: 4px solid #0078d7;
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-
     cursor: pointer;
 
     min-height: 40px;
 
-    padding: 8px;
     margin-bottom: 15px;
-
-    flex-grow: 1;
 
     transition: 0.3s linear all;
 
     &:hover {
         background-color: $neutral-8;
+    }
+
+    &.selected {
+        background: $communication-tint-40;
     }
 
     &--info {

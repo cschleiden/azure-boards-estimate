@@ -1,16 +1,13 @@
 import { getClient } from "azure-devops-extension-api";
 import { CoreRestClient } from "azure-devops-extension-api/Core";
 import {
-    GetWorkItemTypeExpand,
+    WorkItemBatchGetRequest,
+    WorkItemTrackingRestClient
+} from "azure-devops-extension-api/WorkItemTracking";
+import {
     Page,
     WorkItemTrackingProcessRestClient
 } from "azure-devops-extension-api/WorkItemTrackingProcess";
-import {
-    WorkItemTrackingRestClient,
-    WorkItemExpand,
-    WorkItemErrorPolicy,
-    WorkItemBatchGetRequest
-} from "azure-devops-extension-api/WorkItemTracking";
 import { IWorkItem } from "../model/workitem";
 import { IService } from "./services";
 
@@ -20,39 +17,18 @@ export interface IWorkItemService extends IService {
 
 export const WorkItemServiceId = "WorkItemService";
 
-export class MockWorkItemService implements IWorkItemService {
-    async getWorkItems(workItemIds: number[]): Promise<IWorkItem[]> {
-        return [
-            {
-                project: "AgileGit",
-                id: 42,
-                title: "Admin interface",
-                description:
-                    "Lorem ipsum dolor amet salvia actually microdosing polaroid drinking vinegar aesthetic put a bird on it prism master cleanse craft beer poutine. Cronut celiac church-key fanny pack butcher cloud bread. Portland af hammock cray sartorial PBR&B migas kale chips raclette. Poke schlitz forage leggings authentic yuccie prism. Banjo before they sold out aesthetic cloud bread, chartreuse helvetica YOLO shaman.",
-                workItemType: "User Story"
-            },
-            {
-                project: "AgileGit",
-                id: 23,
-                title: "Chat function",
-                description:
-                    "Kogi bushwick wayfarers pour-over. Aesthetic ugh godard, celiac shoreditch succulents crucifix portland roof party franzen chambray. Venmo umami polaroid trust fund. Gastropub plaid biodiesel, blue bottle vice craft beer umami messenger bag ramps microdosing tumeric waistcoat. Tbh 90's succulents affogato cold-pressed banh mi. Hexagon tbh polaroid authentic master cleanse kickstarter lo-fi selvage craft beer drinking vinegar 8-bit. Pickled schlitz bitters typewriter dreamcatcher quinoa.",
-                workItemType: "Bug"
-            },
-            {
-                project: "AgileGit",
-                id: 12,
-                title: "Integration tests",
-                description:
-                    "Copper mug heirloom health goth, gluten-free meditation live-edge tumblr wolf woke. Salvia truffaut gluten-free pabst brunch quinoa taxidermy, trust fund DIY tbh air plant vice master cleanse. Aesthetic pitchfork photo booth coloring book succulents pop-up. Af roof party bespoke occupy, wayfarers coloring book live-edge beard poke schlitz hella letterpress bitters skateboard tumblr. Air plant kale chips venmo, deep v butcher kogi microdosing everyday carry irony crucifix drinking vinegar cred VHS. Cloud bread vape raw denim hashtag disrupt, hexagon viral.",
-                workItemType: "User Story"
-            }
-        ];
-    }
+interface IWorkItemTypeInfo {
+    icon?: string;
+    color?: string;
+    descriptionFieldRefName?: string;
 }
 
 export class WorkItemService implements IWorkItemService {
     async getWorkItems(workItemIds: number[]): Promise<IWorkItem[]> {
+        if (!workItemIds || workItemIds.length === 0) {
+            return [];
+        }
+
         // Get all work items
         const workItemTrackingClient = getClient(WorkItemTrackingRestClient);
         const workItems = await workItemTrackingClient.getWorkItemsBatch({
@@ -67,7 +43,7 @@ export class WorkItemService implements IWorkItemService {
             errorPolicy: 2 /* Omit */
         } as WorkItemBatchGetRequest);
 
-        const mappedWorkItems = workItems.map(wi => {
+        const mappedWorkItems: IWorkItem[] = workItems.map(wi => {
             return {
                 project: wi.fields["System.TeamProject"],
                 id: wi.id,
@@ -82,16 +58,19 @@ export class WorkItemService implements IWorkItemService {
         // really really slow.
 
         // Aggregate all projects
-        const foo = new Map<string, { workItemTypes: Map<string, string> }>();
+        const projectById = new Map<
+            string,
+            { workItemTypes: Map<string, IWorkItemTypeInfo> }
+        >();
         for (const workItem of mappedWorkItems) {
-            if (foo.has(workItem.project)) {
-                const projectEntry = foo.get(workItem.project)!;
+            if (projectById.has(workItem.project)) {
+                const projectEntry = projectById.get(workItem.project)!;
                 // We can just override here
-                projectEntry.workItemTypes.set(workItem.workItemType, "");
+                projectEntry.workItemTypes.set(workItem.workItemType, {});
             } else {
-                foo.set(workItem.project, {
-                    workItemTypes: new Map<string, string>([
-                        [workItem.workItemType, ""]
+                projectById.set(workItem.project, {
+                    workItemTypes: new Map<string, IWorkItemTypeInfo>([
+                        [workItem.workItemType, {}]
                     ])
                 });
             }
@@ -101,7 +80,7 @@ export class WorkItemService implements IWorkItemService {
         const processClient = getClient(WorkItemTrackingProcessRestClient);
 
         await Promise.all(
-            Array.from(foo.entries()).map(
+            Array.from(projectById.entries()).map(
                 async ([projectName, projectInfo]) => {
                     // Get id for project
                     // Unfortunately, the project properties API only accepts projectId and not name, so make this roundtrip here.
@@ -138,12 +117,16 @@ export class WorkItemService implements IWorkItemService {
                                 );
 
                                 // Look for the first page and get the first HTML control
-                                const descriptionRefName = this._getDescription(
+                                const descriptionFieldRefName = this._getDescription(
                                     workItemType.layout.pages
                                 );
                                 projectInfo.workItemTypes.set(
                                     workItemTypeName,
-                                    descriptionRefName
+                                    {
+                                        icon: workItemType.icon,
+                                        color: workItemType.color,
+                                        descriptionFieldRefName
+                                    }
                                 );
                             }
                         )
@@ -158,8 +141,10 @@ export class WorkItemService implements IWorkItemService {
                 ids: workItemIds,
                 fields: Array.prototype.concat.apply(
                     [],
-                    Array.from(foo.values()).map(x =>
-                        Array.from(x.workItemTypes.values())
+                    Array.from(projectById.values()).map(x =>
+                        Array.from(x.workItemTypes.values()).map(
+                            x => x.descriptionFieldRefName
+                        )
                     )
                 ),
                 $expand: 0 /* WorkItemExpand.None */,
@@ -173,10 +158,15 @@ export class WorkItemService implements IWorkItemService {
         for (const workItemDescription of workItemDescriptions) {
             try {
                 const wi = mappedWorkItemsById[workItemDescription.id];
-                const descriptionRefName = foo
+                const workItemTypeInfo = projectById
                     .get(wi.project)!
                     .workItemTypes.get(wi.workItemType)!;
-                wi.description = workItemDescription.fields[descriptionRefName];
+                wi.description =
+                    workItemDescription.fields[
+                        workItemTypeInfo.descriptionFieldRefName!
+                    ];
+                wi.icon = workItemTypeInfo.icon;
+                wi.color = workItemTypeInfo.color;
             } catch {
                 // Ignore!
             }

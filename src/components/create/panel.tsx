@@ -21,7 +21,8 @@ import {
     setName,
     setSource,
     setTeam,
-    setQuery
+    setQuery,
+    reset
 } from "../../pages/create/createActions";
 import { IState } from "../../reducer";
 import { IIteration, ITeam } from "../../services/teams";
@@ -120,6 +121,7 @@ interface ICreatePanelProps {
 
 const Actions = {
     onInit: init,
+    onReset: reset,
     onSetMode: setMode,
     onSetName: setName,
     onSetSource: setSource,
@@ -150,11 +152,13 @@ class CreatePanel extends React.Component<
 
         return (
             <Panel
-                title="Create new session"
+                titleProps={{
+                    text: "Create new session"
+                }}
                 onDismiss={onDismiss}
                 blurDismiss={false}
                 footerButtonProps={[
-                    { onClick: onDismiss, text: "Cancel" },
+                    { onClick: this.dismiss, text: "Cancel" },
                     {
                         onClick: this.onCreate,
                         text: "Create",
@@ -258,7 +262,7 @@ class CreatePanel extends React.Component<
                 return (
                     <div>
                         <Dropdown
-                            onChanged={this.onSetTeam}
+                            onChange={this.onSetTeam}
                             label="Team"
                             placeHolder="Select Team"
                             selectedKey={team}
@@ -309,9 +313,12 @@ class CreatePanel extends React.Component<
         onSetSource(parseInt(option.key, 10) as SessionSource);
     };
 
-    private onSetTeam = (option: IDropdownOption) => {
+    private onSetTeam = (
+        _: React.FormEvent<HTMLDivElement>,
+        option?: IDropdownOption
+    ) => {
         const { onSetTeam } = this.props;
-        onSetTeam(option.key as string);
+        onSetTeam(option!.key as string);
     };
 
     private onSetIteration = (option: IDropdownOption) => {
@@ -332,6 +339,12 @@ class CreatePanel extends React.Component<
     private onCreate = () => {
         const { onCreate } = this.props;
         onCreate();
+    };
+
+    private dismiss = () => {
+        const { onReset, onDismiss } = this.props;
+        onReset();
+        onDismiss();
     };
 }
 

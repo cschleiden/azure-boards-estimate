@@ -1,6 +1,7 @@
 import { getClient } from "azure-devops-extension-api";
 import { WorkRestClient } from "azure-devops-extension-api/Work";
 import { IService } from "./services";
+import { IIteration } from "./teams";
 
 export interface ISprintService extends IService {
     getWorkItems(
@@ -8,21 +9,48 @@ export interface ISprintService extends IService {
         teamId: string,
         iterationId: string
     ): Promise<number[]>;
+
+    getIterations(
+        projectId: string,
+        iterations: [string, string][]
+    ): Promise<IIteration[]>;
 }
 
 export const SprintServiceId = "SprintService";
 
-export class MockSprintService implements ISprintService {
-    async getWorkItems(
-        projectId: string,
-        teamId: string,
-        iterationId: string
-    ): Promise<number[]> {
-        return [42, 23, 12];
-    }
-}
-
 export class SprintService implements ISprintService {
+    async getIterations(
+        projectId: string,
+        iterations: [string, string][]
+    ): Promise<IIteration[]> {
+        const client = getClient(WorkRestClient);
+
+        const result = await Promise.all(
+            iterations.map(([teamId, iterationId]) =>
+                client
+                    .getTeamIteration(
+                        {
+                            project: "",
+                            projectId,
+                            team: "",
+                            teamId
+                        },
+                        iterationId
+                    )
+                    .then(
+                        x =>
+                            ({
+                                id: x.id,
+                                name: x.name
+                            } as IIteration)
+                    )
+                    .catch(() => null)
+            )
+        );
+
+        return result.filter(x => x !== null) as IIteration[];
+    }
+
     async getWorkItems(
         projectId: string,
         teamId: string,

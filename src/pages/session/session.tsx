@@ -1,8 +1,7 @@
-import { Spinner } from "office-ui-fabric-react";
+import "./session.scss";
+import { Spinner, SpinnerSize } from "office-ui-fabric-react";
 import * as React from "react";
 import { connect } from "react-redux";
-import { IconButton, MoreButton } from "../../components/buttons";
-import { Header } from "../../components/header";
 import { Splitter } from "../../components/splitter";
 import { WorkItemCard } from "../../components/workitems/workItemCard";
 import { ICardSet } from "../../model/cards";
@@ -17,8 +16,12 @@ import {
     leaveSession,
     loadedSession,
     loadSession,
-    selectWorkItem
+    selectWorkItem,
+    endSession
 } from "./sessionActions";
+import { Page } from "azure-devops-ui/Page";
+import { Card } from "azure-devops-ui/Card";
+import { Header } from "azure-devops-ui/Header";
 
 interface ISessionParams {
     id: string;
@@ -38,7 +41,8 @@ const Actions = {
     loadSession,
     loadedSession,
     selectWorkItem,
-    leaveSession
+    leaveSession,
+    endSession
 };
 
 class Session extends React.Component<
@@ -69,74 +73,67 @@ class Session extends React.Component<
 
         if (loading || !session) {
             return (
-                <div>
-                    <Spinner />
+                <div className="session-loading">
+                    <Spinner size={SpinnerSize.large} />
                 </div>
             );
         }
 
         return (
-            <div>
+            <Page className="bolt-page-grey flex-grow">
                 <Header
                     title={session.name}
-                    buttons={
-                        <>
-                            <IconButton
-                                iconProps={{
-                                    iconName: "Leave"
-                                }}
-                                onClick={() => leaveSession()}
-                            >
-                                Leave session
-                            </IconButton>
-                            &nbsp;
-                            <MoreButton
-                                iconProps={{
-                                    iconName: "More"
-                                }}
-                                contextualMenuProps={{
-                                    menuProps: {
-                                        id: "session-more-menu",
-                                        items: [
-                                            {
-                                                id: "end",
-                                                text: "End session",
-                                                iconProps: {
-                                                    iconName: "Delete"
-                                                }
-                                            }
-                                        ]
-                                    }
-                                }}
-                            />
-                        </>
-                    }
+                    commandBarItems={[
+                        {
+                            id: "action-leave",
+                            important: true,
+                            text: "Leave session",
+                            iconProps: { iconName: "Home" },
+                            onActivate: () => {
+                                leaveSession();
+                            }
+                        },
+                        {
+                            id: "action-end",
+                            important: false,
+                            text: "End session",
+                            iconProps: { iconName: "Delete" },
+                            onActivate: () => {
+                                this.props.endSession();
+                            }
+                        }
+                    ]}
                 />
 
-                <Splitter
-                    left={
-                        <>
-                            {workItems.map(workItem => (
-                                <WorkItemCard
-                                    key={workItem.id}
-                                    selected={
-                                        !!selectedWorkItem &&
-                                        selectedWorkItem.id === workItem.id
-                                    }
-                                    id={workItem.id}
-                                    title={workItem.title}
-                                    // TODO: Use real value
-                                    estimate={cardSet.cards[0].identifier}
-                                    onClick={() =>
-                                        this.props.selectWorkItem(workItem.id)
-                                    }
-                                />
-                            ))}
-                        </>
-                    }
-                    right={<>{!!selectedWorkItem && <WorkItemView />}</>}
-                />
-            </div>
+                <div className="page-content page-content-top">
+                    <Splitter
+                        left={
+                            <>
+                                {workItems.map(workItem => (
+                                    <WorkItemCard
+                                        key={workItem.id}
+                                        selected={
+                                            !!selectedWorkItem &&
+                                            selectedWorkItem.id === workItem.id
+                                        }
+                                        workItem={workItem}
+                                        // TODO: Use real value
+                                        estimate={cardSet.cards[0].identifier}
+                                        onClick={() =>
+                                            this.props.selectWorkItem(
+                                                workItem.id
+                                            )
+                                        }
+                                    />
+                                ))}
+                            </>
+                        }
+                        right={
+                            (!!selectedWorkItem && <WorkItemView />) || <></>
+                        }
+                    />
+                </div>
+            </Page>
         );
     }
 }

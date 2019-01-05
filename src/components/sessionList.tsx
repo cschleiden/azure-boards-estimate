@@ -1,11 +1,11 @@
 import { History } from "history";
 import * as React from "react";
-import { ISession } from "../model/session";
+import { ISessionDisplay } from "../model/session";
 import { SessionCard } from "./sessionCard";
 import "./sessionList.scss";
 
 export interface ICardListProps {
-    sessions: ISession[];
+    sessions: ISessionDisplay[];
     history: History;
 }
 
@@ -17,7 +17,7 @@ export class SessionList extends React.Component<ICardListProps> {
             <ul className="session-list">
                 {sessions.map(session => (
                     <SessionCard
-                        key={session.id}
+                        key={session.session.id}
                         session={session}
                         history={history}
                     />

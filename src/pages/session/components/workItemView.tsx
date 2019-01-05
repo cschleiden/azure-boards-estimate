@@ -1,4 +1,4 @@
-import { TextField } from "office-ui-fabric-react";
+import { TextField, ICommandBarItemProps } from "office-ui-fabric-react";
 import * as React from "react";
 import { connect } from "react-redux";
 import { PrimaryButton } from "../../../components/buttons";
@@ -13,6 +13,11 @@ import { IWorkItem } from "../../../model/workitem";
 import { IState } from "../../../reducer";
 import { estimate, reveal } from "../sessionActions";
 import "./workItemView.scss";
+import { CustomCard, CardContent } from "azure-devops-ui/Card";
+import { Header } from "azure-devops-ui/Header";
+import { IHeaderCommandBarItem } from "azure-devops-ui/HeaderCommandBar";
+import { WorkItemDescription } from "../../../components/workitems/workItemDescription";
+import { WorkItemStoryPoints } from "../../../components/workitems/workItemStoryPoints";
 
 interface IWorkItemProps {
     identity: IIdentity;
@@ -21,6 +26,7 @@ interface IWorkItemProps {
     estimates: IEstimate[];
 
     revealed: boolean;
+    canReveal: boolean;
 }
 
 const Actions = {
@@ -30,59 +36,78 @@ const Actions = {
 
 class WorkItemView extends React.Component<IWorkItemProps & typeof Actions> {
     render() {
-        const { cardSet, selectedWorkItem, estimates, revealed } = this.props;
+        const {
+            cardSet,
+            selectedWorkItem,
+            estimates,
+            canReveal,
+            revealed
+        } = this.props;
 
         return (
-            <>
-                <WorkItemHeader
-                    id={selectedWorkItem.id}
-                    typeName={selectedWorkItem.workItemType}
-                    title={selectedWorkItem.title}
-                    description={selectedWorkItem.description}
-                />
+            <CustomCard className="flex-grow bolt-card-white">
+                <Header
+                    commandBarItems={
+                        [
+                            canReveal &&
+                                ({
+                                    id: "action-reveal",
+                                    text: "Reveal",
+                                    important: true,
+                                    isPrimary: true,
+                                    onActivate: this.doReveal
+                                } as IHeaderCommandBarItem)
+                        ].filter(x => !!x) as IHeaderCommandBarItem[]
+                    }
+                >
+                    <WorkItemHeader workItem={selectedWorkItem} />
+                </Header>
 
-                <SubTitle>Your vote</SubTitle>
-                <div className="card-container">
-                    {cardSet && cardSet.cards.map(this.renderCard)}
-                </div>
+                <CardContent>
+                    <div className="flex-grow flex-column">
+                        <WorkItemDescription workItem={selectedWorkItem} />
 
-                <SubTitle>Other votes</SubTitle>
-                <Votes
-                    cardSet={cardSet}
-                    estimates={estimates || []}
-                    revealed={revealed}
-                />
+                        <WorkItemStoryPoints estimate={0} />
 
-                <SubTitle>Actions</SubTitle>
-                {!revealed && (
-                    <>
-                        <PrimaryButton onClick={this.doReveal}>
-                            Reveal
-                        </PrimaryButton>
-                    </>
-                )}
-                {revealed && (
-                    <>
-                        <div>
-                            These were the cards selected, choose one to commit
-                            the value to the work item:
+                        <SubTitle>Your vote</SubTitle>
+                        <div className="card-container">
+                            {cardSet && cardSet.cards.map(this.renderCard)}
                         </div>
-                        <div>
-                            {estimates.map(e =>
-                                this.renderCard(
-                                    cardSet.cards.find(
-                                        x => x.identifier === e.cardIdentifier
-                                    )!
-                                )
-                            )}
-                        </div>
-                        <div>
-                            Or enter a custom value:
-                            <TextField />
-                        </div>
-                    </>
-                )}
-            </>
+
+                        <SubTitle>All votes</SubTitle>
+                        <Votes
+                            cardSet={cardSet}
+                            estimates={estimates || []}
+                            revealed={revealed}
+                        />
+
+                        <SubTitle>Actions</SubTitle>
+                        {revealed && (
+                            <>
+                                <div>
+                                    These were the cards selected, choose one to
+                                    commit the value to the work item:
+                                </div>
+                                <div>
+                                    {(estimates || []).map(e =>
+                                        this.renderCard(
+                                            cardSet.cards.find(
+                                                x =>
+                                                    x.identifier ===
+                                                    e.cardIdentifier
+                                            )!
+                                        )
+                                    )}
+                                </div>
+                                <div>
+                                    Or enter a custom value:
+                                    <TextField />
+                                </div>
+                            </>
+                        )}
+                    </div>
+                </CardContent>
+            </CustomCard>
         );
     }
 
@@ -120,12 +145,16 @@ class WorkItemView extends React.Component<IWorkItemProps & typeof Actions> {
 export default connect(
     (state: IState) => {
         const { session } = state;
+
+        const estimates = session.estimates[session.selectedWorkItem!.id];
+
         return {
             identity: state.init.currentIdentity!,
             cardSet: session.cardSet!,
             selectedWorkItem: session.selectedWorkItem!,
-            estimates: session.estimates[session.selectedWorkItem!.id],
-            revealed: session.revealed
+            estimates,
+            revealed: session.revealed,
+            canReveal: !session.revealed && estimates && estimates.length > 0
         };
     },
     Actions

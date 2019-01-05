@@ -7,7 +7,10 @@ import {
 import * as DevOps from "azure-devops-extension-sdk";
 import { IconButton } from "office-ui-fabric-react/lib/Button";
 import { Dropdown, IDropdownOption } from "office-ui-fabric-react/lib/Dropdown";
-import { ISelectableOption } from "office-ui-fabric-react/lib/utilities/selectableOption/SelectableOption.types";
+import {
+    ISelectableOption,
+    SelectableOptionMenuItemType
+} from "office-ui-fabric-react/lib/utilities/selectableOption/SelectableOption.types";
 import * as React from "react";
 import "./queryPicker.scss";
 
@@ -20,7 +23,7 @@ interface IQueryOption extends ISelectableOption {
 }
 
 interface IQueryTreeItem {
-    parentId: string;
+    parentId: string | null;
     item: QueryHierarchyItem;
 
     childrenFetched: boolean;
@@ -66,7 +69,9 @@ export class QueryPicker extends React.Component<
         const queryItems = await getClient(
             WorkItemTrackingRestClient
         ).getQueries(project!.id, 4, 0);
-        this._mapQueryItems(queryItems);
+
+        // Only take Shared Queries
+        this._mapQueryItems([queryItems[1]]);
 
         if (defaultSelectedQueryId) {
             await this.setInitial(defaultSelectedQueryId);
@@ -162,7 +167,6 @@ export class QueryPicker extends React.Component<
         const result: IQueryOption[] = [];
 
         const stack: IQueryTreeItem[] = [];
-        let level = 0;
 
         stack.push(...this.queryTree.slice(0).reverse());
         while (stack.length > 0) {
@@ -183,7 +187,10 @@ export class QueryPicker extends React.Component<
                     hasChildren: treeItem.item.hasChildren,
                     isExpanded: treeItem.isExpanded,
                     level,
-                    queryTreeItem: treeItem
+                    queryTreeItem: treeItem,
+                    itemType: treeItem.item.hasChildren
+                        ? SelectableOptionMenuItemType.Header
+                        : SelectableOptionMenuItemType.Normal
                 });
 
                 if (treeItem.item.hasChildren && treeItem.isExpanded) {
@@ -200,7 +207,8 @@ export class QueryPicker extends React.Component<
                             text: "Loading...",
                             hasChildren: false,
                             isExpanded: false,
-                            level,
+                            // Indent by one level
+                            level: level + 1,
                             queryTreeItem: treeItem
                         });
                     }
@@ -213,7 +221,7 @@ export class QueryPicker extends React.Component<
 
     private _onRenderItem = (
         item: IQueryOption | undefined,
-        defaultRender: any
+        defaultRender: (props: IQueryOption | undefined) => JSX.Element
     ): JSX.Element => {
         if (
             item &&
@@ -221,7 +229,11 @@ export class QueryPicker extends React.Component<
             this.queryTreeLookup[item.key] &&
             this.queryTreeLookup[item.key].item.hasChildren
         ) {
-            return this._onRenderOption(item);
+            return (
+                <div className="query-option" key={item.queryTreeItem.item.id}>
+                    {this._onRenderOption(item)}
+                </div>
+            );
         }
 
         return defaultRender(item);
@@ -270,7 +282,7 @@ export class QueryPicker extends React.Component<
         }
 
         const treeItem: IQueryTreeItem = {
-            parentId: parentId!,
+            parentId: parentId,
             item: queryItem,
             childrenFetched: false,
             isExpanded: false
@@ -283,6 +295,9 @@ export class QueryPicker extends React.Component<
 
             if (!parentItem.item.children.some(i => i.id === queryItem.id)) {
                 parentItem.item.children.push(queryItem);
+
+                // Ensure children are sorted
+                parentItem.item.children.sort(comparer);
             }
         }
 
@@ -291,6 +306,7 @@ export class QueryPicker extends React.Component<
         return treeItem;
     }
 
+    /** Expand/collapse a node */
     private _toggle = async (
         ev: React.MouseEvent<any>,
         option: IQueryOption
@@ -331,4 +347,14 @@ export class QueryPicker extends React.Component<
             options: this._buildOptions()
         });
     }
+}
+
+function comparer(a: QueryHierarchyItem, b: QueryHierarchyItem): number {
+    if (a.isFolder && !b.isFolder) {
+        return -1;
+    } else if (!a.isFolder && b.isFolder) {
+        return 1;
+    }
+
+    return a.name.localeCompare(b.name);
 }
