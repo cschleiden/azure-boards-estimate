@@ -36,27 +36,36 @@ export class SessionService implements ISessionService {
     async getSessions(): Promise<ISession[]> {
         const manager = await this.getManager();
 
-        const sessions: ISession[] = await manager.getDocuments(
-            SessionCollection,
-            {
-                defaultValue: []
-            }
-        );
+        try {
+            const sessions: ISession[] = await manager.getDocuments(
+                SessionCollection,
+                {
+                    defaultValue: []
+                }
+            );
 
-        return sessions;
+            return sessions;
+        } catch {
+            return [];
+        }
     }
 
     async getSession(id: string): Promise<ISession | null> {
         const manager = await this.getManager();
 
-        const session: ISession | null = await manager.getDocument(
-            SessionCollection,
-            id,
-            {
-                defaultValue: null
-            }
-        );
-        return session;
+        try {
+            const session: ISession | null = await manager.getDocument(
+                SessionCollection,
+                id,
+                {
+                    defaultValue: null
+                }
+            );
+
+            return session;
+        } catch {
+            return null;
+        }
     }
 
     async saveSession(session: ISession): Promise<ISession> {
@@ -70,7 +79,8 @@ export class SessionService implements ISessionService {
 
         try {
             await manager.deleteDocument(SessionCollection, id);
-        } finally {
+        } catch {
+            // Ignore
         }
     }
 

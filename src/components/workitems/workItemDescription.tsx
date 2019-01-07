@@ -7,6 +7,7 @@ export const WorkItemDescription: React.StatelessComponent<{
 }> = props => (
     <div className="work-item-description">
         <div
+            className="html-content"
             dangerouslySetInnerHTML={{
                 __html: props.workItem.description
             }}

@@ -8,3 +8,25 @@
 
     min-height: 60px;
 }
+
+.html-content {
+    ul,
+    ol {
+        padding-left: 40px;
+    }
+
+    li {
+        list-style: inherit;
+    }
+
+    a {
+        text-decoration: underline;
+    }
+
+    pre {
+        background-color: rgba(234, 234, 234, 1);
+        background-color: rgba(var(--palette-neutral-8, 234, 234, 234), 1);
+        display: inline-block;
+        min-width: 100%;
+    }
+}

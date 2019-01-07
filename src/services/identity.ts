@@ -8,22 +8,14 @@ export interface IIdentityService extends IService {
 
 export const IdentityServiceId = "IdentityService";
 
-export class MockIdentityService implements IIdentityService {
-    getCurrentIdentity(): IIdentity {
-        return {
-            id: "f6642bc9-e18c-4dcd-975b-55b4d857eb02",
-            displayName: "Jane Doe"
-        };
-    }
-}
-
 export class IdentityService implements IIdentityService {
     getCurrentIdentity(): IIdentity {
         const currentUser = DevOps.getUser()!;
 
         return {
             id: currentUser.id,
-            displayName: currentUser.displayName
+            displayName: currentUser.displayName,
+            imageUrl: currentUser.imageUrl
         };
     }
 }

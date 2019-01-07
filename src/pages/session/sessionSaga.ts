@@ -20,6 +20,8 @@ import {
     loadedSession,
     loadSession
 } from "./sessionActions";
+import { IIdentityService, IdentityServiceId } from "../../services/identity";
+import { IIdentity } from "../../model/identity";
 
 export function* rootSessionSaga() {
     yield takeLatest(loadSession.type, sessionSaga);
@@ -116,7 +118,26 @@ export function* sessionSaga(action: ReturnType<typeof loadSession>) {
     const channelTask: Task = yield fork(channelSaga, session);
 
     // Session is now loaded
-    yield put(loadedSession({ session, cardSet, workItems, estimates: {} }));
+    const identityService = Services.getService<IIdentityService>(
+        IdentityServiceId
+    );
+    const identity: IIdentity = yield call([
+        identityService,
+        identityService.getCurrentIdentity
+    ]);
+    yield put(
+        loadedSession({
+            session,
+            cardSet,
+            workItems,
+            estimates: {},
+            userInfo: {
+                tfId: identity.id,
+                name: identity.displayName,
+                imageUrl: identity.imageUrl
+            }
+        })
+    );
 
     // Wait for leave or end
     const a:

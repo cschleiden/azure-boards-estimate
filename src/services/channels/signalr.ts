@@ -69,7 +69,8 @@ export class SignalRChannel implements IChannel {
         // Say hello to other clients
         await this.join({
             tfId: identity.id,
-            name: identity.displayName
+            name: identity.displayName,
+            imageUrl: identity.imageUrl
         });
     }
 

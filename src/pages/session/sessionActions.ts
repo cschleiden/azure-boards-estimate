@@ -13,6 +13,7 @@ export const loadedSession = factory<{
     cardSet: ICardSet;
     workItems: IWorkItem[];
     estimates: ISessionEstimates;
+    userInfo: IUserInfo;
 }>("loaded");
 
 export const leaveSession = factory<void>("leave");
@@ -29,3 +30,4 @@ export const revealed = factory<void>("revealed");
 export const estimateSet = factory<IEstimate>("estimateSet");
 
 export const userJoined = factory<IUserInfo>("userJoined");
+export const userLeft = factory<string>("userLeft");

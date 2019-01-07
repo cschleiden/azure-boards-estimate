@@ -64,18 +64,20 @@ export function* initSaga() {
             return [segments[0], segments[1]];
         })
         .filter(x => x[0] && x[1]);
+    if (teamAndIterationIds && teamAndIterationIds.length > 0) {
+        const sprintService = Services.getService<ISprintService>(
+            SprintServiceId
+        );
+        const iterations: IIteration[] = yield call(
+            [sprintService, sprintService.getIterations],
+            projectInfo.id,
+            teamAndIterationIds
+        );
 
-    const sprintService = Services.getService<ISprintService>(SprintServiceId);
-    const iterations: IIteration[] = yield call(
-        [sprintService, sprintService.getIterations],
-        projectInfo.id,
-        teamAndIterationIds
-    );
-
-    yield put(setIterationLookup(toLookup(iterations, x => x.id)));
+        yield put(setIterationLookup(toLookup(iterations, x => x.id)));
+    }
 
     // Resolve teams
-    const teamIds = teamAndIterationIds.map(x => x[0]);
     const teamService = Services.getService<ITeamService>(TeamServiceId);
     const teams: ITeam[] = yield call(
         [teamService, teamService.getAllTeams],
@@ -88,14 +90,17 @@ export function* initSaga() {
     const queryIds = sessions
         .filter(s => s.source === SessionSource.Query)
         .map(s => s.sourceData as string);
-    const queriesService = Services.getService<IQueriesService>(
-        QueriesServiceId
-    );
 
-    const queries = yield call(
-        [queriesService, queriesService.getQueries],
-        projectInfo.id,
-        queryIds
-    );
-    yield put(setQueryLookup(toLookup(queries, q => q.id)));
+    if (queryIds && queryIds.length > 0) {
+        const queriesService = Services.getService<IQueriesService>(
+            QueriesServiceId
+        );
+
+        const queries = yield call(
+            [queriesService, queriesService.getQueries],
+            projectInfo.id,
+            queryIds
+        );
+        yield put(setQueryLookup(toLookup(queries, q => q.id)));
+    }
 }

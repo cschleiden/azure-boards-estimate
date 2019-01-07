@@ -1,4 +1,11 @@
-import "./session.scss";
+import {
+    CustomHeader,
+    HeaderTitle,
+    HeaderTitleArea
+} from "azure-devops-ui/Header";
+import { HeaderCommandBar } from "azure-devops-ui/HeaderCommandBar";
+import { Page } from "azure-devops-ui/Page";
+import { VssPersona } from "azure-devops-ui/VssPersona";
 import { Spinner, SpinnerSize } from "office-ui-fabric-react";
 import * as React from "react";
 import { connect } from "react-redux";
@@ -8,20 +15,21 @@ import { ICardSet } from "../../model/cards";
 import { ISessionEstimates } from "../../model/estimate";
 import { IIdentity } from "../../model/identity";
 import { ISession } from "../../model/session";
+import { IUserInfo } from "../../model/user";
 import { IWorkItem } from "../../model/workitem";
 import { IState } from "../../reducer";
 import { IPageProps } from "../props";
 import WorkItemView from "./components/workItemView";
+import { getActiveUsers } from "./selector";
+import "./session.scss";
 import {
+    endSession,
     leaveSession,
     loadedSession,
     loadSession,
-    selectWorkItem,
-    endSession
+    selectWorkItem
 } from "./sessionActions";
-import { Page } from "azure-devops-ui/Page";
-import { Card } from "azure-devops-ui/Card";
-import { Header } from "azure-devops-ui/Header";
+import { Tooltip } from "azure-devops-ui/TooltipEx";
 
 interface ISessionParams {
     id: string;
@@ -35,6 +43,7 @@ interface ISessionProps extends IPageProps<ISessionParams> {
     estimates: ISessionEstimates;
     cardSet: ICardSet;
     selectedWorkItem: IWorkItem | null;
+    activeUsers: IUserInfo[];
 }
 
 const Actions = {
@@ -68,7 +77,8 @@ class Session extends React.Component<
             loading,
             workItems,
             selectedWorkItem,
-            leaveSession
+            leaveSession,
+            activeUsers
         } = this.props;
 
         if (loading || !session) {
@@ -81,29 +91,51 @@ class Session extends React.Component<
 
         return (
             <Page className="bolt-page-grey flex-grow">
-                <Header
-                    title={session.name}
-                    commandBarItems={[
-                        {
-                            id: "action-leave",
-                            important: true,
-                            text: "Leave session",
-                            iconProps: { iconName: "Home" },
-                            onActivate: () => {
-                                leaveSession();
+                <CustomHeader className="bolt-header-with-commandbar">
+                    <HeaderTitleArea>
+                        <HeaderTitle>{session.name}</HeaderTitle>
+                    </HeaderTitleArea>
+
+                    <div className="session--active-users flex-row flex-justify-end flex-center flex-self-stretch">
+                        {activeUsers.map(u => (
+                            <Tooltip key={u.tfId} text={u.name}>
+                                <div>
+                                    <VssPersona
+                                        identityDetailsProvider={{
+                                            getDisplayName: () => u.name,
+                                            getIdentityImageUrl: () =>
+                                                u.imageUrl
+                                        }}
+                                        size="small"
+                                    />
+                                </div>
+                            </Tooltip>
+                        ))}
+                    </div>
+
+                    <HeaderCommandBar
+                        items={[
+                            {
+                                id: "action-leave",
+                                important: true,
+                                text: "Leave session",
+                                iconProps: { iconName: "Home" },
+                                onActivate: () => {
+                                    leaveSession();
+                                }
+                            },
+                            {
+                                id: "action-end",
+                                important: false,
+                                text: "End session",
+                                iconProps: { iconName: "Delete" },
+                                onActivate: () => {
+                                    this.props.endSession();
+                                }
                             }
-                        },
-                        {
-                            id: "action-end",
-                            important: false,
-                            text: "End session",
-                            iconProps: { iconName: "Delete" },
-                            onActivate: () => {
-                                this.props.endSession();
-                            }
-                        }
-                    ]}
-                />
+                        ]}
+                    />
+                </CustomHeader>
 
                 <div className="page-content page-content-top">
                     <Splitter
@@ -147,7 +179,8 @@ export default connect(
             cardSet: state.session.cardSet,
             workItems: state.session.workItems,
             estimates: state.session.estimates,
-            selectedWorkItem: state.session.selectedWorkItem
+            selectedWorkItem: state.session.selectedWorkItem,
+            activeUsers: getActiveUsers(state)
         };
     },
     Actions

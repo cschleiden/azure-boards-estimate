@@ -5,6 +5,7 @@ import { ISessionEstimates, IEstimate } from "../../model/estimate";
 import { ISession } from "../../model/session";
 import { IWorkItem } from "../../model/workitem";
 import * as Actions from "./sessionActions";
+import { IUserInfo } from "../../model/user";
 
 export const initialState = {
     session: null as ISession | null,
@@ -14,7 +15,8 @@ export const initialState = {
     ownEstimate: null as IEstimate | null,
     estimates: {} as ISessionEstimates,
     loading: false,
-    revealed: false
+    revealed: false,
+    activeUsers: [] as IUserInfo[]
 };
 
 export type ISessionState = typeof initialState;
@@ -28,11 +30,12 @@ const loadSession = reducerAction(
 
 const loadedSession = reducerAction(
     Actions.loadedSession,
-    (state: ISessionState, { session, cardSet, workItems }) => {
+    (state: ISessionState, { session, cardSet, workItems, userInfo }) => {
         state.session = session;
         state.cardSet = cardSet;
         state.workItems = workItems;
         state.loading = false;
+        state.activeUsers = [userInfo];
     }
 );
 
@@ -58,6 +61,22 @@ const workItemSelected = reducerAction(
 
         state.selectedWorkItem = workItem;
         state.revealed = false;
+    }
+);
+
+const userJoined = reducerAction(
+    Actions.userJoined,
+    (state: ISessionState, userInfo) => {
+        if (!state.activeUsers.find(x => x.tfId === userInfo.tfId)) {
+            state.activeUsers.push(userInfo);
+        }
+    }
+);
+
+const userLeft = reducerAction(
+    Actions.userLeft,
+    (state: ISessionState, userId) => {
+        state.activeUsers = state.activeUsers.filter(x => x.tfId !== userId);
     }
 );
 
@@ -119,6 +138,8 @@ export default <TPayload>(
         [Actions.workItemSelected.type]: workItemSelected,
         [Actions.revealed.type]: revealed,
         [Actions.estimateSet.type]: estimateSet,
-        [Actions.estimate.type]: estimate
+        [Actions.estimate.type]: estimate,
+        [Actions.userJoined.type]: userJoined,
+        [Actions.userLeft.type]: userLeft
     });
 };

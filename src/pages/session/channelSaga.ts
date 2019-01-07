@@ -21,7 +21,8 @@ import {
     revealed,
     selectWorkItem,
     userJoined,
-    workItemSelected
+    workItemSelected,
+    userLeft
 } from "./sessionActions";
 
 export function* channelSaga(session: ISession): SagaIterator {
@@ -57,7 +58,7 @@ export function* channelSenderSaga(sessionId: string, channel: IChannel) {
                     break;
 
                 case userJoined.type: {
-                    // New user has joined, re-send our estimate
+                    // New user has joined, re-send our estimate to everyone
                     const ownEstimate: IEstimate = yield select(getOwnEstimate);
                     if (ownEstimate) {
                         yield call([channel, channel.estimate], ownEstimate);
@@ -94,6 +95,10 @@ export function subscribe(channel: IChannel) {
 
         channel.join.attachHandler(payload => {
             emit(userJoined(payload));
+        });
+
+        channel.left.attachHandler(payload => {
+            emit(userLeft(payload));
         });
 
         channel.revealed.attachHandler(() => {

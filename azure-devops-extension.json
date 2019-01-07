@@ -1,6 +1,6 @@
 {
     "manifestVersion": 1,
-    "version": "0.0.3",
+    "version": "0.0.6",
     "name": "Estimate",
     "scopes": [
         "vso.project",
@@ -41,7 +41,13 @@
     },
     "categories": [
         "Azure Boards"
-    ],    
+    ], 
+    "files": [
+        {
+            "path": "marketplace",
+            "addressable": true
+        }
+    ],
     "contributions": [
         {
             "id": "estimate-hub",
@@ -52,7 +58,8 @@
             "properties": {
                 "name": "Estimate",
                 "order": 100,
-                "uri": "build/index.html"
+                "uri": "build/index.html",
+                "icon": "asset://marketplace/icon-combined.png"
             }
         }
     ]

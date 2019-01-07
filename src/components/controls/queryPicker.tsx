@@ -71,7 +71,7 @@ export class QueryPicker extends React.Component<
         ).getQueries(project!.id, 4, 0);
 
         // Only take Shared Queries
-        this._mapQueryItems([queryItems[1]]);
+        this._mapQueryItems(queryItems.filter(x => x.isPublic));
 
         if (defaultSelectedQueryId) {
             await this.setInitial(defaultSelectedQueryId);
