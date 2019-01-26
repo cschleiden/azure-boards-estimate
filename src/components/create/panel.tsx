@@ -1,3 +1,4 @@
+import { TitleSize } from "azure-devops-ui/Header";
 import { Panel } from "azure-devops-ui/Panel";
 import { TextField } from "azure-devops-ui/TextField";
 import {
@@ -15,22 +16,22 @@ import { SessionMode, SessionSource } from "../../model/session";
 import {
     create,
     init,
+    reset,
     setCardSet,
     setIteration,
     setMode,
     setName,
-    setSource,
-    setTeam,
     setQuery,
-    reset
+    setSource,
+    setTeam
 } from "../../pages/create/createActions";
+import { isValid } from "../../pages/create/createSelector";
 import { IState } from "../../reducer";
 import { IIteration, ITeam } from "../../services/teams";
 import { getIconForMode } from "../cardIcon";
+import { QueryPicker } from "../controls/queryPicker";
 import { CardSetPicker } from "./cardSetPicker";
 import "./panel.scss";
-import { isValid } from "../../pages/create/createSelector";
-import { QueryPicker } from "../controls/queryPicker";
 
 const { icon: onlineIcon, description: onlineDescription } = getIconForMode(
     SessionMode.Online
@@ -153,7 +154,8 @@ class CreatePanel extends React.Component<
         return (
             <Panel
                 titleProps={{
-                    text: "Create new session"
+                    text: "Create new session",
+                    size: TitleSize.Large
                 }}
                 onDismiss={onDismiss}
                 blurDismiss={false}
@@ -209,19 +211,6 @@ class CreatePanel extends React.Component<
                             selectedCardSetId={cardSet || ""}
                             onChange={this.onChangeCardSet}
                         />
-                    </div>
-
-                    <div className="create-panel--group">
-                        <label className="create-panel--group-label">
-                            Estimation field
-                        </label>
-
-                        <i>
-                            Select which field to use for saving the estimated
-                            value
-                        </i>
-
-                        <Dropdown options={[]} />
                     </div>
                 </div>
             </Panel>

@@ -9,7 +9,7 @@
             "addressable": true
         },
         {
-            "path": "../marketplace",
+            "path": "../legacy",
             "addressable": true
         }
     ]

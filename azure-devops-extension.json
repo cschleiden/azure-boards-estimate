@@ -1,15 +1,15 @@
 {
     "manifestVersion": 1,
-    "version": "0.0.6",
+    "id": "estimate",
+    "version": "0.0.9",
     "name": "Estimate",
+    "publisher": "cschleiden",
     "scopes": [
         "vso.project",
         "vso.work",
         "vso.work_write"
     ],
     "description": "",
-    "publisher": "cschleiden",
-    "id": "estimate",
     "targets": [
         {
             "id": "Microsoft.VisualStudio.Services"
@@ -25,7 +25,15 @@
         "Planning Poker",
         "Estimate"
     ],
-    "content": {},
+    "icons": {
+        "default": "marketplace/icon-dark.png",
+        "branding": "marketplace/icon-dark.png"
+    },
+    "content": {
+        "details": {
+            "path": "marketplace/overview.md"
+        }
+    },
     "repository": {
         "type": "git",
         "url": "https://github.com/cschleiden/azure-boards-estimate"
@@ -41,7 +49,7 @@
     },
     "categories": [
         "Azure Boards"
-    ], 
+    ],
     "files": [
         {
             "path": "marketplace",
@@ -49,6 +57,20 @@
         }
     ],
     "contributions": [
+        {
+            "id": "estimate-2",
+            "type": "ms.vss-web.feature",
+            "description": "Use the Estimate 2 preview",
+            "targets": [
+                "ms.vss-web.managed-features",
+                "ms.vss-web.managed-features-onprem"
+            ],
+            "properties": {
+                "name": "Estimate 2",
+                "userConfigurable": false,
+                "hostConfigurable": true
+            }
+        },
         {
             "id": "estimate-hub",
             "type": "ms.vss-web.hub",
@@ -59,8 +81,63 @@
                 "name": "Estimate",
                 "order": 100,
                 "uri": "build/index.html",
-                "icon": "asset://marketplace/icon-combined.png"
-            }
+                "icon": {
+                    "light": "marketplace/icon-light.png",
+                    "dark": "marketplace/icon-dark.png"
+                }
+            },
+            "constraints": [
+                {
+                    "name": "Feature",
+                    "properties": {
+                        "featureId": "cschleiden.estimate.estimate-2"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "Estimate.Main",
+            "type": "ms.vss-web.hub",
+            "targets": [
+                "ms.vss-work-web.work-hub-group"
+            ],
+            "properties": {
+                "name": "Estimate",
+                "order": 99,
+                "uri": "legacy/hub.html"
+            },
+            "constraints": [
+                {
+                    "name": "Feature",
+                    "properties": {
+                        "featureId": "cschleiden.estimate.estimate-2"
+                    },
+                    "inverse": true
+                }
+            ]
+        },
+        {
+            "id": "Estimate.WorkItems",
+            "type": "ms.vss-web.action",
+            "description": "Shows the target properties for menu actions for work items",
+            "targets": [
+                "ms.vss-work-web.backlog-item-menu"
+            ],
+            "properties": {
+                "text": "Estimate work item(s)",
+                "title": "Start estimation session",
+                "group": "actions",
+                "uri": "legacy/index.html"
+            },
+            "constraints": [
+                {
+                    "name": "Feature",
+                    "properties": {
+                        "featureId": "cschleiden.estimate.estimate-2"
+                    },
+                    "inverse": true
+                }
+            ]
         }
     ]
 }

@@ -31,6 +31,12 @@ class App extends React.Component {
                             path="/create/:ids?"
                             component={HomePage}
                         />
+
+                        <Route
+                            exact={true}
+                            path="/settings"
+                            component={HomePage}
+                        />
                         <Route exact={true} path="/" component={HomePage} />
                     </Switch>
 

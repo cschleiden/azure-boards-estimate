@@ -2,14 +2,14 @@ import {
     IExtensionDataManager,
     IExtensionDataService
 } from "azure-devops-extension-api";
+import * as DevOps from "azure-devops-extension-sdk";
 import {
     getAccessToken,
     getExtensionContext,
     getService
 } from "azure-devops-extension-sdk";
-import { ISession, SessionMode, SessionSource } from "../model/session";
+import { ISession } from "../model/session";
 import { IService } from "./services";
-import * as DevOps from "azure-devops-extension-sdk";
 
 export interface ISessionService extends IService {
     getSessions(): Promise<ISession[]>;
@@ -19,6 +19,10 @@ export interface ISessionService extends IService {
     saveSession(session: ISession): Promise<ISession>;
 
     removeSession(id: string): Promise<void>;
+
+    getSettingsValue<T>(projectId: string, id: string): Promise<T>;
+
+    setSettingsValue<T>(projectId: string, id: string, value: T): Promise<void>;
 }
 
 export const SessionServiceId = "SessionService";
@@ -31,6 +35,22 @@ export class SessionService implements ISessionService {
     constructor() {
         // Prefetch service
         this.getManager();
+    }
+
+    async getSettingsValue<T>(projectId: string, id: string): Promise<T> {
+        const manager = await this.getManager();
+
+        return manager.getValue<T>(`${projectId}/${id}`);
+    }
+
+    async setSettingsValue<T>(
+        projectId: string,
+        id: string,
+        value: T
+    ): Promise<void> {
+        const manager = await this.getManager();
+
+        await manager.setValue(`${projectId}/${id}`, value);
     }
 
     async getSessions(): Promise<ISession[]> {

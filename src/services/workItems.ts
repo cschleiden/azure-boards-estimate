@@ -10,9 +10,13 @@ import {
 } from "azure-devops-extension-api/WorkItemTrackingProcess";
 import { IWorkItem } from "../model/workitem";
 import { IService } from "./services";
+import { IWorkItemType } from "../model/workItemType";
+import { WorkRestClient } from "azure-devops-extension-api/Work";
 
 export interface IWorkItemService extends IService {
     getWorkItems(workItemIds: number[]): Promise<IWorkItem[]>;
+
+    getWorkItemTypes(projectId: string): Promise<IWorkItemType[]>;
 }
 
 export const WorkItemServiceId = "WorkItemService";
@@ -24,6 +28,37 @@ interface IWorkItemTypeInfo {
 }
 
 export class WorkItemService implements IWorkItemService {
+    async getWorkItemTypes(projectId: string): Promise<IWorkItemType[]> {
+        // Get type fields
+        const workClient = getClient(WorkRestClient);
+        const processConfig = await workClient.getProcessConfiguration(
+            projectId
+        );
+        const effortField = processConfig.typeFields["Effort"]!;
+
+        const client = getClient(WorkItemTrackingRestClient);
+        const workItemTypes = await client.getWorkItemTypes(projectId);
+        return workItemTypes.map(wi => {
+            let estimationFieldRefName: string | undefined;
+
+            if (
+                wi.fields.some(
+                    f =>
+                        f.referenceName.toLocaleLowerCase() ===
+                        effortField.referenceName.toLocaleLowerCase()
+                )
+            ) {
+                // Work item type has effort field, use this
+                estimationFieldRefName = effortField.referenceName;
+            }
+
+            return {
+                name: wi.name,
+                estimationFieldRefName
+            };
+        });
+    }
+
     async getWorkItems(workItemIds: number[]): Promise<IWorkItem[]> {
         if (!workItemIds || workItemIds.length === 0) {
             return [];

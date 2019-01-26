@@ -11,6 +11,7 @@ import { Filter } from "azure-devops-ui/Utilities/Filter";
 import * as React from "react";
 import { connect } from "react-redux";
 import CreatePanel from "../../components/create/panel";
+import SettingsPanel from "../settings/settings";
 import { SessionList } from "../../components/sessionList";
 import { ISessionDisplay } from "../../model/session";
 import { IState } from "../../reducer";
@@ -64,7 +65,8 @@ class HomePage extends React.Component<IHomePageProps & typeof Actions> {
                             id: "end",
                             tooltipProps: { text: "Settings" },
                             iconProps: { iconName: "Settings" },
-                            subtle: true
+                            subtle: true,
+                            onActivate: this.openSettings
                         }
                     ]}
                 />
@@ -98,6 +100,10 @@ class HomePage extends React.Component<IHomePageProps & typeof Actions> {
                 {match.path.indexOf("/create") !== -1 && (
                     <CreatePanel onDismiss={this.closeCreate} />
                 )}
+
+                {match.path.indexOf("/settings") !== -1 && (
+                    <SettingsPanel onDismiss={this.closeSettings} />
+                )}
             </Page>
         );
     }
@@ -124,7 +130,17 @@ class HomePage extends React.Component<IHomePageProps & typeof Actions> {
         history.push("/create");
     };
 
+    private openSettings = () => {
+        const { history } = this.props;
+        history.push("/settings");
+    };
+
     private closeCreate = () => {
+        const { history } = this.props;
+        history.push("/");
+    };
+
+    private closeSettings = () => {
         const { history } = this.props;
         history.push("/");
     };
@@ -135,7 +151,6 @@ export default connect(
         sessions: getDisplaySessions(
             state.sessions,
             (state.sessions.filteredSessions &&
-                state.sessions.filteredSessions.length > 0 &&
                 state.sessions.filteredSessions) ||
                 state.sessions.sessions
         )

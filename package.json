@@ -29,6 +29,7 @@
   },
   "devDependencies": {
     "@aspnet/signalr": "^1.0.3",
+    "@cschleiden/azure-devops-react-scripts": "2.1.1",
     "@types/jest": "^23.1.1",
     "@types/node": "^10.3.5",
     "@types/prop-types": "^15.5.3",
@@ -37,8 +38,7 @@
     "@types/react-redux": "^6.0.2",
     "@types/react-router-dom": "^4.2.7",
     "base64-inline-loader": "^1.1.1",
-    "node-sass": "^4.10.0",
-    "@cschleiden/azure-devops-react-scripts": "2.1.1",
+    "node-sass": "^4.11.0",
     "tfx-cli": "0.6.3",
     "typescript": "^3.1.6"
   },
