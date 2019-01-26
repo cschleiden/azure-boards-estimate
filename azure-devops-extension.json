@@ -3,13 +3,13 @@
     "id": "estimate",
     "version": "0.0.9",
     "name": "Estimate",
+    "description": "Planning Poker in Azure Boards.",
     "publisher": "cschleiden",
     "scopes": [
         "vso.project",
         "vso.work",
         "vso.work_write"
     ],
-    "description": "",
     "targets": [
         {
             "id": "Microsoft.VisualStudio.Services"
@@ -26,8 +26,8 @@
         "Estimate"
     ],
     "icons": {
-        "default": "marketplace/icon-dark.png",
-        "branding": "marketplace/icon-dark.png"
+        "default": "marketplace/icon-light.png",
+        "branding": "marketplace/icon-light.png"
     },
     "content": {
         "details": {
