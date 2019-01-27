@@ -2,5 +2,5 @@
     "id": "estimate-dev",
     "name": "Estimate DEV",
     "public": false,
-    "baseUri": "https://localhost:3000"
+    "baseUri": "https://localhost:3000"    
 }

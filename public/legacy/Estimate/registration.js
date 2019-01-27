@@ -9,7 +9,7 @@ var menuAction = function () {
                 workItemIds = actionContext.rows.map(function (row) { return parseInt(row[0], 10); });
             }
             else {
-                workItemIds = actionContext.workItemIds;
+                workItemIds = actionContext.workItemIds || [];
             }
             var workItemStr = workItemIds.join(",");
             var url = vsoContext.host.uri + "/" + vsoContext.project.name + "/" + (vsoContext.team && vsoContext.team.name && (vsoContext.team.name + "/") || "") + "_apps/hub/" + extensionContext.publisherId + "." + extensionContext.extensionId + ".Estimate.Main#action=create&workItemIds=" + workItemStr;

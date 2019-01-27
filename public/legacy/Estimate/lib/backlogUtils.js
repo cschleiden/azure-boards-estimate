@@ -73,35 +73,32 @@ define(["require", "exports", "q", "VSS/Service", "TFS/Work/RestClient", "TFS/Wo
             witClient.getWorkItemTypeCategory(webContext.project.id, "Microsoft.BugCategory")
         ])
             .spread(function (teamSettings, teamfieldValues, requirementCategory, bugCategory) {
-            return workClient.getTeamIteration(teamContext, teamSettings.backlogIteration.id)
-                .then(function (backlogIteration) {
-                var workItemTypes = requirementCategory.workItemTypes.map(function (x) { return x.name; });
-                if (teamSettings.bugsBehavior === WorkContracts.BugsBehavior.AsRequirements) {
-                    workItemTypes = workItemTypes.concat(bugCategory.workItemTypes.map(function (x) { return x.name; }));
+            var workItemTypes = requirementCategory.workItemTypes.map(function (x) { return x.name; });
+            if (teamSettings.bugsBehavior === WorkContracts.BugsBehavior.AsRequirements) {
+                workItemTypes = workItemTypes.concat(bugCategory.workItemTypes.map(function (x) { return x.name; }));
+            }
+            var buildTeamFieldClause = function (prefix) {
+                if (prefix !== "") {
+                    prefix += ".";
                 }
-                var buildTeamFieldClause = function (prefix) {
-                    if (prefix !== "") {
-                        prefix += ".";
-                    }
-                    if (teamfieldValues.field.referenceName === "System.AreaPath") {
-                        return teamfieldValues.values.map(function (tfv) {
-                            var op;
-                            if (tfv.includeChildren) {
-                                op = "UNDER";
-                            }
-                            else {
-                                op = "=";
-                            }
-                            return prefix + "[System.AreaPath] " + op + " '" + tfv.value + "'";
-                        }).join(" OR ");
-                    }
-                    else {
-                        return teamfieldValues.values.map(function (tfv) { return ("" + prefix + teamfieldValues.field.referenceName + " = '" + tfv.value + "'"); }).join(" OR ");
-                    }
-                };
-                var targetStates = ["Proposed", "New", "Active", "Approved", "Committed"];
-                return "SELECT [System.Id] FROM WorkItemLinks\n                        WHERE Source.[System.WorkItemType] IN ('" + workItemTypes.join("','") + "')\n                            AND Source.[System.IterationPath] UNDER '" + backlogIteration.path + "'\n                            AND Source.[System.IterationPath] UNDER '" + iteration + "'\n                            AND (" + buildTeamFieldClause("Source") + ")\n                            AND Target.[System.WorkItemType] IN ('" + workItemTypes.join("','") + "')\n                            AND Target.[System.IterationPath] UNDER '" + backlogIteration.path + "'\n                            AND Target.[System.IterationPath] UNDER '" + iteration + "'\n                            AND Target.[System.State] IN ('" + targetStates.join("', '") + "')\n                            AND (" + buildTeamFieldClause("Target") + ")\n                            AND [System.Links.LinkType] = 'System.LinkTypes.Hierarchy-Forward'\n                            ORDER BY [" + orderFieldRefName + "], [System.Id] MODE(Recursive, ReturnMatchingChildren)";
-            });
+                if (teamfieldValues.field.referenceName === "System.AreaPath") {
+                    return teamfieldValues.values.map(function (tfv) {
+                        var op;
+                        if (tfv.includeChildren) {
+                            op = "UNDER";
+                        }
+                        else {
+                            op = "=";
+                        }
+                        return prefix + "[System.AreaPath] " + op + " '" + tfv.value + "'";
+                    }).join(" OR ");
+                }
+                else {
+                    return teamfieldValues.values.map(function (tfv) { return ("" + prefix + teamfieldValues.field.referenceName + " = '" + tfv.value + "'"); }).join(" OR ");
+                }
+            };
+            var targetStates = ["Proposed", "New", "Active", "Approved", "Committed"];
+            return "SELECT [System.Id] FROM WorkItemLinks\n                        WHERE Source.[System.WorkItemType] IN ('" + workItemTypes.join("','") + "')\n                            AND Source.[System.IterationPath] UNDER '" + iteration + "'\n                            AND (" + buildTeamFieldClause("Source") + ")\n                            AND Target.[System.WorkItemType] IN ('" + workItemTypes.join("','") + "')\n                            AND Target.[System.IterationPath] UNDER '" + iteration + "'\n                            AND Target.[System.State] IN ('" + targetStates.join("', '") + "')\n                            AND (" + buildTeamFieldClause("Target") + ")\n                            AND [System.Links.LinkType] = 'System.LinkTypes.Hierarchy-Forward'\n                            ORDER BY [" + orderFieldRefName + "], [System.Id] MODE(Recursive, ReturnMatchingChildren)";
         });
     }
     exports.getBacklogQueryForIteration = getBacklogQueryForIteration;

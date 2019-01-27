@@ -10,6 +10,7 @@
     "office-ui-fabric-react": "6.105.0",
     "prop-types": "^15.6.2",
     "react": "16.4.1",
+    "react-dev-utils": "^7.0.1",
     "react-dom": "16.4.1",
     "react-redux": "5.0.7",
     "react-router-dom": "4.3.1",
@@ -24,12 +25,12 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "start": "react-scripts start",
-    "package-dev": "tfx extension create --manifest-globs azure-devops-extension.json --overrides-file ./configs/dev.json",
-    "package-release": "tfx extension create --manifest-globs azure-devops-extension.json --overrides-file ./configs/release.json"
+    "package-dev": "tfx extension create --manifest-globs azure-devops-extension.json --overrides-file ./configs/dev.json --root ./",
+    "package-release": "tfx extension create --manifest-globs azure-devops-extension.json --overrides-file ./configs/release.json --root ./"
   },
   "devDependencies": {
     "@aspnet/signalr": "^1.0.3",
-    "@cschleiden/azure-devops-react-scripts": "2.1.1",
+    "@cschleiden/azure-devops-react-scripts": "^2.1.3-4",
     "@types/jest": "^23.1.1",
     "@types/node": "^10.3.5",
     "@types/prop-types": "^15.5.3",

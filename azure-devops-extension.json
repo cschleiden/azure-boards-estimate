@@ -1,7 +1,7 @@
 {
     "manifestVersion": 1,
     "id": "estimate",
-    "version": "0.0.9",
+    "version": "0.0.10",
     "name": "Estimate",
     "description": "Planning Poker in Azure Boards.",
     "publisher": "cschleiden",
@@ -16,7 +16,7 @@
         }
     ],
     "demands": [
-        "api-version/3.0"
+        "api-version/5.0"
     ],
     "galleryFlags": [
         "Preview"
@@ -54,6 +54,10 @@
         {
             "path": "marketplace",
             "addressable": true
+        },
+        {
+            "path": "build",
+            "addressable": true
         }
     ],
     "contributions": [
@@ -80,7 +84,7 @@
             "properties": {
                 "name": "Estimate",
                 "order": 100,
-                "uri": "build/index.html",
+                "uri": "index.html",
                 "icon": {
                     "light": "marketplace/icon-light.png",
                     "dark": "marketplace/icon-dark.png"

@@ -195,8 +195,12 @@ define(["require", "exports", "q", "VSS/Service", "TFS/WorkItemTracking/RestClie
                                 }
                                 var idx = args[1];
                                 var workItem = _this.workItems()[idx];
+                                var team = "";
+                                if (webContext.team && webContext.team.name) {
+                                    team = "/" + webContext.team.name;
+                                }
                                 var elem = _this.grid._drawCell.apply(_this.grid, args);
-                                elem.html("<a href=\"" + webContext.collection.uri + webContext.project.name + "/_workitems?id=" + workItem.id + "&triage=true&_a=edit&fullScreen=true\" target=\"_blank\">" + workItem.id + "</a>");
+                                elem.html("<a href=\"" + webContext.collection.uri + webContext.project.name + team + "/_workitems?id=" + workItem.id + "&triage=true&_a=edit&fullScreen=true\" target=\"_blank\">" + workItem.id + "</a>");
                                 return elem;
                             }
                         },
@@ -302,7 +306,11 @@ define(["require", "exports", "q", "VSS/Service", "TFS/WorkItemTracking/RestClie
             var workItem = this._getWorkItem(workItemId);
             this.currentWorkItem(workItem);
             var webContext = VSS.getWebContext();
-            this.currentWorkItemLink("" + webContext.collection.uri + webContext.project.name + "/_workitems#id=" + workItem.id + "&triage=true&_a=edit");
+            var team = "";
+            if (webContext.team && webContext.team.name) {
+                team = "/" + webContext.team.name;
+            }
+            this.currentWorkItemLink("" + webContext.collection.uri + webContext.project.name + team + "/_workitems#id=" + workItem.id + "&triage=true&_a=edit");
             for (var _i = 0, _a = this.estimates(); _i < _a.length; _i++) {
                 var estimate = _a[_i];
                 estimate.value = null;
