@@ -4,12 +4,12 @@ import {
     HeaderTitleArea
 } from "azure-devops-ui/Header";
 import { HeaderCommandBar } from "azure-devops-ui/HeaderCommandBar";
-import { Page } from "azure-devops-ui/Page";
+import { Orientation, Page } from "azure-devops-ui/Page";
+import { Tooltip } from "azure-devops-ui/TooltipEx";
 import { VssPersona } from "azure-devops-ui/VssPersona";
 import { Spinner, SpinnerSize } from "office-ui-fabric-react";
 import * as React from "react";
 import { connect } from "react-redux";
-import { Splitter } from "../../components/splitter";
 import { WorkItemCard } from "../../components/workitems/workItemCard";
 import { ICardSet } from "../../model/cards";
 import { ISessionEstimates } from "../../model/estimate";
@@ -29,7 +29,6 @@ import {
     loadSession,
     selectWorkItem
 } from "./sessionActions";
-import { Tooltip } from "azure-devops-ui/TooltipEx";
 
 interface ISessionParams {
     id: string;
@@ -90,7 +89,7 @@ class Session extends React.Component<
         }
 
         return (
-            <Page className="absolute-fill">
+            <Page className="absolute-fill" orientation={Orientation.Vertical}>
                 <CustomHeader className="bolt-header-with-commandbar">
                     <HeaderTitleArea>
                         <HeaderTitle>{session.name}</HeaderTitle>
@@ -137,33 +136,25 @@ class Session extends React.Component<
                     />
                 </CustomHeader>
 
-                <div className="page-content page-content-top">
-                    <Splitter
-                        left={
-                            <div className="work-item-list flex-column flex-grow">
-                                {workItems.map(workItem => (
-                                    <WorkItemCard
-                                        key={workItem.id}
-                                        selected={
-                                            !!selectedWorkItem &&
-                                            selectedWorkItem.id === workItem.id
-                                        }
-                                        workItem={workItem}
-                                        // TODO: Use real value
-                                        estimate={cardSet.cards[0].identifier}
-                                        onClick={() =>
-                                            this.props.selectWorkItem(
-                                                workItem.id
-                                            )
-                                        }
-                                    />
-                                ))}
-                            </div>
-                        }
-                        right={
-                            (!!selectedWorkItem && <WorkItemView />) || <></>
-                        }
-                    />
+                <div className="page-content page-content-top flex-grow flex-row">
+                    <div className="work-item-list v-scroll-auto flex-column custom-scrollbar">
+                        {workItems.map(workItem => (
+                            <WorkItemCard
+                                key={workItem.id}
+                                selected={
+                                    !!selectedWorkItem &&
+                                    selectedWorkItem.id === workItem.id
+                                }
+                                workItem={workItem}
+                                // TODO: Use real value
+                                estimate={cardSet.cards[0].identifier}
+                                onClick={() =>
+                                    this.props.selectWorkItem(workItem.id)
+                                }
+                            />
+                        ))}
+                    </div>
+                    {!!selectedWorkItem && <WorkItemView />}
                 </div>
             </Page>
         );

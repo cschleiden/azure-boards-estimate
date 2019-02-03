@@ -26,15 +26,14 @@ export class WorkItemCard extends React.Component<IWorkItemCardProps> {
         } = this.props;
 
         return (
-            <Card
-                className={css(
-                    "flex-grow",
-                    "bolt-card-white",
-                    "work-item-card",
-                    selected && "selected"
-                )}
-            >
-                <div className="flex-grow" onClick={onClick}>
+            <div className="flex-grow" onClick={onClick}>
+                <Card
+                    className={css(
+                        "flex-grow",
+                        "work-item-card",
+                        selected && "selected"
+                    )}
+                >
                     <div className="work-item-card--info">
                         <div className="work-item-card--meta">
                             <WorkItemTypeIcon icon={icon} color={color} />
@@ -44,8 +43,8 @@ export class WorkItemCard extends React.Component<IWorkItemCardProps> {
                     </div>
 
                     <div className="work-item-card--estimate">{estimate}</div>
-                </div>
-            </Card>
+                </Card>
+            </div>
         );
     }
 }

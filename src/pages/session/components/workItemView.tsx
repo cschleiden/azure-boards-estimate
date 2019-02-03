@@ -44,7 +44,7 @@ class WorkItemView extends React.Component<IWorkItemProps & typeof Actions> {
         } = this.props;
 
         return (
-            <CustomCard className="flex-grow bolt-card-white">
+            <CustomCard className="work-item-view flex-grow">
                 <Header
                     commandBarItems={
                         [
