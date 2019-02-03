@@ -1,12 +1,12 @@
 import "./cardIcon.scss";
-import { TooltipHost } from "azure-devops-ui/Tooltip";
 import * as React from "react";
 import { SessionMode, SessionSource } from "../model/session";
 import {
     ModeDescriptionOffline,
     ModeDescriptionOnline
 } from "../resources/resources";
-import { Icon } from "office-ui-fabric-react/lib/Icon";
+import { Tooltip } from "azure-devops-ui/TooltipEx";
+import { Icon } from "azure-devops-ui/Icon";
 
 export interface ICardTypeProps {
     mode: SessionMode;
@@ -21,13 +21,13 @@ export class CardIcon extends React.Component<ICardTypeProps> {
         const { icon, description } = getIconForMode(mode);
 
         return (
-            <div className="card-icon">
-                <TooltipHost content={description}>
-                    <Icon iconName={icon} />
-                </TooltipHost>
-                <TooltipHost>
-                    <Icon iconName={getIconForSource(source)} />
-                </TooltipHost>
+            <div className="card-icon flex-row">
+                <Tooltip text={description}>
+                    <span>
+                        <Icon iconName={icon} />
+                    </span>
+                </Tooltip>
+                <Icon iconName={getIconForSource(source)} />
             </div>
         );
     }
@@ -52,13 +52,13 @@ export function getIconForMode(
     switch (mode) {
         case SessionMode.Online:
             return {
-                icon: "Transition",
+                icon: "ConnectContacts",
                 description: ModeDescriptionOnline
             };
 
         case SessionMode.Offline:
             return {
-                icon: "PlugDisconnected",
+                icon: "Clock",
                 description: ModeDescriptionOffline
             };
     }

@@ -1,13 +1,13 @@
 import { TitleSize } from "azure-devops-ui/Header";
 import { Panel } from "azure-devops-ui/Panel";
 import { TextField } from "azure-devops-ui/TextField";
+import { Tooltip } from "azure-devops-ui/TooltipEx";
 import {
     ChoiceGroup,
     Dropdown,
     IChoiceGroupOption,
     IDropdownOption,
-    IRenderFunction,
-    TooltipHost
+    IRenderFunction
 } from "office-ui-fabric-react";
 import * as React from "react";
 import { connect } from "react-redux";
@@ -44,11 +44,7 @@ const renderOptionWithTooltip: IRenderFunction<IChoiceGroupOption> = (
     option: any,
     defaultRender: any
 ) => {
-    return (
-        <TooltipHost content={option!.title}>
-            {defaultRender!(option)}
-        </TooltipHost>
-    );
+    return <Tooltip text={option!.title}>{defaultRender!(option)}</Tooltip>;
 };
 
 const modeOptions: IChoiceGroupOption[] = [

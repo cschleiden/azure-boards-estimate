@@ -8,7 +8,10 @@ const factory = actionCreatorFactory("sessions");
 
 export const loadSessions = factory<void>("load");
 
-export const populate = factory<ISession[]>("populate");
+export const populate = factory<{
+    sessions: ISession[];
+    legacySessions: ISession[];
+}>("populate");
 
 export const setIterationLookup = factory<ILookup<IIteration>>(
     "setIterationLookup"

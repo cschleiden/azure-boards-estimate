@@ -1,9 +1,10 @@
 @import "azure-devops-ui/Core/_platformCommon.scss";
 
 .card-icon {
+    font-weight: normal;
     font-size: 28px;
 
-    & > div:last-of-type {
+    & > :last-of-type {
         margin-left: 10px;
     }
 }

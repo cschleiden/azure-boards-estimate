@@ -5,7 +5,6 @@ import {
     WorkItemTrackingRestClient
 } from "azure-devops-extension-api/WorkItemTracking";
 import * as DevOps from "azure-devops-extension-sdk";
-import { IconButton } from "office-ui-fabric-react/lib/Button";
 import { Dropdown, IDropdownOption } from "office-ui-fabric-react/lib/Dropdown";
 import {
     ISelectableOption,
@@ -13,6 +12,7 @@ import {
 } from "office-ui-fabric-react/lib/utilities/selectableOption/SelectableOption.types";
 import * as React from "react";
 import "./queryPicker.scss";
+import { Button } from "azure-devops-ui/Button";
 
 interface IQueryOption extends ISelectableOption {
     hasChildren: boolean;
@@ -243,16 +243,21 @@ export class QueryPicker extends React.Component<
         const marginLeft = option.level * 10;
 
         return (
-            <div className="query-item" key={option.queryTreeItem.item.id}>
+            <div
+                className="query-item"
+                key={option.queryTreeItem.item.id}
+                style={{
+                    paddingLeft: (option.hasChildren && marginLeft) || 0
+                }}
+            >
                 {option.hasChildren && (
-                    <IconButton
-                        style={{ marginLeft }}
-                        onClick={ev => this._toggle(ev, option)}
+                    <Button
                         iconProps={{
                             iconName: option.isExpanded
                                 ? "ChevronDown"
                                 : "ChevronRight"
                         }}
+                        onClick={ev => this._toggle(ev, option)}
                     />
                 )}
                 {!option.hasChildren && (
@@ -308,7 +313,7 @@ export class QueryPicker extends React.Component<
 
     /** Expand/collapse a node */
     private _toggle = async (
-        ev: React.MouseEvent<any>,
+        ev: React.MouseEvent<any> | React.KeyboardEvent<any>,
         option: IQueryOption
     ) => {
         // Do this first before React reuses the event (this saves persisting)

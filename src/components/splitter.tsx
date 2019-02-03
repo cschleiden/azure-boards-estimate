@@ -12,8 +12,8 @@ export class Splitter extends React.Component<ISplitterProps> {
 
         return (
             <div className="splitter">
-                <div className="splitter--left">{left}</div>
-                <div className="splitter--right">{right}</div>
+                <div className="splitter--left flex-row">{left}</div>
+                <div className="splitter--right flex-row">{right}</div>
             </div>
         );
     }

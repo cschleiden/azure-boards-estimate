@@ -1,11 +1,14 @@
-import { TextField, ICommandBarItemProps } from "office-ui-fabric-react";
+import { CardContent, CustomCard } from "azure-devops-ui/Card";
+import { Header } from "azure-devops-ui/Header";
+import { IHeaderCommandBarItem } from "azure-devops-ui/HeaderCommandBar";
 import * as React from "react";
 import { connect } from "react-redux";
-import { PrimaryButton } from "../../../components/buttons";
 import { Card } from "../../../components/cards/card";
 import { SubTitle } from "../../../components/subtitle";
 import { Votes } from "../../../components/votes";
+import { WorkItemDescription } from "../../../components/workitems/workItemDescription";
 import { WorkItemHeader } from "../../../components/workitems/workItemHeader";
+import { WorkItemStoryPoints } from "../../../components/workitems/workItemStoryPoints";
 import { ICard, ICardSet } from "../../../model/cards";
 import { IEstimate } from "../../../model/estimate";
 import { IIdentity } from "../../../model/identity";
@@ -13,11 +16,7 @@ import { IWorkItem } from "../../../model/workitem";
 import { IState } from "../../../reducer";
 import { estimate, reveal } from "../sessionActions";
 import "./workItemView.scss";
-import { CustomCard, CardContent } from "azure-devops-ui/Card";
-import { Header } from "azure-devops-ui/Header";
-import { IHeaderCommandBarItem } from "azure-devops-ui/HeaderCommandBar";
-import { WorkItemDescription } from "../../../components/workitems/workItemDescription";
-import { WorkItemStoryPoints } from "../../../components/workitems/workItemStoryPoints";
+import { TextField } from "azure-devops-ui/TextField";
 
 interface IWorkItemProps {
     identity: IIdentity;
@@ -101,7 +100,9 @@ class WorkItemView extends React.Component<IWorkItemProps & typeof Actions> {
                                 </div>
                                 <div>
                                     Or enter a custom value:
-                                    <TextField />
+                                    <TextField
+                                        onChange={this._onChangeCustomValue}
+                                    />
                                 </div>
                             </>
                         )}
@@ -110,6 +111,8 @@ class WorkItemView extends React.Component<IWorkItemProps & typeof Actions> {
             </CustomCard>
         );
     }
+
+    private _onChangeCustomValue = () => {};
 
     private renderCard = (card: ICard): JSX.Element => {
         const { revealed } = this.props;

@@ -8,11 +8,19 @@ import {
     getExtensionContext,
     getService
 } from "azure-devops-extension-sdk";
-import { ISession } from "../model/session";
+import {
+    ISession,
+    ILegacySession,
+    SessionMode,
+    SessionSource
+} from "../model/session";
 import { IService } from "./services";
+import { defaultCardSets } from "../model/cards";
 
 export interface ISessionService extends IService {
     getSessions(): Promise<ISession[]>;
+
+    getLegacySession(): Promise<ISession[]>;
 
     getSession(id: string): Promise<ISession | null>;
 
@@ -65,6 +73,32 @@ export class SessionService implements ISessionService {
             );
 
             return sessions;
+        } catch {
+            return [];
+        }
+    }
+
+    async getLegacySession(): Promise<ISession[]> {
+        const manager = await this.getManager();
+
+        try {
+            const legacySession: ILegacySession[] = await manager.getDocuments(
+                "EstimationSessions"
+            );
+
+            return legacySession.map<ISession>(ls => ({
+                id: ls.id,
+                name: `Migrated: '${ls.name}'`,
+                mode: SessionMode.Online,
+                source: SessionSource.Ids,
+                sourceData: ls.workItemIds,
+                version: 1,
+                createdAt: ls.createdAt,
+                createdBy: ls.creatorId,
+                cardSet: defaultCardSets[0].id // TODO!
+            }));
+
+            // Map
         } catch {
             return [];
         }

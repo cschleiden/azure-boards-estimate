@@ -7,6 +7,7 @@ import {
 } from "../../model/session";
 import { ISessionsState } from "./sessionsReducer";
 
+// TODO: memoize.
 export function getDisplaySessions(
     state: ISessionsState,
     sessions: ISession[]
@@ -62,4 +63,12 @@ export function getDisplaySessions(
             sessionInfo: info
         };
     });
+}
+
+export function getSessions(state: ISessionsState): ISessionDisplay[] {
+    return getDisplaySessions(state, state.sessions);
+}
+
+export function getLegacySessions(state: ISessionsState): ISessionDisplay[] {
+    return getDisplaySessions(state, state.legacySessions);
 }

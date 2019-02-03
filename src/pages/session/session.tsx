@@ -90,7 +90,7 @@ class Session extends React.Component<
         }
 
         return (
-            <Page className="bolt-page-grey flex-grow">
+            <Page className="absolute-fill">
                 <CustomHeader className="bolt-header-with-commandbar">
                     <HeaderTitleArea>
                         <HeaderTitle>{session.name}</HeaderTitle>
@@ -140,7 +140,7 @@ class Session extends React.Component<
                 <div className="page-content page-content-top">
                     <Splitter
                         left={
-                            <>
+                            <div className="work-item-list flex-column flex-grow">
                                 {workItems.map(workItem => (
                                     <WorkItemCard
                                         key={workItem.id}
@@ -158,7 +158,7 @@ class Session extends React.Component<
                                         }
                                     />
                                 ))}
-                            </>
+                            </div>
                         }
                         right={
                             (!!selectedWorkItem && <WorkItemView />) || <></>

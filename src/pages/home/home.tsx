@@ -1,9 +1,7 @@
 import { Card } from "azure-devops-ui/Card";
-import { ConditionalChildren } from "azure-devops-ui/ConditionalChildren";
 import { ObservableValue } from "azure-devops-ui/Core/Observable";
 import { FilterBar } from "azure-devops-ui/FilterBar";
 import { Header } from "azure-devops-ui/Header";
-import { HeaderCommandBarWithFilter } from "azure-devops-ui/HeaderCommandBar";
 import { Page } from "azure-devops-ui/Page";
 import { Tab, TabBar } from "azure-devops-ui/Tabs";
 import { KeywordFilterBarItem } from "azure-devops-ui/TextFilterBarItem";
@@ -11,16 +9,18 @@ import { Filter } from "azure-devops-ui/Utilities/Filter";
 import * as React from "react";
 import { connect } from "react-redux";
 import CreatePanel from "../../components/create/panel";
-import SettingsPanel from "../settings/settings";
 import { SessionList } from "../../components/sessionList";
 import { ISessionDisplay } from "../../model/session";
 import { IState } from "../../reducer";
 import { IPageProps } from "../props";
+import SettingsPanel from "../settings/settings";
+import "./home.scss";
 import { filter, loadSessions } from "./sessionsActions";
-import { getDisplaySessions } from "./sessionsSelectors";
+import { getDisplaySessions, getLegacySessions } from "./sessionsSelectors";
 
 interface IHomePageProps extends IPageProps<{}> {
     sessions: ISessionDisplay[];
+    legacySessions: ISessionDisplay[];
 }
 
 const Actions = {
@@ -46,10 +46,10 @@ class HomePage extends React.Component<IHomePageProps & typeof Actions> {
     }
 
     render(): JSX.Element {
-        const { history, match, sessions } = this.props;
+        const { history, match, sessions, legacySessions } = this.props;
 
         return (
-            <Page className="bolt-page-grey flex-grow">
+            <Page className="flex-grow">
                 <Header
                     title="Estimate"
                     commandBarItems={[
@@ -79,22 +79,27 @@ class HomePage extends React.Component<IHomePageProps & typeof Actions> {
                     <Tab id="sessions" name="Sessions" />
                 </TabBar>
 
-                <ConditionalChildren renderChildren={this.filterToggled}>
-                    <div className="page-content page-content-top">
-                        <FilterBar
-                            className="bolt-filterbar-white depth-8"
-                            filter={this.filter}
-                            onDismissClicked={this.onFilterBarDismissClicked}
-                        >
-                            <KeywordFilterBarItem filterItemKey="keyword" />
-                        </FilterBar>
-                    </div>
-                </ConditionalChildren>
-
                 <div className="page-content page-content-top">
-                    <Card className="flex-grow bolt-card-white">
-                        <SessionList history={history} sessions={sessions} />
-                    </Card>
+                    {sessions && sessions.length > 0 && (
+                        <Card className="flex-grow">
+                            <SessionList
+                                history={history}
+                                sessions={sessions}
+                            />
+                        </Card>
+                    )}
+
+                    {legacySessions && legacySessions.length > 0 && (
+                        <Card
+                            titleProps={{ text: "Migrated Sessions" }}
+                            className="flex-grow legacy-sessions"
+                        >
+                            <SessionList
+                                history={history}
+                                sessions={legacySessions}
+                            />
+                        </Card>
+                    )}
                 </div>
 
                 {match.path.indexOf("/create") !== -1 && (
@@ -117,11 +122,15 @@ class HomePage extends React.Component<IHomePageProps & typeof Actions> {
 
     private renderTabBarCommands = () => {
         return (
-            <HeaderCommandBarWithFilter
-                filter={this.filter}
-                filterToggled={this.filterToggled}
-                items={[]}
-            />
+            <>
+                <FilterBar
+                    className="bolt-filterbar-white depth-8"
+                    filter={this.filter}
+                    onDismissClicked={this.onFilterBarDismissClicked}
+                >
+                    <KeywordFilterBarItem filterItemKey="keyword" />
+                </FilterBar>
+            </>
         );
     };
 
@@ -153,7 +162,8 @@ export default connect(
             (state.sessions.filteredSessions &&
                 state.sessions.filteredSessions) ||
                 state.sessions.sessions
-        )
+        ),
+        legacySessions: getLegacySessions(state.sessions)
     }),
     Actions
 )(HomePage);

@@ -1,30 +1,26 @@
+import { IProjectPageService } from "azure-devops-extension-api";
+import { ProjectInfo } from "azure-devops-extension-api/Core";
+import { getService } from "azure-devops-extension-sdk";
 import { call, put, takeLatest } from "redux-saga/effects";
+import { toLookup } from "../../lib/lookup";
 import { ISession, SessionSource } from "../../model/session";
+import { IQueriesService, QueriesServiceId } from "../../services/queries";
 import { Services } from "../../services/services";
 import { ISessionService, SessionServiceId } from "../../services/sessions";
+import { ISprintService, SprintServiceId } from "../../services/sprints";
+import {
+    IIteration,
+    ITeam,
+    ITeamService,
+    TeamServiceId
+} from "../../services/teams";
 import {
     loadSessions,
     populate,
     setIterationLookup,
-    setTeamLookup,
-    setQueryLookup
+    setQueryLookup,
+    setTeamLookup
 } from "./sessionsActions";
-import {
-    ITeamService,
-    TeamServiceId,
-    IIteration,
-    ITeam
-} from "../../services/teams";
-import { ISprintService, SprintServiceId } from "../../services/sprints";
-import { getService } from "azure-devops-extension-sdk";
-import { IProjectPageService } from "azure-devops-extension-api";
-import { ProjectInfo } from "azure-devops-extension-api/Core";
-import { toLookup } from "../../lib/lookup";
-import {
-    QueriesService,
-    QueriesServiceId,
-    IQueriesService
-} from "../../services/queries";
 
 export function* rootSessionsSaga() {
     yield takeLatest(loadSessions.type, initSaga);
@@ -39,7 +35,14 @@ export function* initSaga() {
         sessionService.getSessions
     ]);
 
-    yield put(populate(sessions));
+    yield put(populate({ sessions, legacySessions: [] }));
+
+    const legacySessions: ISession[] = yield call([
+        sessionService,
+        sessionService.getLegacySession
+    ]);
+
+    yield put(populate({ sessions, legacySessions }));
 
     //
     // Resolve session sources

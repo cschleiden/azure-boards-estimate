@@ -1,6 +1,8 @@
 @import "azure-devops-ui/core/_platformCommon.scss";
 
 .work-item-card {
+    align-self: stretch;
+
     cursor: pointer;
 
     min-height: 40px;

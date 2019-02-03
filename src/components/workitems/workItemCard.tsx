@@ -28,6 +28,7 @@ export class WorkItemCard extends React.Component<IWorkItemCardProps> {
         return (
             <Card
                 className={css(
+                    "flex-grow",
                     "bolt-card-white",
                     "work-item-card",
                     selected && "selected"
