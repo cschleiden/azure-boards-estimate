@@ -1,7 +1,8 @@
 import { IProjectPageService } from "azure-devops-extension-api";
 import { ProjectInfo } from "azure-devops-extension-api/Core";
 import { getService } from "azure-devops-extension-sdk";
-import { call, put, takeLatest } from "redux-saga/effects";
+import { SagaIterator } from "redux-saga";
+import { call, put, takeLatest, takeEvery } from "redux-saga/effects";
 import { toLookup } from "../../lib/lookup";
 import { ISession, SessionSource } from "../../model/session";
 import { IQueriesService, QueriesServiceId } from "../../services/queries";
@@ -19,14 +20,17 @@ import {
     populate,
     setIterationLookup,
     setQueryLookup,
-    setTeamLookup
+    setTeamLookup,
+    deleteSession
 } from "./sessionsActions";
 
 export function* rootSessionsSaga() {
     yield takeLatest(loadSessions.type, initSaga);
+
+    yield takeEvery(deleteSession.type, deleteSaga);
 }
 
-export function* initSaga() {
+export function* initSaga(): SagaIterator {
     const sessionService = Services.getService<ISessionService>(
         SessionServiceId
     );
@@ -106,4 +110,13 @@ export function* initSaga() {
         );
         yield put(setQueryLookup(toLookup(queries, q => q.id)));
     }
+}
+
+function* deleteSaga(action: ReturnType<typeof deleteSession>): SagaIterator {
+    const sessionService = Services.getService<ISessionService>(
+        SessionServiceId
+    );
+    yield call([sessionService, sessionService.removeSession], action.payload);
+
+    yield put(loadSessions());
 }

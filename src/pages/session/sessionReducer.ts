@@ -23,7 +23,7 @@ export type ISessionState = typeof initialState;
 
 const loadSession = reducerAction(
     Actions.loadSession,
-    (state: ISessionState, payload) => {
+    (state: ISessionState) => {
         state.loading = true;
     }
 );

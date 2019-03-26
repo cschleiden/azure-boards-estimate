@@ -15,7 +15,8 @@ export const initialState = {
     iterationLookup: null as null | ILookup<IIteration>,
     queryLookup: null as null | ILookup<IQuery>,
 
-    loading: false
+    loading: false,
+    error: null as string | null
 };
 
 export type ISessionsState = typeof initialState;
@@ -23,6 +24,7 @@ export type ISessionsState = typeof initialState;
 const populate = reducerAction(
     Actions.populate,
     (state: ISessionsState, { sessions, legacySessions }) => {
+        state.loading = false;
         state.sessions = sessions;
         state.legacySessions = legacySessions;
     }
@@ -62,16 +64,39 @@ const setQueryLookup = reducerAction(
     }
 );
 
+const error = reducerAction(
+    Actions.fatalError,
+    (state: ISessionsState, error) => {
+        state.error = error;
+    }
+);
+
+const clearError = reducerAction(
+    Actions.fatalError,
+    (state: ISessionsState) => {
+        state.error = null;
+    }
+);
+
 export default <TPayload>(
     state: ISessionsState = initialState,
     action?: Action<TPayload>
 ) => {
     return reducerMap(action, state, {
+        [Actions.loadSessions.type]: reducerAction(
+            Actions.loadSessions,
+            state => {
+                state.loading = true;
+            }
+        ),
         [Actions.populate.type]: populate,
         [Actions.filter.type]: filter,
 
         [Actions.setIterationLookup.type]: setIterationLookup,
         [Actions.setTeamLookup.type]: setTeamLookup,
-        [Actions.setQueryLookup.type]: setQueryLookup
+        [Actions.setQueryLookup.type]: setQueryLookup,
+
+        [Actions.fatalError.type]: error,
+        [Actions.clearError.type]: clearError
     });
 };

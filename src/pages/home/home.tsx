@@ -2,6 +2,7 @@ import { Card } from "azure-devops-ui/Card";
 import { ObservableValue } from "azure-devops-ui/Core/Observable";
 import { FilterBar } from "azure-devops-ui/FilterBar";
 import { Header } from "azure-devops-ui/Header";
+import { MessageCard, MessageCardSeverity } from "azure-devops-ui/MessageCard";
 import { Page } from "azure-devops-ui/Page";
 import { Tab, TabBar } from "azure-devops-ui/Tabs";
 import { KeywordFilterBarItem } from "azure-devops-ui/TextFilterBarItem";
@@ -15,17 +16,25 @@ import { IState } from "../../reducer";
 import { IPageProps } from "../props";
 import SettingsPanel from "../settings/settings";
 import "./home.scss";
-import { filter, loadSessions } from "./sessionsActions";
+import {
+    clearError,
+    deleteSession,
+    filter,
+    loadSessions
+} from "./sessionsActions";
 import { getDisplaySessions, getLegacySessions } from "./sessionsSelectors";
 
 interface IHomePageProps extends IPageProps<{}> {
     sessions: ISessionDisplay[];
     legacySessions: ISessionDisplay[];
+    error: string | null;
 }
 
 const Actions = {
     onInit: loadSessions,
-    filter
+    filter,
+    clearError,
+    deleteSession
 };
 
 class HomePage extends React.Component<IHomePageProps & typeof Actions> {
@@ -46,7 +55,15 @@ class HomePage extends React.Component<IHomePageProps & typeof Actions> {
     }
 
     render(): JSX.Element {
-        const { history, match, sessions, legacySessions } = this.props;
+        const {
+            clearError,
+            error,
+            history,
+            match,
+            sessions,
+            legacySessions,
+            deleteSession
+        } = this.props;
 
         return (
             <Page className="flex-grow">
@@ -80,11 +97,22 @@ class HomePage extends React.Component<IHomePageProps & typeof Actions> {
                 </TabBar>
 
                 <div className="page-content page-content-top">
+                    {error && (
+                        <MessageCard
+                            className="fatal-error"
+                            severity={MessageCardSeverity.Error}
+                            onDismiss={clearError}
+                        >
+                            {error}
+                        </MessageCard>
+                    )}
+
                     {sessions && sessions.length > 0 && (
                         <Card className="flex-grow">
                             <SessionList
                                 history={history}
                                 sessions={sessions}
+                                onEndSession={deleteSession}
                             />
                         </Card>
                     )}
@@ -97,6 +125,7 @@ class HomePage extends React.Component<IHomePageProps & typeof Actions> {
                             <SessionList
                                 history={history}
                                 sessions={legacySessions}
+                                onEndSession={deleteSession}
                             />
                         </Card>
                     )}
@@ -163,7 +192,8 @@ export default connect(
                 state.sessions.filteredSessions) ||
                 state.sessions.sessions
         ),
-        legacySessions: getLegacySessions(state.sessions)
+        legacySessions: getLegacySessions(state.sessions),
+        error: state.sessions.error
     }),
     Actions
 )(HomePage);

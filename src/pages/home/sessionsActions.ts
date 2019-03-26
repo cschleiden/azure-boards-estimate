@@ -8,6 +8,8 @@ const factory = actionCreatorFactory("sessions");
 
 export const loadSessions = factory<void>("load");
 
+export const deleteSession = factory<string>("delete");
+
 export const populate = factory<{
     sessions: ISession[];
     legacySessions: ISession[];
@@ -22,3 +24,7 @@ export const setTeamLookup = factory<ILookup<ITeam>>("setTeamLookup");
 export const setQueryLookup = factory<ILookup<IQuery>>("setQueryLookup");
 
 export const filter = factory<string>("filter");
+
+export const fatalError = factory<string>("error");
+
+export const clearError = factory<void>("clearError");

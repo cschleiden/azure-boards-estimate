@@ -7,11 +7,13 @@ import "./sessionList.scss";
 export interface ICardListProps {
     sessions: ISessionDisplay[];
     history: History;
+
+    onEndSession: (id: string) => void;
 }
 
 export class SessionList extends React.Component<ICardListProps> {
     render(): JSX.Element {
-        const { history, sessions } = this.props;
+        const { history, onEndSession, sessions } = this.props;
 
         return (
             <ul className="session-list">
@@ -20,6 +22,7 @@ export class SessionList extends React.Component<ICardListProps> {
                         key={session.session.id}
                         session={session}
                         history={history}
+                        onEndSession={onEndSession}
                     />
                 ))}
             </ul>

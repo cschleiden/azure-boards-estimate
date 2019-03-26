@@ -22,11 +22,7 @@ export class CardIcon extends React.Component<ICardTypeProps> {
 
         return (
             <div className="card-icon flex-row">
-                <Tooltip text={description}>
-                    <span>
-                        <Icon iconName={icon} />
-                    </span>
-                </Tooltip>
+                <Tooltip text={description}>{Icon({ iconName: icon })}</Tooltip>
                 <Icon iconName={getIconForSource(source)} />
             </div>
         );

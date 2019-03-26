@@ -5,9 +5,11 @@ import { makeUrlSafe } from "../lib/urlSafe";
 import { ISessionDisplay, ISessionInfo } from "../model/session";
 import { CardIcon } from "./cardIcon";
 import "./sessionCard.scss";
+import { Link } from "azure-devops-ui/Link";
+import { MoreButton } from "azure-devops-ui/Menu";
 
 const CardTitle: React.StatelessComponent = props => (
-    <h2 className="session-card--title">{props.children}</h2>
+    <h2 className="session-card--title flex-grow" {...props} />
 );
 
 const CardMode: React.StatelessComponent = props => (
@@ -30,6 +32,8 @@ const CardInfo: React.StatelessComponent<{
 export interface ICardProps {
     history: History;
     session: ISessionDisplay;
+
+    onEndSession: (id: string) => void;
 }
 
 export class SessionCard extends React.Component<ICardProps> {
@@ -38,17 +42,41 @@ export class SessionCard extends React.Component<ICardProps> {
             session: {
                 session: { id, mode, name, source, sourceData },
                 sessionInfo
-            }
+            },
+            onEndSession
         } = this.props;
 
         return (
-            <Button
-                className="session-card"
-                href={`/session/${id}/${makeUrlSafe(name)}`}
-                onClick={this.navigate}
-            >
+            <div className="session-card">
                 <div className="session-card--content">
-                    <CardTitle>{name}</CardTitle>
+                    <div className="flex-row">
+                        <CardTitle>
+                            <Link
+                                href={`/session/${id}/${makeUrlSafe(name)}`}
+                                onClick={this.navigate}
+                            >
+                                {name}
+                            </Link>
+                        </CardTitle>
+
+                        <MoreButton
+                            className="session-card--menu"
+                            contextualMenuProps={{
+                                menuProps: {
+                                    onActivate: (ev: any) =>
+                                        ev.stopPropagation(),
+                                    id: "card-more",
+                                    items: [
+                                        {
+                                            id: "session-end",
+                                            text: "End session",
+                                            onActivate: () => onEndSession(id)
+                                        }
+                                    ]
+                                }
+                            }}
+                        />
+                    </div>
 
                     <CardInfo sessionInfo={sessionInfo} />
 
@@ -56,7 +84,7 @@ export class SessionCard extends React.Component<ICardProps> {
                         <CardIcon mode={mode} source={source} />
                     </CardMode>
                 </div>
-            </Button>
+            </div>
         );
     }
 
