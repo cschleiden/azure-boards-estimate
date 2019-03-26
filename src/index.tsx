@@ -17,6 +17,7 @@ import registerServiceWorker from "./registerServiceWorker";
 import "./services/registration";
 
 import * as DevOps from "azure-devops-extension-sdk";
+import { rootSettingsSaga } from "./pages/settings/settingsSaga";
 
 DevOps.init().then(() => {
     const composeEnhancers =
@@ -31,6 +32,7 @@ DevOps.init().then(() => {
 
     sagaMiddleware.run(initSaga);
     sagaMiddleware.run(createSaga);
+    sagaMiddleware.run(rootSettingsSaga);
     sagaMiddleware.run(rootSessionsSaga);
     sagaMiddleware.run(rootSessionSaga);
 

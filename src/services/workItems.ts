@@ -1,5 +1,6 @@
 import { getClient } from "azure-devops-extension-api";
 import { CoreRestClient } from "azure-devops-extension-api/Core";
+import { WorkRestClient } from "azure-devops-extension-api/Work";
 import {
     WorkItemBatchGetRequest,
     WorkItemTrackingRestClient
@@ -9,14 +10,15 @@ import {
     WorkItemTrackingProcessRestClient
 } from "azure-devops-extension-api/WorkItemTrackingProcess";
 import { IWorkItem } from "../model/workitem";
+import { IField, IWorkItemType } from "../model/workItemType";
 import { IService } from "./services";
-import { IWorkItemType } from "../model/workItemType";
-import { WorkRestClient } from "azure-devops-extension-api/Work";
 
 export interface IWorkItemService extends IService {
     getWorkItems(workItemIds: number[]): Promise<IWorkItem[]>;
 
     getWorkItemTypes(projectId: string): Promise<IWorkItemType[]>;
+
+    getFields(projectId: string): Promise<IField[]>;
 }
 
 export const WorkItemServiceId = "WorkItemService";
@@ -28,6 +30,19 @@ interface IWorkItemTypeInfo {
 }
 
 export class WorkItemService implements IWorkItemService {
+    async getFields(projectId: string): Promise<IField[]> {
+        const client = getClient(WorkItemTrackingRestClient);
+        const fields = await client.getFields(projectId);
+
+        const mappedFields: IField[] = fields.map(f => ({
+            name: f.name,
+            referenceName: f.referenceName
+        }));
+        mappedFields.sort((a, b) => a.name.localeCompare(b.name));
+
+        return mappedFields;
+    }
+
     async getWorkItemTypes(projectId: string): Promise<IWorkItemType[]> {
         // Get type fields
         const workClient = getClient(WorkRestClient);

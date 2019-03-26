@@ -13,6 +13,11 @@
     }
 }
 
+.session-content {
+    flex: auto 0 1;
+    overflow: hidden;
+}
+
 .work-item-list {    
     min-width: 200px;
     max-width: 300px;

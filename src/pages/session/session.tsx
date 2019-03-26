@@ -136,7 +136,7 @@ class Session extends React.Component<
                     />
                 </CustomHeader>
 
-                <div className="page-content page-content-top flex-grow flex-row">
+                <div className="page-content page-content-top flex-row session-content">
                     <div className="work-item-list v-scroll-auto flex-column custom-scrollbar">
                         {workItems.map(workItem => (
                             <WorkItemCard

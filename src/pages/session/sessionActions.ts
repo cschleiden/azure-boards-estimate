@@ -1,5 +1,5 @@
 import { actionCreatorFactory } from "typescript-fsa";
-import { ICardSet } from "../../model/cards";
+import { ICardSet, ICard } from "../../model/cards";
 import { IEstimate, ISessionEstimates } from "../../model/estimate";
 import { ISession } from "../../model/session";
 import { IUserInfo } from "../../model/user";
@@ -25,8 +25,13 @@ export const workItemSelected = factory<number>("workItemSelected");
 
 export const estimate = factory<IEstimate>("estimate");
 
+/** Reveal all cards */
 export const reveal = factory<void>("reveal");
+
+/** Cards have been revealed */
 export const revealed = factory<void>("revealed");
+
+export const commitCard = factory<ICard>("commitCard");
 
 export const estimateSet = factory<IEstimate>("estimateSet");
 

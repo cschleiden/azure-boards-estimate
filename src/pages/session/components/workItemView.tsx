@@ -14,7 +14,7 @@ import { IEstimate } from "../../../model/estimate";
 import { IIdentity } from "../../../model/identity";
 import { IWorkItem } from "../../../model/workitem";
 import { IState } from "../../../reducer";
-import { estimate, reveal } from "../sessionActions";
+import { commitCard, estimate, reveal } from "../sessionActions";
 import "./workItemView.scss";
 import { TextField } from "azure-devops-ui/TextField";
 
@@ -22,6 +22,9 @@ interface IWorkItemProps {
     identity: IIdentity;
     selectedWorkItem: IWorkItem;
     cardSet: ICardSet;
+
+    /** User's selection */
+    selectedCardId: string | null;
     estimates: IEstimate[];
 
     revealed: boolean;
@@ -30,7 +33,8 @@ interface IWorkItemProps {
 
 const Actions = {
     estimate,
-    reveal
+    reveal,
+    commitCard
 };
 
 class WorkItemView extends React.Component<IWorkItemProps & typeof Actions> {
@@ -38,6 +42,7 @@ class WorkItemView extends React.Component<IWorkItemProps & typeof Actions> {
         const {
             cardSet,
             selectedWorkItem,
+            selectedCardId,
             estimates,
             canReveal,
             revealed
@@ -70,7 +75,15 @@ class WorkItemView extends React.Component<IWorkItemProps & typeof Actions> {
 
                         <SubTitle>Your vote</SubTitle>
                         <div className="card-container">
-                            {cardSet && cardSet.cards.map(this.renderCard)}
+                            {cardSet &&
+                                cardSet.cards.map(card =>
+                                    this.renderCard(
+                                        card,
+                                        revealed,
+                                        card.identifier === selectedCardId,
+                                        this.doEstimate.bind(this, card)
+                                    )
+                                )}
                         </div>
 
                         <SubTitle>All votes</SubTitle>
@@ -88,15 +101,19 @@ class WorkItemView extends React.Component<IWorkItemProps & typeof Actions> {
                                     commit the value to the work item:
                                 </div>
                                 <div>
-                                    {(estimates || []).map(e =>
-                                        this.renderCard(
-                                            cardSet.cards.find(
-                                                x =>
-                                                    x.identifier ===
-                                                    e.cardIdentifier
-                                            )!
-                                        )
-                                    )}
+                                    {(estimates || []).map(e => {
+                                        const card = cardSet.cards.find(
+                                            x =>
+                                                x.identifier ===
+                                                e.cardIdentifier
+                                        )!;
+                                        return this.renderCard(
+                                            card,
+                                            false,
+                                            false,
+                                            this.doCommitCard.bind(this, card)
+                                        );
+                                    })}
                                 </div>
                                 <div>
                                     Or enter a custom value:
@@ -114,9 +131,12 @@ class WorkItemView extends React.Component<IWorkItemProps & typeof Actions> {
 
     private _onChangeCustomValue = () => {};
 
-    private renderCard = (card: ICard): JSX.Element => {
-        const { revealed } = this.props;
-
+    private renderCard = (
+        card: ICard,
+        disabled?: boolean,
+        selected?: boolean,
+        onClick?: () => void
+    ): JSX.Element => {
         return (
             <Card
                 key={card.identifier}
@@ -124,8 +144,9 @@ class WorkItemView extends React.Component<IWorkItemProps & typeof Actions> {
                     label: card.identifier
                 }}
                 flipped={false}
-                onClick={this.doEstimate.bind(this, card)}
-                disabled={revealed}
+                onClick={onClick}
+                disabled={disabled}
+                selected={selected}
             />
         );
     };
@@ -143,6 +164,12 @@ class WorkItemView extends React.Component<IWorkItemProps & typeof Actions> {
             cardIdentifier: card.identifier
         });
     };
+
+    private doCommitCard = (card: ICard): void => {
+        const { commitCard } = this.props;
+
+        commitCard(card);
+    };
 }
 
 export default connect(
@@ -157,7 +184,10 @@ export default connect(
             selectedWorkItem: session.selectedWorkItem!,
             estimates,
             revealed: session.revealed,
-            canReveal: !session.revealed && estimates && estimates.length > 0
+            canReveal: !session.revealed && estimates && estimates.length > 0,
+            selectedCardId:
+                state.session.ownEstimate &&
+                state.session.ownEstimate.cardIdentifier
         };
     },
     Actions

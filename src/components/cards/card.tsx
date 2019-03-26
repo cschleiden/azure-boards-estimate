@@ -53,6 +53,7 @@ export interface ICardComponentProps {
     flipped?: boolean;
 
     disabled?: boolean;
+    selected?: boolean;
 
     onClick?: () => void;
 }
@@ -65,7 +66,8 @@ export class Card extends React.Component<ICardComponentProps> {
             disabled = false,
             flipped = false,
             onClick,
-            size = CardSize.medium
+            size = CardSize.medium,
+            selected
         } = this.props;
 
         let BaseElement: string;
@@ -77,7 +79,8 @@ export class Card extends React.Component<ICardComponentProps> {
 
         const cardClassNames = css(
             flipped && "flipped",
-            disabled && "disabled"
+            disabled && "disabled",
+            selected && "selected"
         );
 
         const cardStyle: React.CSSProperties = {

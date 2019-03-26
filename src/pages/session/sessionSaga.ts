@@ -1,7 +1,7 @@
 import { IProjectPageService } from "azure-devops-extension-api";
 import { ProjectInfo } from "azure-devops-extension-api/Core";
 import { getService } from "azure-devops-extension-sdk";
-import { Task } from "redux-saga";
+import { Task, SagaIterator } from "redux-saga";
 import { call, cancel, fork, put, take, takeLatest } from "redux-saga/effects";
 import history from "../../lib/history";
 import { ICardSet } from "../../model/cards";
@@ -21,7 +21,8 @@ import {
     endSession,
     leaveSession,
     loadedSession,
-    loadSession
+    loadSession,
+    commitCard
 } from "./sessionActions";
 
 export function* rootSessionSaga() {
@@ -143,6 +144,8 @@ export function* sessionSaga(action: ReturnType<typeof loadSession>) {
             })
         );
 
+        const estimationTask = yield fork(sessionEstimationSaga);
+
         // Wait for leave or end
         const a:
             | ReturnType<typeof leaveSession>
@@ -150,6 +153,9 @@ export function* sessionSaga(action: ReturnType<typeof loadSession>) {
             leaveSession.type,
             endSession.type
         ]);
+
+        yield cancel(estimationTask);
+
         switch (a.type) {
             case endSession.type: {
                 const sessionService = Services.getService<ISessionService>(
@@ -172,4 +178,16 @@ export function* sessionSaga(action: ReturnType<typeof loadSession>) {
         // Navigate back to session list
         history.push("/");
     }
+}
+
+/**
+ * Handle estimation
+ */
+function* sessionEstimationSaga(): SagaIterator {
+    const action: ReturnType<typeof commitCard> = yield take(commitCard);
+
+    const workItemService = Services.getService<IWorkItemService>(
+        WorkItemServiceId
+    );
+    workItemService;
 }

@@ -252,6 +252,7 @@ export class QueryPicker extends React.Component<
             >
                 {option.hasChildren && (
                     <Button
+                        subtle={true}
                         iconProps={{
                             iconName: option.isExpanded
                                 ? "ChevronDown"

@@ -2,7 +2,7 @@
 
 .card--base-button {
     border: none;
-    background: $backgroundColor;
+    background: transparent;
     padding: 0;
     outline: none;
 
@@ -13,7 +13,7 @@
 
 .card--base {
     border: none;
-    background: $backgroundColor;
+    background: transparent;
     padding: 0;
     outline: none;
 
@@ -56,6 +56,10 @@
         pointer-events: none;
     }
 
+    &.selected {
+        background-color: $communication-background;
+    }
+
     &.card--front {
         transform: rotateY(0deg);
 
@@ -65,7 +69,7 @@
 
         &:not(.disabled) {
             &:hover {
-                background-color: red;
+                background-color: $communication-tint-10;
             }
         }
     }
