@@ -8,6 +8,8 @@ steps:
       inputs:
           verbose: false
 
+    - script: npm run build
+
     - script: npm run package-release
 
     - task: ms-devlabs.vsts-developer-tools-build-tasks.publish-extension-build-task.PublishExtension@1
