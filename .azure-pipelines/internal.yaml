@@ -13,7 +13,7 @@ steps:
       inputs:
           command: custom
           verbose: false
-          customCommand: "package-release"
+          customCommand: "run package-release"
 
     - task: ms-devlabs.vsts-developer-tools-build-tasks.publish-extension-build-task.PublishExtension@1
       displayName: "Publish Extension"
