@@ -4,17 +4,18 @@
     cursor: pointer;
 
     min-width: 200px;
-
     margin-bottom: 15px;
 
-    transition: 0.3s linear all;
+    .bolt-card {
+        transition: 0.3s linear all;
+    }
 
-    &:hover {
+    &:hover .bolt-card {
         background-color: $neutral-8;
     }
 
-    &.selected {
-        background: $communication-tint-40;
+    &.selected .bolt-card {
+        background: $communication-tint-30;
     }
 
     &--info {
