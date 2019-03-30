@@ -2,6 +2,11 @@ pool:
     name: Hosted VS2017
     demands: npm
 
+trigger:
+    tags:
+        include:
+            - v*
+
 steps:
     - task: Npm@1
       displayName: "npm install"
