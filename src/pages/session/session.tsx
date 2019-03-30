@@ -36,7 +36,10 @@ interface ISessionParams {
 
 interface ISessionProps extends IPageProps<ISessionParams> {
     identity: IIdentity;
-    loading: boolean;
+    status: {
+        loading: boolean;
+        message: string;
+    };
     session: ISession;
     workItems: IWorkItem[];
     estimates: ISessionEstimates;
@@ -73,17 +76,18 @@ class Session extends React.Component<
         const {
             cardSet,
             session,
-            loading,
+            status,
             workItems,
             selectedWorkItem,
             leaveSession,
             activeUsers
         } = this.props;
 
-        if (loading || !session) {
+        if (status.loading || !session) {
             return (
-                <div className="session-loading">
+                <div className="absolute-fill flex-column flex-grow flex-center justify-center">
                     <Spinner size={SpinnerSize.large} />
+                    <div>{status.message}</div>
                 </div>
             );
         }
@@ -137,7 +141,7 @@ class Session extends React.Component<
                 </CustomHeader>
 
                 <div className="page-content page-content-top flex-row session-content">
-                    <div className="work-item-list v-scroll-auto flex-column custom-scrollbar">
+                    <div className="work-item-list v-scroll-auto flex-column custom-scrollbar flex-noshrink">
                         {workItems.map(workItem => (
                             <WorkItemCard
                                 key={workItem.id}
@@ -165,7 +169,7 @@ export default connect(
     (state: IState) => {
         return {
             identity: state.init.currentIdentity,
-            loading: state.session.loading,
+            status: state.session.status,
             session: state.session.session,
             cardSet: state.session.cardSet,
             workItems: state.session.workItems,

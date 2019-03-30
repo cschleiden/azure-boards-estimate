@@ -49,83 +49,89 @@ class WorkItemView extends React.Component<IWorkItemProps & typeof Actions> {
         } = this.props;
 
         return (
-            <CustomCard className="work-item-view flex-grow">
-                <Header
-                    commandBarItems={
-                        [
-                            canReveal &&
-                                ({
-                                    id: "action-reveal",
-                                    text: "Reveal",
-                                    important: true,
-                                    isPrimary: true,
-                                    onActivate: this.doReveal
-                                } as IHeaderCommandBarItem)
-                        ].filter(x => !!x) as IHeaderCommandBarItem[]
-                    }
-                >
-                    <WorkItemHeader workItem={selectedWorkItem} />
-                </Header>
+            <div className="v-scroll-auto custom-scrollbar flex-grow">
+                <CustomCard className="work-item-view flex-grow">
+                    <Header
+                        commandBarItems={
+                            [
+                                canReveal &&
+                                    ({
+                                        id: "action-reveal",
+                                        text: "Reveal",
+                                        important: true,
+                                        isPrimary: true,
+                                        onActivate: this.doReveal
+                                    } as IHeaderCommandBarItem)
+                            ].filter(x => !!x) as IHeaderCommandBarItem[]
+                        }
+                    >
+                        <WorkItemHeader workItem={selectedWorkItem} />
+                    </Header>
 
-                <CardContent>
-                    <div className="flex-grow flex-column">
-                        <WorkItemDescription workItem={selectedWorkItem} />
+                    <CardContent>
+                        <div className="flex-grow flex-column">
+                            <WorkItemDescription workItem={selectedWorkItem} />
 
-                        <WorkItemStoryPoints estimate={0} />
+                            <WorkItemStoryPoints estimate={0} />
 
-                        <SubTitle>Your vote</SubTitle>
-                        <div className="card-container">
-                            {cardSet &&
-                                cardSet.cards.map(card =>
-                                    this.renderCard(
-                                        card,
-                                        revealed,
-                                        card.identifier === selectedCardId,
-                                        this.doEstimate.bind(this, card)
-                                    )
-                                )}
-                        </div>
-
-                        <SubTitle>All votes</SubTitle>
-                        <Votes
-                            cardSet={cardSet}
-                            estimates={estimates || []}
-                            revealed={revealed}
-                        />
-
-                        <SubTitle>Actions</SubTitle>
-                        {revealed && (
-                            <>
-                                <div>
-                                    These were the cards selected, choose one to
-                                    commit the value to the work item:
-                                </div>
-                                <div>
-                                    {(estimates || []).map(e => {
-                                        const card = cardSet.cards.find(
-                                            x =>
-                                                x.identifier ===
-                                                e.cardIdentifier
-                                        )!;
-                                        return this.renderCard(
+                            <SubTitle>Your vote</SubTitle>
+                            <div className="card-container">
+                                {cardSet &&
+                                    cardSet.cards.map(card =>
+                                        this.renderCard(
                                             card,
-                                            false,
-                                            false,
-                                            this.doCommitCard.bind(this, card)
-                                        );
-                                    })}
-                                </div>
-                                <div>
-                                    Or enter a custom value:
-                                    <TextField
-                                        onChange={this._onChangeCustomValue}
-                                    />
-                                </div>
-                            </>
-                        )}
-                    </div>
-                </CardContent>
-            </CustomCard>
+                                            revealed,
+                                            card.identifier === selectedCardId,
+                                            this.doEstimate.bind(this, card)
+                                        )
+                                    )}
+                            </div>
+
+                            <SubTitle>All votes</SubTitle>
+                            <Votes
+                                cardSet={cardSet}
+                                estimates={estimates || []}
+                                revealed={revealed}
+                            />
+
+                            <SubTitle>Actions</SubTitle>
+                            {revealed && (
+                                <>
+                                    <div>
+                                        These were the cards selected, choose
+                                        one to commit the value to the work
+                                        item:
+                                    </div>
+                                    <div>
+                                        {(estimates || []).map(e => {
+                                            const card = cardSet.cards.find(
+                                                x =>
+                                                    x.identifier ===
+                                                    e.cardIdentifier
+                                            )!;
+                                            return this.renderCard(
+                                                card,
+                                                false,
+                                                false,
+                                                this.doCommitCard.bind(
+                                                    this,
+                                                    card
+                                                )
+                                            );
+                                        })}
+                                    </div>
+                                    <div>
+                                        Or enter a custom value:
+                                        <TextField
+                                            onChange={this._onChangeCustomValue}
+                                        />
+                                    </div>
+                                </>
+                            )}
+                        </div>
+                    </CardContent>
+                </CustomCard>
+            </div>
         );
     }
 

@@ -13,6 +13,12 @@ body {
 //
 // Global styles
 //
+.bolt-panel-content, 
+.custom-scrollbar {
+    scrollbar-color: $transblack-20 transparent;
+    scrollbar-width: thin;
+}
+
 .bolt-panel-content::-webkit-scrollbar {
     width: 18px;
 }
@@ -28,3 +34,4 @@ body {
     background: $transblack-30;
     background-clip: padding-box;
 }
+

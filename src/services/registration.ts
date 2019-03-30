@@ -1,5 +1,5 @@
 import { CardSetServiceId, MockCardSetService } from "./cardSets";
-import { EstimationServiceId, MockEstimationService } from "./estimation";
+import { EstimationServiceId, OfflineEstimationService } from "./estimation";
 import { IdentityService, IdentityServiceId } from "./identity";
 import { QueriesService, QueriesServiceId } from "./queries";
 import { Services } from "./services";
@@ -9,7 +9,7 @@ import { TeamService, TeamServiceId } from "./teams";
 import { WorkItemService, WorkItemServiceId } from "./workItems";
 
 // Mock services
-Services.registerService(EstimationServiceId, MockEstimationService);
+Services.registerService(EstimationServiceId, OfflineEstimationService);
 Services.registerService(CardSetServiceId, MockCardSetService);
 
 Services.registerService(IdentityServiceId, IdentityService);

@@ -16,6 +16,8 @@ export const loadedSession = factory<{
     userInfo: IUserInfo;
 }>("loaded");
 
+export const updateStatus = factory<string>("updateStatus");
+
 export const errorSession = factory<string>("error");
 export const leaveSession = factory<void>("leave");
 export const endSession = factory<void>("end");

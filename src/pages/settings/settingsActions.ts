@@ -8,3 +8,6 @@ export const loaded = factory<{
     workItemTypes: IWorkItemType[];
     fields: IField[];
 }>("loaded");
+export const close = factory("close");
+
+export const setField = factory<IWorkItemType>("setField");

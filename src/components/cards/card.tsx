@@ -44,6 +44,8 @@ export interface ICardData {
 }
 
 export interface ICardComponentProps {
+    className?: string;
+
     state?: CardState;
     size?: CardSize;
 
@@ -61,6 +63,7 @@ export interface ICardComponentProps {
 export class Card extends React.Component<ICardComponentProps> {
     render(): JSX.Element {
         const {
+            className,
             front,
             back,
             disabled = false,
@@ -93,6 +96,7 @@ export class Card extends React.Component<ICardComponentProps> {
         return (
             <BaseElement
                 className={css(
+                    className,
                     onClick && "card--base-button",
                     !onClick && "card--base"
                 )}

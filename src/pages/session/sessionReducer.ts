@@ -6,17 +6,22 @@ import { ISession } from "../../model/session";
 import { IWorkItem } from "../../model/workitem";
 import * as Actions from "./sessionActions";
 import { IUserInfo } from "../../model/user";
+import { stat } from "fs";
 
 export const initialState = {
+    status: {
+        loading: false,
+        message: ""
+    },
     session: null as ISession | null,
     cardSet: null as ICardSet | null,
     workItems: [] as IWorkItem[],
     selectedWorkItem: null as IWorkItem | null,
     ownEstimate: null as IEstimate | null,
     estimates: {} as ISessionEstimates,
-    loading: false,
     revealed: false,
-    activeUsers: [] as IUserInfo[]
+    activeUsers: [] as IUserInfo[],
+    currentUser: null as IUserInfo | null
 };
 
 export type ISessionState = typeof initialState;
@@ -24,7 +29,7 @@ export type ISessionState = typeof initialState;
 const loadSession = reducerAction(
     Actions.loadSession,
     (state: ISessionState) => {
-        state.loading = true;
+        state.status.loading = true;
     }
 );
 
@@ -34,8 +39,9 @@ const loadedSession = reducerAction(
         state.session = session;
         state.cardSet = cardSet;
         state.workItems = workItems;
-        state.loading = false;
+        state.status.loading = false;
         state.activeUsers = [userInfo];
+        state.currentUser = userInfo;
     }
 );
 
@@ -59,8 +65,13 @@ const workItemSelected = reducerAction(
             throw new Error(`Cannot find work item with id ${id}`);
         }
 
+        // Update work item and hide estimates
         state.selectedWorkItem = workItem;
         state.revealed = false;
+
+        // Clear own and other estimates
+        state.estimates = {};
+        state.ownEstimate = null;
     }
 );
 
@@ -98,7 +109,7 @@ const revealed = reducerAction(Actions.revealed, (state: ISessionState) => {
 });
 
 /**
- * Remote estimate
+ * Incoming estimate
  */
 const estimateSet = reducerAction(
     Actions.estimateSet,
@@ -119,10 +130,16 @@ const estimateSet = reducerAction(
                 e => e.identity.id === identity.id
             );
             if (idx === -1) {
+                // We don't have an estimate from this user
                 state.estimates[workItemId].push(estimate);
             } else {
+                // User might have changed their estimate
                 state.estimates[workItemId][idx] = estimate;
             }
+        }
+
+        if (state.currentUser && identity.id === state.currentUser.tfId) {
+            state.ownEstimate = estimate;
         }
     }
 );
@@ -140,6 +157,12 @@ export default <TPayload>(
         [Actions.estimateSet.type]: estimateSet,
         [Actions.estimate.type]: estimate,
         [Actions.userJoined.type]: userJoined,
-        [Actions.userLeft.type]: userLeft
+        [Actions.userLeft.type]: userLeft,
+        [Actions.updateStatus.type]: reducerAction(
+            Actions.updateStatus,
+            (state, message) => {
+                state.status.message = message;
+            }
+        )
     });
 };

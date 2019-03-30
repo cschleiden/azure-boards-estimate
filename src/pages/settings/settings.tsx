@@ -1,22 +1,22 @@
-import { TitleSize } from "azure-devops-ui/Header";
-import { Panel } from "azure-devops-ui/Panel";
-import {
-    renderSimpleCell,
-    Table,
-    TableColumnLayout,
-    ITableColumn,
-    SimpleTableCell
-} from "azure-devops-ui/Table";
-import { ArrayItemProvider } from "azure-devops-ui/Utilities/Provider";
 import { Dropdown } from "azure-devops-ui/Dropdown";
-import * as React from "react";
-import { connect } from "react-redux";
-import { IWorkItemType, IField } from "../../model/workItemType";
-import { IState } from "../../reducer";
-import "./settings.scss";
-import { init } from "./settingsActions";
+import { TitleSize } from "azure-devops-ui/Header";
 import { ListSelection } from "azure-devops-ui/List";
 import { IListBoxItem } from "azure-devops-ui/ListBox";
+import { Panel } from "azure-devops-ui/Panel";
+import {
+    ITableColumn,
+    renderSimpleCell,
+    SimpleTableCell,
+    Table
+} from "azure-devops-ui/Table";
+import { ArrayItemProvider } from "azure-devops-ui/Utilities/Provider";
+import { Spinner, SpinnerSize } from "office-ui-fabric-react";
+import * as React from "react";
+import { connect } from "react-redux";
+import { IField, IWorkItemType } from "../../model/workItemType";
+import { IState } from "../../reducer";
+import "./settings.scss";
+import { close, init, setField } from "./settingsActions";
 
 export interface ISettingsPanelOwnProps {
     onDismiss(): void;
@@ -25,9 +25,10 @@ export interface ISettingsPanelOwnProps {
 interface ISettingsPanelProps {
     workItemTypes: IWorkItemType[];
     fields: null | IField[];
+    loading: boolean;
 }
 
-const Actions = { init };
+const Actions = { init, close, setField };
 
 class SettingsPanel extends React.Component<
     ISettingsPanelProps & typeof Actions & ISettingsPanelOwnProps
@@ -52,17 +53,20 @@ class SettingsPanel extends React.Component<
                 rowIndex: number,
                 columnIndex: number,
                 tableColumn: ITableColumn<any>,
-                tableItem: IWorkItemType
+                workItemType: IWorkItemType
             ) => {
                 const selectedIdx = (this.props.fields || []).findIndex(
-                    f => f.referenceName === tableItem.estimationFieldRefName
+                    f => f.referenceName === workItemType.estimationFieldRefName
                 );
 
                 return (
                     <SimpleTableCell columnIndex={columnIndex}>
                         <Dropdown<IField>
                             listBoxProps={{
-                                onSelect: this.onSelect,
+                                onSelect: this.onSelect.bind(
+                                    this,
+                                    workItemType
+                                ),
                                 selection: new ListSelection({
                                     multiSelect: false,
                                     selectOnFocus: false,
@@ -76,11 +80,14 @@ class SettingsPanel extends React.Component<
                                               ]
                                             : undefined
                                 }),
-                                items: (this.props.fields || []).map(f => ({
-                                    id: f.referenceName,
-                                    text: f.name,
-                                    ...f
-                                }))
+                                items: (this.props.fields || []).map(
+                                    f =>
+                                        ({
+                                            id: f.referenceName,
+                                            text: f.name,
+                                            data: f
+                                        } as IListBoxItem<IField>)
+                                )
                             }}
                         />
                     </SimpleTableCell>
@@ -90,16 +97,22 @@ class SettingsPanel extends React.Component<
         }
     ];
     private onSelect = (
+        workItemType: IWorkItemType,
         event: React.SyntheticEvent<HTMLElement>,
         item: IListBoxItem<IField>
-    ) => {};
+    ) => {
+        this.props.setField({
+            ...workItemType,
+            estimationFieldRefName: item.data!.referenceName
+        });
+    };
 
     public componentDidMount() {
         this.props.init();
     }
 
     public render(): JSX.Element {
-        const { onDismiss } = this.props;
+        const { loading } = this.props;
 
         return (
             <Panel
@@ -107,32 +120,51 @@ class SettingsPanel extends React.Component<
                     text: "Settings",
                     size: TitleSize.Large
                 }}
-                onDismiss={onDismiss}
+                onDismiss={this.onDismiss}
                 blurDismiss={false}
                 contentClassName="custom-scrollbar"
             >
-                <div className="settings-panel--content">
-                    <div>
-                        Select a field to store the estimation for each work
-                        item type you are planning to estimate.
+                {loading ? (
+                    <div className="flex-column flex-grow justify-center">
+                        <Spinner size={SpinnerSize.large} />
                     </div>
+                ) : (
+                    <div className="settings-panel--content">
+                        <p>
+                            Select a field to store the estimation for each work
+                            item type you are planning to estimate.
+                        </p>
 
-                    <Table<IWorkItemType>
-                        columns={this.columns}
-                        itemProvider={
-                            new ArrayItemProvider(this.props.workItemTypes)
-                        }
-                    />
-                </div>
+                        <p>
+                            Please make sure the selected field has the correct
+                            field type.
+                        </p>
+
+                        <Table<IWorkItemType>
+                            columns={this.columns}
+                            itemProvider={
+                                new ArrayItemProvider(this.props.workItemTypes)
+                            }
+                        />
+                    </div>
+                )}
             </Panel>
         );
     }
+
+    private onDismiss = () => {
+        this.props.close();
+
+        const { onDismiss } = this.props;
+        onDismiss();
+    };
 }
 
 export default connect(
     (state: IState) => ({
         workItemTypes: state.settings.workItemTypes,
-        fields: state.settings.fields
+        fields: state.settings.fields,
+        loading: state.settings.loading
     }),
     Actions
 )(SettingsPanel);

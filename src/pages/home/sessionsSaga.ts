@@ -39,8 +39,6 @@ export function* initSaga(): SagaIterator {
         sessionService.getSessions
     ]);
 
-    yield put(populate({ sessions, legacySessions: [] }));
-
     const legacySessions: ISession[] = yield call([
         sessionService,
         sessionService.getLegacySession

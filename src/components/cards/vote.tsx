@@ -3,6 +3,8 @@ import * as React from "react";
 import { ICard } from "../../model/cards";
 import { IIdentity } from "../../model/identity";
 import { Card } from "./card";
+import { VssPersona } from "azure-devops-ui/VssPersona";
+import { Tooltip } from "azure-devops-ui/TooltipEx";
 
 export interface IVoteProps {
     identity: IIdentity;
@@ -19,6 +21,7 @@ export class Vote extends React.Component<IVoteProps> {
         return (
             <div className="vote-container">
                 <Card
+                    className="vote-card"
                     front={{
                         label: "..."
                     }}
@@ -29,7 +32,17 @@ export class Vote extends React.Component<IVoteProps> {
                     disabled={true}
                 />
 
-                <div className="identity">{identity.displayName}</div>
+                <Tooltip text={identity.displayName}>
+                    <div>
+                        <VssPersona
+                            identityDetailsProvider={{
+                                getDisplayName: () => identity.displayName,
+                                getIdentityImageUrl: () => identity.imageUrl
+                            }}
+                            size="small"
+                        />
+                    </div>
+                </Tooltip>
             </div>
         );
     }

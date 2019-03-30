@@ -24,10 +24,13 @@ import {
     workItemSelected,
     userLeft
 } from "./sessionActions";
+import { connected } from "./channelActions";
 
 export function* channelSaga(session: ISession): SagaIterator {
     const channel: IChannel = yield call(getChannel, session.id, session.mode);
     yield call([channel, channel.start], session.id);
+
+    yield put(connected());
 
     try {
         yield all([

@@ -1,5 +1,5 @@
 import { IUserInfo } from "../../model/user";
-import { EstimationServiceId, IEstimationService } from "../estimation";
+import { EstimationServiceId, IOfflineEstimationService } from "../estimation";
 import { Services } from "../services";
 import { defineIncomingOperation, defineOperation, IChannel } from "./channels";
 import { IEstimate } from "../../model/estimate";
@@ -38,10 +38,10 @@ export class OfflineChannel implements IChannel {
     left = defineIncomingOperation<string>();
 
     private sessionId: string = "";
-    private estimationService: IEstimationService;
+    private estimationService: IOfflineEstimationService;
 
     constructor() {
-        this.estimationService = Services.getService<IEstimationService>(
+        this.estimationService = Services.getService<IOfflineEstimationService>(
             EstimationServiceId
         );
     }

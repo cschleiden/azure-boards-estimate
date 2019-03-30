@@ -1,7 +1,9 @@
+import { IExtensionDataManager } from "azure-devops-extension-api";
 import { IEstimate, ISessionEstimates } from "../model/estimate";
 import { IService } from "./services";
+import { getStorageManager } from "./storage";
 
-export interface IEstimationService extends IService {
+export interface IOfflineEstimationService extends IService {
     estimate(sessionId: string, estimate: IEstimate): Promise<void>;
 
     getEstimates(sessionId: string): Promise<ISessionEstimates>;
@@ -9,17 +11,29 @@ export interface IEstimationService extends IService {
 
 export const EstimationServiceId = "EstimationService";
 
-export class MockEstimationService implements IEstimationService {
-    private storage: { [sessionId: string]: ISessionEstimates } = {};
+const OfflineEstimationCollection = "offlineSessions";
 
-    estimate(sessionId: string, estimate: IEstimate): Promise<void> {
-        if (!this.storage[sessionId]) {
-            this.storage[sessionId] = {};
-        }
+interface ISessionDocument {
+    id: string;
+    sessionEstimates: ISessionEstimates;
+    __etag?: string;
+}
 
-        let estimates = this.storage[sessionId][estimate.workItemId];
+export class OfflineEstimationService implements IOfflineEstimationService {
+    private manager: IExtensionDataManager | undefined;
+
+    constructor() {
+        // Prefetch manager
+        this.getManager();
+    }
+
+    async estimate(sessionId: string, estimate: IEstimate): Promise<void> {
+        const document = await this.getDocument(sessionId);
+        const { sessionEstimates } = document;
+
+        let estimates = sessionEstimates[estimate.workItemId];
         if (!estimates) {
-            estimates = this.storage[sessionId][estimate.workItemId] = [];
+            estimates = sessionEstimates[estimate.workItemId] = [];
         }
 
         const idx = estimates.findIndex(
@@ -31,10 +45,45 @@ export class MockEstimationService implements IEstimationService {
             estimates.push(estimate);
         }
 
-        return Promise.resolve();
+        const manager = await this.getManager();
+        manager.setDocument(OfflineEstimationCollection, {
+            ...document,
+            sessionEstimates
+        });
     }
 
     async getEstimates(sessionId: string): Promise<ISessionEstimates> {
-        return this.storage[sessionId] || {};
+        const document = await this.getDocument(sessionId);
+        return document.sessionEstimates;
+    }
+
+    private async getDocument(sessionId: string): Promise<ISessionDocument> {
+        const defaultValue: ISessionDocument = {
+            id: sessionId,
+            sessionEstimates: {}
+        };
+
+        const manager = await this.getManager();
+        try {
+            const document = await manager.getDocument(
+                OfflineEstimationCollection,
+                sessionId,
+                {
+                    defaultValue
+                }
+            );
+            return document;
+        } catch (e) {
+            // Collection does not exist
+            return defaultValue;
+        }
+    }
+
+    private async getManager() {
+        if (!this.manager) {
+            this.manager = await getStorageManager();
+        }
+
+        return this.manager;
     }
 }

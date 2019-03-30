@@ -22,8 +22,10 @@ import {
     leaveSession,
     loadedSession,
     loadSession,
-    commitCard
+    commitCard,
+    updateStatus
 } from "./sessionActions";
+import { connected } from "./channelActions";
 
 export function* rootSessionSaga() {
     yield takeLatest(loadSession.type, sessionSaga);
@@ -58,6 +60,8 @@ export function* sessionSaga(action: ReturnType<typeof loadSession>) {
             [cardService, cardService.getSet],
             session.cardSet
         );
+
+        yield put(updateStatus("Loading work items..."));
 
         // Load work items
         let workItemIds: number[] = [];
@@ -119,8 +123,15 @@ export function* sessionSaga(action: ReturnType<typeof loadSession>) {
             workItemIds
         );
 
+        yield put(updateStatus("Connecting to server..."));
+
         // Start communication channel
         const channelTask: Task = yield fork(channelSaga, session);
+
+        // Wait for connection
+        yield take(connected.type);
+
+        yield put(updateStatus("Connected."));
 
         // Session is now loaded
         const identityService = Services.getService<IIdentityService>(

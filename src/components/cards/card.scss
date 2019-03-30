@@ -5,10 +5,6 @@
     background: transparent;
     padding: 0;
     outline: none;
-
-    perspective: 1000;
-    transform: perspective(1000px);
-    transform-style: preserve-3d;
 }
 
 .card--base {
@@ -17,7 +13,7 @@
     padding: 0;
     outline: none;
 
-    perspective: 1000;
+    perspective: 1000px;
     transform: perspective(1000px);
     transform-style: preserve-3d;
 }

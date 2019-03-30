@@ -1,21 +1,13 @@
+import { IExtensionDataManager } from "azure-devops-extension-api";
+import { defaultCardSets } from "../model/cards";
 import {
-    IExtensionDataManager,
-    IExtensionDataService
-} from "azure-devops-extension-api";
-import * as DevOps from "azure-devops-extension-sdk";
-import {
-    getAccessToken,
-    getExtensionContext,
-    getService
-} from "azure-devops-extension-sdk";
-import {
-    ISession,
     ILegacySession,
+    ISession,
     SessionMode,
     SessionSource
 } from "../model/session";
 import { IService } from "./services";
-import { defaultCardSets } from "../model/cards";
+import { getStorageManager } from "./storage";
 
 export interface ISessionService extends IService {
     getSessions(): Promise<ISession[]>;
@@ -48,7 +40,7 @@ export class SessionService implements ISessionService {
     async getSettingsValue<T>(projectId: string, id: string): Promise<T> {
         const manager = await this.getManager();
 
-        return manager.getValue<T>(`${projectId}/${id}`);
+        return manager.getValue<T>(`${projectId}-${id}`);
     }
 
     async setSettingsValue<T>(
@@ -58,7 +50,7 @@ export class SessionService implements ISessionService {
     ): Promise<void> {
         const manager = await this.getManager();
 
-        await manager.setValue(`${projectId}/${id}`, value);
+        await manager.setValue(`${projectId}-${id}`, value);
     }
 
     async getSessions(): Promise<ISession[]> {
@@ -140,16 +132,7 @@ export class SessionService implements ISessionService {
 
     private async getManager(): Promise<IExtensionDataManager> {
         if (!this.manager) {
-            await DevOps.ready();
-            const context = getExtensionContext();
-            const extensionDataService = await getService<
-                IExtensionDataService
-            >("ms.vss-features.extension-data-service");
-            const accessToken = await getAccessToken();
-            this.manager = await extensionDataService.getExtensionDataManager(
-                context.id,
-                accessToken
-            );
+            this.manager = await getStorageManager();
         }
 
         return this.manager;
