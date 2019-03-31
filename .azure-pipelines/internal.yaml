@@ -29,4 +29,3 @@ steps:
           fileType: vsix
           vsixFile: "cschleiden.estimate-*.vsix"
           updateTasksVersion: false
-=
