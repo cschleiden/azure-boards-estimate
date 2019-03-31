@@ -2,6 +2,7 @@
   "name": "azure-boards-estimate",
   "version": "0.1.0",
   "private": true,
+  "homepage": "./",
   "dependencies": {
     "@aspnet/signalr": "^1.0.3",
     "azure-devops-extension-api": "^1.149.2",
