@@ -1,30 +1,19 @@
 {
     "manifestVersion": 1,
     "id": "estimate",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "name": "Estimate",
     "description": "Planning Poker in Azure Boards.",
     "publisher": "cschleiden",
-    "scopes": [
-        "vso.project",
-        "vso.work",
-        "vso.work_write"
-    ],
+    "scopes": ["vso.project", "vso.work", "vso.work_write"],
     "targets": [
         {
             "id": "Microsoft.VisualStudio.Services"
         }
     ],
-    "demands": [
-        "api-version/5.0"
-    ],
-    "galleryFlags": [
-        "Preview"
-    ],
-    "tags": [
-        "Planning Poker",
-        "Estimate"
-    ],
+    "demands": ["api-version/5.0"],
+    "galleryFlags": ["Preview"],
+    "tags": ["Planning Poker", "Estimate"],
     "icons": {
         "default": "marketplace/icon-light.png",
         "branding": "marketplace/icon-light.png"
@@ -47,9 +36,7 @@
         "color": "rgb(220, 235, 252)",
         "theme": "light"
     },
-    "categories": [
-        "Azure Boards"
-    ],
+    "categories": ["Azure Boards"],
     "files": [
         {
             "path": "marketplace",
@@ -57,6 +44,10 @@
         },
         {
             "path": "build",
+            "addressable": true
+        },
+        {
+            "path": "legacy",
             "addressable": true
         }
     ],
@@ -78,13 +69,11 @@
         {
             "id": "estimate-hub",
             "type": "ms.vss-web.hub",
-            "targets": [
-                "ms.vss-work-web.work-hub-group"
-            ],
+            "targets": ["ms.vss-work-web.work-hub-group"],
             "properties": {
                 "name": "Estimate",
                 "order": 100,
-                "uri": "index.html",
+                "uri": "build/index.html",
                 "icon": {
                     "light": "marketplace/icon-light.png",
                     "dark": "marketplace/icon-dark.png"
@@ -102,9 +91,7 @@
         {
             "id": "Estimate.Main",
             "type": "ms.vss-web.hub",
-            "targets": [
-                "ms.vss-work-web.work-hub-group"
-            ],
+            "targets": ["ms.vss-work-web.work-hub-group"],
             "properties": {
                 "name": "Estimate",
                 "order": 99,
@@ -124,9 +111,7 @@
             "id": "Estimate.WorkItems",
             "type": "ms.vss-web.action",
             "description": "Shows the target properties for menu actions for work items",
-            "targets": [
-                "ms.vss-work-web.backlog-item-menu"
-            ],
+            "targets": ["ms.vss-work-web.backlog-item-menu"],
             "properties": {
                 "text": "Estimate work item(s)",
                 "title": "Start estimation session",
