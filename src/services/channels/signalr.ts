@@ -4,6 +4,7 @@ import { IUserInfo } from "../../model/user";
 import { IdentityServiceId, IIdentityService } from "../identity";
 import { Services } from "../services";
 import { defineIncomingOperation, defineOperation, IChannel } from "./channels";
+import { ISnapshot } from "../../model/snapshots";
 
 const baseUrl = "https://estimate-backend.azurewebsites.net/";
 
@@ -13,7 +14,8 @@ enum Action {
     Estimate = "estimate",
     Reveal = "reveal",
     Add = "add",
-    Switch = "switch"
+    Switch = "switch",
+    Snapshot = "snapshot"
 }
 
 export class SignalRChannel implements IChannel {
@@ -36,6 +38,10 @@ export class SignalRChannel implements IChannel {
     });
 
     left = defineIncomingOperation<string>();
+
+    snapshot = defineOperation<ISnapshot>(async snapshot => {
+        await this.sendToOtherClients(Action.Snapshot, snapshot);
+    });
 
     private connection: signalR.HubConnection | undefined;
     private sessionId: string = "";
@@ -72,6 +78,8 @@ export class SignalRChannel implements IChannel {
             name: identity.displayName,
             imageUrl: identity.imageUrl
         });
+
+        // Wait for snapshot
     }
 
     async end(): Promise<void> {
@@ -111,6 +119,11 @@ export class SignalRChannel implements IChannel {
 
             case Action.Reveal: {
                 this.revealed.incoming(payload);
+                break;
+            }
+
+            case Action.Snapshot: {
+                this.snapshot.incoming(payload);
                 break;
             }
 

@@ -3,6 +3,7 @@ import { EstimationServiceId, IOfflineEstimationService } from "../estimation";
 import { Services } from "../services";
 import { defineIncomingOperation, defineOperation, IChannel } from "./channels";
 import { IEstimate } from "../../model/estimate";
+import { ISnapshot } from "../../model/snapshots";
 
 export class OfflineChannel implements IChannel {
     estimate = defineOperation<IEstimate>(async estimate => {
@@ -36,6 +37,8 @@ export class OfflineChannel implements IChannel {
     });
 
     left = defineIncomingOperation<string>();
+
+    snapshot = defineOperation<ISnapshot>(async () => {});
 
     private sessionId: string = "";
     private estimationService: IOfflineEstimationService;

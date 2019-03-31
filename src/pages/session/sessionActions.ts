@@ -4,6 +4,7 @@ import { IEstimate, ISessionEstimates } from "../../model/estimate";
 import { ISession } from "../../model/session";
 import { IUserInfo } from "../../model/user";
 import { IWorkItem } from "../../model/workitem";
+import { ISnapshot } from "../../model/snapshots";
 
 const factory = actionCreatorFactory("session");
 
@@ -39,3 +40,5 @@ export const estimateSet = factory<IEstimate>("estimateSet");
 
 export const userJoined = factory<IUserInfo>("userJoined");
 export const userLeft = factory<string>("userLeft");
+
+export const snapshotReceived = factory<ISnapshot>("snapshotReceived");

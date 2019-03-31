@@ -39,6 +39,7 @@ import {
 import { connected } from "./channelActions";
 import { IEstimate } from "../../model/estimate";
 import { IState } from "../../reducer";
+import { ISnapshot } from "../../model/snapshots";
 
 export function* rootSessionSaga() {
     yield takeLatest(loadSession.type, sessionSaga);
@@ -208,25 +209,10 @@ export function* sessionSaga(action: ReturnType<typeof loadSession>) {
  * Handle estimation
  */
 function* sessionEstimationSaga(): SagaIterator {
-    yield takeEvery(userJoined, userJoinedSaga);
-
     const action: ReturnType<typeof commitCard> = yield take(commitCard);
 
     const workItemService = Services.getService<IWorkItemService>(
         WorkItemServiceId
     );
     workItemService;
-}
-
-/**
- * Handle a user joining
- */
-function* userJoinedSaga(action: ReturnType<typeof userJoined>): SagaIterator {
-    // When a user joins, we'll re-send our current estimate
-    const ownEstimate: IEstimate = yield select<IState>(
-        s => s.session.ownEstimate
-    );
-    if (ownEstimate) {
-        yield put(estimate(ownEstimate));
-    }
 }

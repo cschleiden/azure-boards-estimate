@@ -1,18 +1,29 @@
 import { IEstimate } from "../../model/estimate";
+import { ISnapshot } from "../../model/snapshots";
 import { IUserInfo } from "../../model/user";
 
 export type IHandler<TPayload> = (payload: TPayload) => void;
 
+/**
+ * Interface for operations which can be received from remote clients
+ */
 export interface IIncoming<TPayload> {
     attachHandler(handler: IHandler<TPayload>): void;
 }
 
+/**  */
 export interface IInternalIncoming<TPayload> extends IIncoming<TPayload> {
     incoming(payload: TPayload): void;
 }
 
+/**
+ * Interface for an operation that can be sent
+ */
 export type IOutgoing<TPayload> = (payload: TPayload) => Promise<void>;
 
+/**
+ * Interface for operations that can be sent and receivied
+ */
 export type IBiDirectional<TPayload> = IIncoming<TPayload> &
     IOutgoing<TPayload>;
 
@@ -72,6 +83,13 @@ export interface IChannel {
 
     join: IBiDirectional<IUserInfo>;
 
+    snapshot: IBiDirectional<ISnapshot>;
+
+    /**
+     * A client has left
+     *
+     * @param Identity Id
+     */
     left: IIncoming<string>;
 
     /**

@@ -78,11 +78,15 @@ const workItemSelected = reducerAction(
 const userJoined = reducerAction(
     Actions.userJoined,
     (state: ISessionState, userInfo) => {
-        if (!state.activeUsers.find(x => x.tfId === userInfo.tfId)) {
-            state.activeUsers.push(userInfo);
-        }
+        addUser(state, userInfo);
     }
 );
+
+function addUser(state: ISessionState, userInfo: IUserInfo): void {
+    if (!state.activeUsers.find(x => x.tfId === userInfo.tfId)) {
+        state.activeUsers.push(userInfo);
+    }
+}
 
 const userLeft = reducerAction(
     Actions.userLeft,
@@ -162,6 +166,38 @@ export default <TPayload>(
             Actions.updateStatus,
             (state, message) => {
                 state.status.message = message;
+            }
+        ),
+        [Actions.snapshotReceived.type]: reducerAction(
+            Actions.snapshotReceived,
+            (state, snapshot) => {
+                // Only react to snapshot if we don't have a current work item. Otherwise assume that we're
+                // already up-to-date.
+                if (!state.selectedWorkItem) {
+                    const {
+                        currentWorkItemId,
+                        revealed,
+                        estimates,
+                        userInfo
+                    } = snapshot;
+                    if (currentWorkItemId) {
+                        const workItem = state.workItems.find(
+                            x => x.id === currentWorkItemId
+                        );
+                        if (!workItem) {
+                            throw new Error(
+                                `Cannot find work item with id ${currentWorkItemId}`
+                            );
+                        }
+
+                        state.selectedWorkItem = workItem;
+                    }
+
+                    state.revealed = revealed;
+                    state.estimates = estimates;
+
+                    addUser(state, userInfo);
+                }
             }
         )
     });
