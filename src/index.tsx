@@ -44,4 +44,4 @@ DevOps.init().then(() => {
     );
 });
 
-registerServiceWorker();
+// registerServiceWorker();
