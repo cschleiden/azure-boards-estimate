@@ -29,6 +29,11 @@ export const SessionServiceId = "SessionService";
 
 const SessionCollection = "sessions";
 
+/**
+ * Storage key for the field configuration
+ */
+export const FieldConfiguration = "field-configuration";
+
 export class SessionService implements ISessionService {
     private manager: IExtensionDataManager | undefined;
 

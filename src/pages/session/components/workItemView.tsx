@@ -8,7 +8,7 @@ import { SubTitle } from "../../../components/subtitle";
 import { Votes } from "../../../components/votes";
 import { WorkItemDescription } from "../../../components/workitems/workItemDescription";
 import { WorkItemHeader } from "../../../components/workitems/workItemHeader";
-import { WorkItemStoryPoints } from "../../../components/workitems/workItemStoryPoints";
+import { WorkItemEstimate } from "../../../components/workitems/workItemEstimate";
 import { ICard, ICardSet } from "../../../model/cards";
 import { IEstimate } from "../../../model/estimate";
 import { IIdentity } from "../../../model/identity";
@@ -72,7 +72,10 @@ class WorkItemView extends React.Component<IWorkItemProps & typeof Actions> {
                         <div className="flex-grow flex-column">
                             <WorkItemDescription workItem={selectedWorkItem} />
 
-                            <WorkItemStoryPoints estimate={0} />
+                            <WorkItemEstimate
+                                cardSet={cardSet}
+                                estimate={selectedWorkItem.estimate}
+                            />
 
                             <SubTitle>Your vote</SubTitle>
                             <div className="card-container">

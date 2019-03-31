@@ -11,7 +11,12 @@ import {
 } from "azure-devops-extension-api/WorkItemTrackingProcess";
 import { IWorkItem } from "../model/workitem";
 import { IField, IWorkItemType } from "../model/workItemType";
-import { IService } from "./services";
+import { IService, Services } from "./services";
+import {
+    SessionServiceId,
+    ISessionService,
+    FieldConfiguration
+} from "./sessions";
 
 export interface IWorkItemService extends IService {
     getWorkItems(workItemIds: number[]): Promise<IWorkItem[]>;
@@ -27,6 +32,7 @@ interface IWorkItemTypeInfo {
     icon?: string;
     color?: string;
     descriptionFieldRefName?: string;
+    estimationFieldRefName?: string;
 }
 
 export class WorkItemService implements IWorkItemService {
@@ -53,6 +59,15 @@ export class WorkItemService implements IWorkItemService {
 
         const client = getClient(WorkItemTrackingRestClient);
         const workItemTypes = await client.getWorkItemTypes(projectId);
+
+        // Merge with config
+        const sessionService = Services.getService<ISessionService>(
+            SessionServiceId
+        );
+        const configuration = await sessionService.getSettingsValue<{
+            [name: string]: IWorkItemType;
+        }>(projectId, FieldConfiguration);
+
         return workItemTypes.map(wi => {
             let estimationFieldRefName: string | undefined;
 
@@ -65,6 +80,12 @@ export class WorkItemService implements IWorkItemService {
             ) {
                 // Work item type has effort field, use this
                 estimationFieldRefName = effortField.referenceName;
+            }
+
+            // Check for overrides from configuration
+            if (configuration && configuration[wi.name]) {
+                estimationFieldRefName =
+                    configuration[wi.name].estimationFieldRefName;
             }
 
             return {
@@ -105,7 +126,7 @@ export class WorkItemService implements IWorkItemService {
 
         // The rest of the method is getting the work item type definitions for the work items and then identifying which HTML fields
         // to use for the description. If most of the work items are in a single project this should be fast, if not it could be
-        // really really slow.
+        // really really slow, but this should not be the mainline scenario.
 
         // Aggregate all projects
         const projectById = new Map<
@@ -136,6 +157,19 @@ export class WorkItemService implements IWorkItemService {
                     // Unfortunately, the project properties API only accepts projectId and not name, so make this roundtrip here.
                     const project = await coreClient.getProject(projectName);
 
+                    // Get work item types and their configuration
+                    const currentProjectWorkItemTypes = await this.getWorkItemTypes(
+                        project.id
+                    );
+
+                    const witEstimationFieldRefNameMapping: {
+                        [workItemTypeName: string]: string | undefined;
+                    } = {};
+                    currentProjectWorkItemTypes.forEach(workItemType => {
+                        witEstimationFieldRefNameMapping[workItemType.name] =
+                            workItemType.estimationFieldRefName;
+                    });
+
                     // Get process type id
                     const properties = await coreClient.getProjectProperties(
                         project.id,
@@ -146,12 +180,13 @@ export class WorkItemService implements IWorkItemService {
                     const workItemTypes = await processClient.getProcessWorkItemTypes(
                         processTypeId
                     );
-                    const workItemTypeNameToRefNameMapping: {
+
+                    // Map of friendly work item name (e.g. Bug) to reference name inherited customization
+                    const witNameToRefNameMapping: {
                         [name: string]: string;
                     } = {};
                     workItemTypes.forEach(x => {
-                        workItemTypeNameToRefNameMapping[x.name] =
-                            x.referenceName;
+                        witNameToRefNameMapping[x.name] = x.referenceName;
                     });
 
                     // Get work item type definitions
@@ -160,9 +195,7 @@ export class WorkItemService implements IWorkItemService {
                             async workItemTypeName => {
                                 const workItemType = await processClient.getProcessWorkItemType(
                                     processTypeId,
-                                    workItemTypeNameToRefNameMapping[
-                                        workItemTypeName
-                                    ],
+                                    witNameToRefNameMapping[workItemTypeName],
                                     4 /* GetWorkItemTypeExpand.Layout */
                                 );
 
@@ -175,7 +208,11 @@ export class WorkItemService implements IWorkItemService {
                                     {
                                         icon: workItemType.icon,
                                         color: workItemType.color,
-                                        descriptionFieldRefName
+                                        descriptionFieldRefName,
+                                        estimationFieldRefName:
+                                            witEstimationFieldRefNameMapping[
+                                                workItemType.name
+                                            ]
                                     }
                                 );
                             }
@@ -185,18 +222,25 @@ export class WorkItemService implements IWorkItemService {
             )
         );
 
-        // Page in description fields
-        const workItemDescriptions = await workItemTrackingClient.getWorkItemsBatch(
+        // Page in description & estimation fields
+        const fields = new Set<string>();
+        for (const project of projectById.values()) {
+            for (const wit of project.workItemTypes.values()) {
+                if (wit.descriptionFieldRefName) {
+                    fields.add(wit.descriptionFieldRefName);
+                }
+
+                if (wit.estimationFieldRefName) {
+                    fields.add(wit.estimationFieldRefName);
+                }
+            }
+        }
+
+        // Get work item data
+        const workItemsFieldData = await workItemTrackingClient.getWorkItemsBatch(
             {
                 ids: workItemIds,
-                fields: Array.prototype.concat.apply(
-                    [],
-                    Array.from(projectById.values()).map(x =>
-                        Array.from(x.workItemTypes.values()).map(
-                            x => x.descriptionFieldRefName
-                        )
-                    )
-                ),
+                fields: Array.from(fields.values()),
                 $expand: 0 /* WorkItemExpand.None */,
                 errorPolicy: 2 /* WorkItemErrorPolicy.Omit */
             } as WorkItemBatchGetRequest
@@ -205,18 +249,28 @@ export class WorkItemService implements IWorkItemService {
         const mappedWorkItemsById: { [id: number]: IWorkItem } = {};
         mappedWorkItems.forEach(x => (mappedWorkItemsById[x.id] = x));
 
-        for (const workItemDescription of workItemDescriptions) {
+        for (const workItemFieldData of workItemsFieldData) {
             try {
-                const wi = mappedWorkItemsById[workItemDescription.id];
+                const workItem = mappedWorkItemsById[workItemFieldData.id];
                 const workItemTypeInfo = projectById
-                    .get(wi.project)!
-                    .workItemTypes.get(wi.workItemType)!;
-                wi.description =
-                    workItemDescription.fields[
-                        workItemTypeInfo.descriptionFieldRefName!
-                    ];
-                wi.icon = workItemTypeInfo.icon;
-                wi.color = workItemTypeInfo.color;
+                    .get(workItem.project)!
+                    .workItemTypes.get(workItem.workItemType)!;
+
+                if (workItemTypeInfo.descriptionFieldRefName) {
+                    workItem.description =
+                        workItemFieldData.fields[
+                            workItemTypeInfo.descriptionFieldRefName
+                        ];
+                }
+
+                if (workItemTypeInfo.estimationFieldRefName) {
+                    workItem.estimate =
+                        workItemFieldData.fields[
+                            workItemTypeInfo.estimationFieldRefName
+                        ];
+                }
+                workItem.icon = workItemTypeInfo.icon;
+                workItem.color = workItemTypeInfo.color;
             } catch {
                 // Ignore!
             }

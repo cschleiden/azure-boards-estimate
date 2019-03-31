@@ -75,6 +75,7 @@ class Session extends React.Component<
 
     render(): JSX.Element {
         const {
+            estimates,
             cardSet,
             session,
             status,
@@ -146,13 +147,12 @@ class Session extends React.Component<
                         {workItems.map(workItem => (
                             <WorkItemCard
                                 key={workItem.id}
+                                cardSet={cardSet}
                                 selected={
                                     !!selectedWorkItem &&
                                     selectedWorkItem.id === workItem.id
                                 }
                                 workItem={workItem}
-                                // TODO: Use real value
-                                estimate={cardSet.cards[0].identifier}
                                 onClick={() =>
                                     this.props.selectWorkItem(workItem.id)
                                 }

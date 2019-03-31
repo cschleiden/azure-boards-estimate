@@ -4,6 +4,7 @@ export interface IWorkItem {
     title: string;
     description: string;
     workItemType: string;
+    estimate?: string | number;
 
     icon?: string;
     color?: string;

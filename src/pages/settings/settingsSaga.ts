@@ -5,7 +5,11 @@ import { SagaIterator } from "redux-saga";
 import { call, put, takeEvery } from "redux-saga/effects";
 import { IField, IWorkItemType } from "../../model/workItemType";
 import { Services } from "../../services/services";
-import { ISessionService, SessionServiceId } from "../../services/sessions";
+import {
+    ISessionService,
+    SessionServiceId,
+    FieldConfiguration
+} from "../../services/sessions";
 import { IWorkItemService, WorkItemServiceId } from "../../services/workItems";
 import { init, loaded, setField } from "./settingsActions";
 
@@ -14,8 +18,6 @@ export function* rootSettingsSaga(): SagaIterator {
 
     yield takeEvery(setField.type, setFieldSaga);
 }
-
-const FieldConfiguration = "field-configuration";
 
 function* initSaga(): SagaIterator {
     const projectService: IProjectPageService = yield call(
@@ -40,25 +42,6 @@ function* initSaga(): SagaIterator {
         [workItemService, workItemService.getFields],
         projectInfo.id
     );
-
-    // Merge with config
-    const sessionService = Services.getService<ISessionService>(
-        SessionServiceId
-    );
-    const configuration: { [name: string]: IWorkItemType } = yield call(
-        [sessionService, sessionService.getSettingsValue as any],
-        projectInfo.id,
-        FieldConfiguration
-    );
-
-    if (configuration) {
-        for (const workItemType of workItemTypes) {
-            if (configuration[workItemType.name]) {
-                workItemType.estimationFieldRefName =
-                    configuration[workItemType.name].estimationFieldRefName;
-            }
-        }
-    }
 
     yield put(
         loaded({
