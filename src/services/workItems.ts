@@ -24,6 +24,12 @@ export interface IWorkItemService extends IService {
     getWorkItemTypes(projectId: string): Promise<IWorkItemType[]>;
 
     getFields(projectId: string): Promise<IField[]>;
+
+    saveEstimate(
+        workItemId: number,
+        estimationFieldRefName: string,
+        estimate?: number | string
+    ): Promise<void>;
 }
 
 export const WorkItemServiceId = "WorkItemService";
@@ -268,6 +274,8 @@ export class WorkItemService implements IWorkItemService {
                         workItemFieldData.fields[
                             workItemTypeInfo.estimationFieldRefName
                         ];
+                    workItem.estimationFieldRefName =
+                        workItemTypeInfo.estimationFieldRefName;
                 }
                 workItem.icon = workItemTypeInfo.icon;
                 workItem.color = workItemTypeInfo.color;
@@ -278,6 +286,25 @@ export class WorkItemService implements IWorkItemService {
 
         // And, we're done.
         return mappedWorkItems;
+    }
+
+    async saveEstimate(
+        workItemId: number,
+        estimationFieldRefName: string,
+        estimate?: string | number | undefined
+    ): Promise<void> {
+        const client = getClient(WorkItemTrackingRestClient);
+
+        await client.updateWorkItem(
+            [
+                {
+                    op: "add",
+                    path: `/fields/${estimationFieldRefName}`,
+                    value: estimate
+                }
+            ],
+            workItemId
+        );
     }
 
     private _getDescription(pages: Page[]): string {

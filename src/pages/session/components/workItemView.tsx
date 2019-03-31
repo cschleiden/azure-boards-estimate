@@ -14,9 +14,11 @@ import { IEstimate } from "../../../model/estimate";
 import { IIdentity } from "../../../model/identity";
 import { IWorkItem } from "../../../model/workitem";
 import { IState } from "../../../reducer";
-import { commitCard, estimate, reveal } from "../sessionActions";
+import { commitEstimate, estimate, reveal } from "../sessionActions";
 import "./workItemView.scss";
 import { TextField } from "azure-devops-ui/TextField";
+import { PrimaryButton } from "office-ui-fabric-react";
+import { CustomEstimate } from "./customEstimate";
 
 interface IWorkItemProps {
     identity: IIdentity;
@@ -34,7 +36,7 @@ interface IWorkItemProps {
 const Actions = {
     estimate,
     reveal,
-    commitCard
+    commitEstimate
 };
 
 class WorkItemView extends React.Component<IWorkItemProps & typeof Actions> {
@@ -123,12 +125,10 @@ class WorkItemView extends React.Component<IWorkItemProps & typeof Actions> {
                                             );
                                         })}
                                     </div>
-                                    <div>
-                                        Or enter a custom value:
-                                        <TextField
-                                            onChange={this._onChangeCustomValue}
-                                        />
-                                    </div>
+                                    <div>Or enter a custom value:</div>
+                                    <CustomEstimate
+                                        commitEstimate={this.doCommitValue}
+                                    />
                                 </>
                             )}
                         </div>
@@ -138,7 +138,10 @@ class WorkItemView extends React.Component<IWorkItemProps & typeof Actions> {
         );
     }
 
-    private _onChangeCustomValue = () => {};
+    private doCommitValue = (value: string) => {
+        const { commitEstimate } = this.props;
+        commitEstimate(value);
+    };
 
     private renderCard = (
         card: ICard,
@@ -175,9 +178,8 @@ class WorkItemView extends React.Component<IWorkItemProps & typeof Actions> {
     };
 
     private doCommitCard = (card: ICard): void => {
-        const { commitCard } = this.props;
-
-        commitCard(card);
+        const { commitEstimate } = this.props;
+        commitEstimate(card.value);
     };
 }
 

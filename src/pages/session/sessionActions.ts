@@ -34,7 +34,11 @@ export const reveal = factory<void>("reveal");
 /** Cards have been revealed */
 export const revealed = factory<void>("revealed");
 
-export const commitCard = factory<ICard>("commitCard");
+export const commitEstimate = factory<number | string | null>("commitCard");
+export const estimateUpdated = factory<{
+    workItemId: number;
+    value: number | string | undefined;
+}>("estimateUpdated");
 
 export const estimateSet = factory<IEstimate>("estimateSet");
 

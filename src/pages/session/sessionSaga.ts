@@ -1,4 +1,8 @@
-import { IProjectPageService } from "azure-devops-extension-api";
+import {
+    IProjectPageService,
+    IGlobalMessagesService,
+    CommonServiceIds
+} from "azure-devops-extension-api";
 import { ProjectInfo } from "azure-devops-extension-api/Core";
 import { getService } from "azure-devops-extension-sdk";
 import { Task, SagaIterator } from "redux-saga";
@@ -31,10 +35,11 @@ import {
     leaveSession,
     loadedSession,
     loadSession,
-    commitCard,
+    commitEstimate,
     updateStatus,
     userJoined,
-    estimate
+    estimate,
+    estimateUpdated
 } from "./sessionActions";
 import { connected } from "./channelActions";
 import { IEstimate } from "../../model/estimate";
@@ -209,10 +214,42 @@ export function* sessionSaga(action: ReturnType<typeof loadSession>) {
  * Handle estimation
  */
 function* sessionEstimationSaga(): SagaIterator {
-    const action: ReturnType<typeof commitCard> = yield take(commitCard);
+    while (true) {
+        const action: ReturnType<typeof commitEstimate> = yield take(
+            commitEstimate
+        );
+        const value = action.payload;
 
-    const workItemService = Services.getService<IWorkItemService>(
-        WorkItemServiceId
-    );
-    workItemService;
+        const workItem: IWorkItem = yield select<IState>(
+            s => s.session.selectedWorkItem
+        );
+        if (!workItem || !value) {
+            continue;
+        }
+
+        if (!workItem.estimationFieldRefName) {
+            // No estimation field ref name given, we cannot save
+            console.error("Cannot save ");
+            continue;
+        }
+
+        try {
+            const workItemService = Services.getService<IWorkItemService>(
+                WorkItemServiceId
+            );
+            yield call(
+                [workItemService, workItemService.saveEstimate],
+                workItem.id,
+                workItem.estimationFieldRefName,
+                value
+            );
+
+            yield put(
+                estimateUpdated({
+                    workItemId: workItem.id,
+                    value
+                })
+            );
+        } catch (e) {}
+    }
 }

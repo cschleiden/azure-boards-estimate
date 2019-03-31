@@ -1,12 +1,11 @@
 import { Action } from "typescript-fsa";
 import reducerMap, { reducerAction } from "../../lib/reducerMap";
 import { ICardSet } from "../../model/cards";
-import { ISessionEstimates, IEstimate } from "../../model/estimate";
+import { IEstimate, ISessionEstimates } from "../../model/estimate";
 import { ISession } from "../../model/session";
+import { IUserInfo } from "../../model/user";
 import { IWorkItem } from "../../model/workitem";
 import * as Actions from "./sessionActions";
-import { IUserInfo } from "../../model/user";
-import { stat } from "fs";
 
 export const initialState = {
     status: {
@@ -162,6 +161,15 @@ export default <TPayload>(
         [Actions.estimate.type]: estimate,
         [Actions.userJoined.type]: userJoined,
         [Actions.userLeft.type]: userLeft,
+        [Actions.estimateUpdated.type]: reducerAction(
+            Actions.estimateUpdated,
+            (state, { workItemId, value }) => {
+                const workItem = state.workItems.find(x => x.id === workItemId);
+                if (workItem) {
+                    workItem.estimate = value;
+                }
+            }
+        ),
         [Actions.updateStatus.type]: reducerAction(
             Actions.updateStatus,
             (state, message) => {

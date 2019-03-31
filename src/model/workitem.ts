@@ -6,6 +6,8 @@ export interface IWorkItem {
     workItemType: string;
     estimate?: string | number;
 
+    estimationFieldRefName?: string;
+
     icon?: string;
     color?: string;
 }
