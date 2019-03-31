@@ -24,7 +24,7 @@
   "scripts": {
     "watch": "react-scripts start",
     "build;temp": "react-scripts build",
-    "build": "env-path -p .env.staging react-scripts build",
+    "build": "env-cmd -p .env.staging react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "start": "react-scripts start",
