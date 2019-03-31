@@ -9,6 +9,7 @@ import { Tooltip } from "azure-devops-ui/TooltipEx";
 import { VssPersona } from "azure-devops-ui/VssPersona";
 import { Spinner, SpinnerSize } from "office-ui-fabric-react";
 import * as React from "react";
+import { ZeroData, ZeroDataActionType } from "azure-devops-ui/ZeroData";
 import { connect } from "react-redux";
 import { WorkItemCard } from "../../components/workitems/workItemCard";
 import { ICardSet } from "../../model/cards";
@@ -159,6 +160,11 @@ class Session extends React.Component<
                         ))}
                     </div>
                     {!!selectedWorkItem && <WorkItemView />}
+                    {!selectedWorkItem && (
+                        <div className="flex-grow flex-column flex-center justify-center">
+                            <i>Select a work item on the left to get started</i>
+                        </div>
+                    )}
                 </div>
             </Page>
         );

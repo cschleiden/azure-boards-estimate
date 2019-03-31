@@ -2,7 +2,16 @@ import { IProjectPageService } from "azure-devops-extension-api";
 import { ProjectInfo } from "azure-devops-extension-api/Core";
 import { getService } from "azure-devops-extension-sdk";
 import { Task, SagaIterator } from "redux-saga";
-import { call, cancel, fork, put, take, takeLatest } from "redux-saga/effects";
+import {
+    call,
+    cancel,
+    fork,
+    put,
+    take,
+    takeLatest,
+    takeEvery,
+    select
+} from "redux-saga/effects";
 import history from "../../lib/history";
 import { ICardSet } from "../../model/cards";
 import { IIdentity } from "../../model/identity";
@@ -23,9 +32,13 @@ import {
     loadedSession,
     loadSession,
     commitCard,
-    updateStatus
+    updateStatus,
+    userJoined,
+    estimate
 } from "./sessionActions";
 import { connected } from "./channelActions";
+import { IEstimate } from "../../model/estimate";
+import { IState } from "../../reducer";
 
 export function* rootSessionSaga() {
     yield takeLatest(loadSession.type, sessionSaga);
@@ -195,10 +208,25 @@ export function* sessionSaga(action: ReturnType<typeof loadSession>) {
  * Handle estimation
  */
 function* sessionEstimationSaga(): SagaIterator {
+    yield takeEvery(userJoined, userJoinedSaga);
+
     const action: ReturnType<typeof commitCard> = yield take(commitCard);
 
     const workItemService = Services.getService<IWorkItemService>(
         WorkItemServiceId
     );
     workItemService;
+}
+
+/**
+ * Handle a user joining
+ */
+function* userJoinedSaga(action: ReturnType<typeof userJoined>): SagaIterator {
+    // When a user joins, we'll re-send our current estimate
+    const ownEstimate: IEstimate = yield select<IState>(
+        s => s.session.ownEstimate
+    );
+    if (ownEstimate) {
+        yield put(estimate(ownEstimate));
+    }
 }
