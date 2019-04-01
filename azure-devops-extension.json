@@ -12,7 +12,7 @@
         }
     ],
     "demands": ["api-version/5.0"],
-    "galleryFlags": ["Preview"],
+    "galleryFlags": [],
     "tags": ["Planning Poker", "Estimate"],
     "icons": {
         "default": "marketplace/icon-light.png",
