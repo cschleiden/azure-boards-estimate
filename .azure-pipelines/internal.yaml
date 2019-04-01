@@ -20,7 +20,7 @@ steps:
 
     - script: npm run build
 
-    - script: npm run package-release
+    - script: npm run package-release-internal
 
     - task: ms-devlabs.vsts-developer-tools-build-tasks.publish-extension-build-task.PublishExtension@1
       displayName: "Publish Extension"
