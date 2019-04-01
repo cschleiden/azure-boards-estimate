@@ -1,0 +1,33 @@
+pool:
+    name: Hosted VS2017
+    demands: npm
+
+pr: none
+
+trigger:
+    branches:
+        exclude:
+            - '*'
+    tags:
+        include:
+            - v*
+        exclude:
+            - v*-internal
+
+steps:
+    - task: Npm@1
+      displayName: "npm install"
+      inputs:
+          verbose: false
+
+    - script: npm run build
+
+    - script: npm run package-release
+
+    - task: ms-devlabs.vsts-developer-tools-build-tasks.publish-extension-build-task.PublishExtension@1
+      displayName: "Publish Extension"
+      inputs:
+          connectedServiceName: Marketplace cschleiden
+          fileType: vsix
+          vsixFile: "ms-devlabs.estimate-*.vsix"
+          updateTasksVersion: false
