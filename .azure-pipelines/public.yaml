@@ -27,7 +27,7 @@ steps:
     - task: ms-devlabs.vsts-developer-tools-build-tasks.publish-extension-build-task.PublishExtension@1
       displayName: "Publish Extension"
       inputs:
-          connectedServiceName: Marketplace cschleiden
+          connectedServiceName: Marketplace ms-devlabs
           fileType: vsix
           vsixFile: "ms-devlabs.estimate-*.vsix"
           updateTasksVersion: false
