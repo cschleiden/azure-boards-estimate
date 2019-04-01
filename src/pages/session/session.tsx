@@ -3,7 +3,10 @@ import {
     HeaderTitle,
     HeaderTitleArea
 } from "azure-devops-ui/Header";
-import { HeaderCommandBar } from "azure-devops-ui/HeaderCommandBar";
+import {
+    HeaderCommandBar,
+    IHeaderCommandBarItem
+} from "azure-devops-ui/HeaderCommandBar";
 import { Orientation, Page } from "azure-devops-ui/Page";
 import { Tooltip } from "azure-devops-ui/TooltipEx";
 import { VssPersona } from "azure-devops-ui/VssPersona";
@@ -119,26 +122,29 @@ class Session extends React.Component<
                     </div>
 
                     <HeaderCommandBar
-                        items={[
-                            {
-                                id: "action-leave",
-                                important: true,
-                                text: "Leave session",
-                                iconProps: { iconName: "Home" },
-                                onActivate: () => {
-                                    leaveSession();
-                                }
-                            },
-                            {
-                                id: "action-end",
-                                important: false,
-                                text: "End session",
-                                iconProps: { iconName: "Delete" },
-                                onActivate: () => {
-                                    this.props.endSession();
-                                }
-                            }
-                        ]}
+                        items={
+                            [
+                                {
+                                    id: "action-leave",
+                                    important: true,
+                                    text: "Leave session",
+                                    iconProps: { iconName: "Home" },
+                                    onActivate: () => {
+                                        leaveSession();
+                                    }
+                                },
+                                (!session.isLegacy && {
+                                    id: "action-end",
+                                    important: false,
+                                    text: "End session",
+                                    iconProps: { iconName: "Delete" },
+                                    onActivate: () => {
+                                        this.props.endSession();
+                                    }
+                                }) ||
+                                    undefined
+                            ].filter(x => !!x) as IHeaderCommandBarItem[]
+                        }
                     />
                 </CustomHeader>
 

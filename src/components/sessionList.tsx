@@ -7,13 +7,14 @@ import "./sessionList.scss";
 export interface ICardListProps {
     sessions: ISessionDisplay[];
     history: History;
+    hideContextMenu?: boolean;
 
     onEndSession: (id: string) => void;
 }
 
 export class SessionList extends React.Component<ICardListProps> {
     render(): JSX.Element {
-        const { history, onEndSession, sessions } = this.props;
+        const { hideContextMenu, history, onEndSession, sessions } = this.props;
 
         return (
             <ul className="session-list">
@@ -21,6 +22,7 @@ export class SessionList extends React.Component<ICardListProps> {
                     <SessionCard
                         key={session.session.id}
                         session={session}
+                        hideContextMenu={hideContextMenu}
                         history={history}
                         onEndSession={onEndSession}
                     />

@@ -66,10 +66,24 @@ export function* sessionSaga(action: ReturnType<typeof loadSession>) {
         const sessionService = Services.getService<ISessionService>(
             SessionServiceId
         );
-        const session: ISession = yield call(
+
+        let session: ISession | undefined;
+        session = yield call(
             [sessionService, sessionService.getSession],
             action.payload
         );
+
+        if (!session) {
+            // Check if it's a legacy session
+            session = yield call(
+                [sessionService, sessionService.getLegacySessions],
+                action.payload
+            );
+        }
+
+        if (!session) {
+            throw new Error("Could not load session");
+        }
 
         // Load cardset
         const cardService = Services.getService<ICardSetService>(

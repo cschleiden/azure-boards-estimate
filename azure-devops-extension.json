@@ -1,7 +1,7 @@
 {
     "manifestVersion": 1,
     "id": "estimate",
-    "version": "2.0.1",
+    "version": "2.0.2",
     "name": "Estimate",
     "description": "Planning Poker in Azure Boards.",
     "publisher": "cschleiden",
@@ -83,7 +83,7 @@
                 {
                     "name": "Feature",
                     "properties": {
-                        "featureId": "cschleiden.estimate.estimate-2"
+                        "featureId": "cschleiden.estimate-dev.estimate-2"
                     }
                 }
             ]
@@ -107,7 +107,7 @@
                 {
                     "name": "Feature",
                     "properties": {
-                        "featureId": "cschleiden.estimate.estimate-2"
+                        "featureId": "cschleiden.estimate-dev.estimate-2"
                     },
                     "inverse": true
                 }
@@ -126,7 +126,7 @@
                 {
                     "name": "Feature",
                     "properties": {
-                        "featureId": "cschleiden.estimate.estimate-2"
+                        "featureId": "cschleiden.estimate-dev.estimate-2"
                     },
                     "inverse": true
                 }
@@ -147,7 +147,7 @@
                 {
                     "name": "Feature",
                     "properties": {
-                        "featureId": "cschleiden.estimate.estimate-2"
+                        "featureId": "cschleiden.estimate-dev.estimate-2"
                     },
                     "inverse": true
                 }

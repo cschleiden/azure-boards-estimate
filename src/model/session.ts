@@ -25,6 +25,8 @@ export interface ISession {
     createdBy: string;
 
     cardSet: string;
+
+    isLegacy?: boolean;
 }
 
 export interface ISessionInfo {

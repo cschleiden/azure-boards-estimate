@@ -117,7 +117,7 @@ class HomePage extends React.Component<IHomePageProps & typeof Actions> {
                         </Card>
                     )}
 
-                    {legacySessions && legacySessions.length > 0 && (
+                    {false && legacySessions && legacySessions.length > 0 && (
                         <Card
                             titleProps={{ text: "Migrated Sessions" }}
                             className="flex-grow legacy-sessions"
@@ -126,6 +126,7 @@ class HomePage extends React.Component<IHomePageProps & typeof Actions> {
                                 history={history}
                                 sessions={legacySessions}
                                 onEndSession={deleteSession}
+                                hideContextMenu={true}
                             />
                         </Card>
                     )}

@@ -32,6 +32,7 @@ const CardInfo: React.StatelessComponent<{
 export interface ICardProps {
     history: History;
     session: ISessionDisplay;
+    hideContextMenu?: boolean;
 
     onEndSession: (id: string) => void;
 }
@@ -39,6 +40,7 @@ export interface ICardProps {
 export class SessionCard extends React.Component<ICardProps> {
     render(): JSX.Element {
         const {
+            hideContextMenu,
             session: {
                 session: { id, mode, name, source, sourceData },
                 sessionInfo
@@ -59,23 +61,26 @@ export class SessionCard extends React.Component<ICardProps> {
                             </Link>
                         </CardTitle>
 
-                        <MoreButton
-                            className="session-card--menu"
-                            contextualMenuProps={{
-                                menuProps: {
-                                    onActivate: (ev: any) =>
-                                        ev.stopPropagation(),
-                                    id: "card-more",
-                                    items: [
-                                        {
-                                            id: "session-end",
-                                            text: "End session",
-                                            onActivate: () => onEndSession(id)
-                                        }
-                                    ]
-                                }
-                            }}
-                        />
+                        {!hideContextMenu && (
+                            <MoreButton
+                                className="session-card--menu"
+                                contextualMenuProps={{
+                                    menuProps: {
+                                        onActivate: (ev: any) =>
+                                            ev.stopPropagation(),
+                                        id: "card-more",
+                                        items: [
+                                            {
+                                                id: "session-end",
+                                                text: "End session",
+                                                onActivate: () =>
+                                                    onEndSession(id)
+                                            }
+                                        ]
+                                    }
+                                }}
+                            />
+                        )}
                     </div>
 
                     <CardInfo sessionInfo={sessionInfo} />

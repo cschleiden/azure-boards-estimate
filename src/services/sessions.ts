@@ -12,9 +12,11 @@ import { getStorageManager } from "./storage";
 export interface ISessionService extends IService {
     getSessions(): Promise<ISession[]>;
 
-    getLegacySession(): Promise<ISession[]>;
+    getLegacySessions(): Promise<ISession[]>;
 
     getSession(id: string): Promise<ISession | null>;
+
+    getLegacySession(id: string): Promise<ISession | null>;
 
     saveSession(session: ISession): Promise<ISession>;
 
@@ -75,7 +77,7 @@ export class SessionService implements ISessionService {
         }
     }
 
-    async getLegacySession(): Promise<ISession[]> {
+    async getLegacySessions(): Promise<ISession[]> {
         const manager = await this.getManager();
 
         try {
@@ -92,10 +94,8 @@ export class SessionService implements ISessionService {
                 version: 1,
                 createdAt: ls.createdAt,
                 createdBy: ls.creatorId,
-                cardSet: defaultCardSets[0].id // TODO!
+                cardSet: defaultCardSets[0].id // Always use the first card set for migrated sessions
             }));
-
-            // Map
         } catch {
             return [];
         }
@@ -114,6 +114,35 @@ export class SessionService implements ISessionService {
             );
 
             return session;
+        } catch {
+            return null;
+        }
+    }
+
+    async getLegacySession(id: string): Promise<ISession | null> {
+        const manager = await this.getManager();
+
+        try {
+            const legacySession: ILegacySession = await manager.getDocument(
+                "EstimationSessions",
+                id,
+                {
+                    defaultValue: null
+                }
+            );
+
+            return {
+                id: legacySession.id,
+                name: `Migrated: '${legacySession.name}'`,
+                mode: SessionMode.Online,
+                source: SessionSource.Ids,
+                sourceData: legacySession.workItemIds,
+                version: 1,
+                createdAt: legacySession.createdAt,
+                createdBy: legacySession.creatorId,
+                cardSet: defaultCardSets[0].id, // Always use the first card set for migrated sessions
+                isLegacy: true
+            };
         } catch {
             return null;
         }
