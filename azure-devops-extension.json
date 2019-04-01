@@ -1,7 +1,7 @@
 {
     "manifestVersion": 1,
     "id": "estimate",
-    "version": "0.2.5",
+    "version": "2.0.1",
     "name": "Estimate",
     "description": "Planning Poker in Azure Boards.",
     "publisher": "cschleiden",
@@ -85,6 +85,31 @@
                     "properties": {
                         "featureId": "cschleiden.estimate.estimate-2"
                     }
+                }
+            ]
+        },
+        {
+            "id": "estimate-ad-banner",
+            "type": "ms.vss-web.global-message-banner",
+            "targets": [".Estimate.Main"],
+            "properties": {
+                "iconName": "Info",
+                "dismissable": true,
+                "position": "top",
+                "message": "You can now enable the Estimate 2 preview",
+                "links": {
+                    "learn": {
+                        "uri": "https://github.com/cschleiden/azure-boards-estimate/wiki/Enable-the-Estimate-2-preview"
+                    }
+                }
+            },
+            "constraints": [
+                {
+                    "name": "Feature",
+                    "properties": {
+                        "featureId": "cschleiden.estimate.estimate-2"
+                    },
+                    "inverse": true
                 }
             ]
         },
