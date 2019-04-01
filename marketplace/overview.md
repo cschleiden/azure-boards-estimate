@@ -4,6 +4,10 @@ This now includes a beta version of the next version of Estimate, enable it on t
 
 ![Preview feature panel with enabled feature](marketplace/images2/enable-preview-feature.png)
 
+See also https://github.com/cschleiden/azure-boards-estimate/wiki/Enable-the-Estimate-2-preview 
+
+Please report any feedback here: https://github.com/cschleiden/azure-boards-estimate/
+
 ------
 
 Play Planning Poker in Visual Studio Team Services. Select work from an iteration or your backlog, estimate the effort of those items with your team, and immediately update the work items.
