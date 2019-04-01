@@ -27,6 +27,7 @@
     "eject": "react-scripts eject",
     "start": "react-scripts start",
     "package-dev": "tfx extension create --manifest-globs azure-devops-extension.json --overrides-file ./configs/dev.json --root ./",
+    "package-release-internal": "tfx extension create --manifest-globs azure-devops-extension.json --overrides-file ./configs/release-internal.json --root ./",
     "package-release": "tfx extension create --manifest-globs azure-devops-extension.json --overrides-file ./configs/release.json --root ./"
   },
   "devDependencies": {
