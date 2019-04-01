@@ -83,7 +83,7 @@
                 {
                     "name": "Feature",
                     "properties": {
-                        "featureId": "ms-devlabs.estimate-dev.estimate-2"
+                        "featureId": "ms-devlabs.estimate.estimate-2"
                     }
                 }
             ]
@@ -107,7 +107,7 @@
                 {
                     "name": "Feature",
                     "properties": {
-                        "featureId": "ms-devlabs.estimate-dev.estimate-2"
+                        "featureId": "ms-devlabs.estimate.estimate-2"
                     },
                     "inverse": true
                 }
@@ -126,7 +126,7 @@
                 {
                     "name": "Feature",
                     "properties": {
-                        "featureId": "ms-devlabs.estimate-dev.estimate-2"
+                        "featureId": "ms-devlabs.estimate.estimate-2"
                     },
                     "inverse": true
                 }
@@ -147,7 +147,7 @@
                 {
                     "name": "Feature",
                     "properties": {
-                        "featureId": "ms-devlabs.estimate-dev.estimate-2"
+                        "featureId": "ms-devlabs.estimate.estimate-2"
                     },
                     "inverse": true
                 }
