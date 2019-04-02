@@ -27,11 +27,7 @@ export const WorkItemCard: React.SFC<IWorkItemCardProps> = props => {
 
     return (
         <div
-            className={css(
-                "flex-grow",
-                "work-item-card",
-                selected && "selected"
-            )}
+            className={css("work-item-card", selected && "selected")}
             onClick={onClick}
         >
             <Card>
