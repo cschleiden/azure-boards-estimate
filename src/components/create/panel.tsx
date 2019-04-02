@@ -97,6 +97,8 @@ const sourceOptions: IChoiceGroupOption[] = [
 
 export interface ICreatePanelOwnProps {
     onDismiss(): void;
+
+    workItemIds?: number[];
 }
 
 interface ICreatePanelProps {
@@ -104,6 +106,7 @@ interface ICreatePanelProps {
     cardSet: string;
     mode: SessionMode;
     source: SessionSource;
+    sourceData?: string | number[];
     isValid: boolean;
 
     teams: ITeam[] | null;
@@ -114,6 +117,7 @@ interface ICreatePanelProps {
     queryId: string;
 
     cardSets: ICardSet[];
+    sourceLocked: boolean;
 }
 
 const Actions = {
@@ -133,7 +137,8 @@ class CreatePanel extends React.Component<
     ICreatePanelProps & typeof Actions & ICreatePanelOwnProps
 > {
     public componentDidMount() {
-        this.props.onInit();
+        const { workItemIds } = this.props;
+        this.props.onInit(workItemIds);
     }
 
     public render(): JSX.Element {
@@ -144,7 +149,8 @@ class CreatePanel extends React.Component<
             source,
             onDismiss,
             cardSets,
-            isValid
+            isValid,
+            sourceLocked
         } = this.props;
 
         return (
@@ -190,6 +196,7 @@ class CreatePanel extends React.Component<
                             Work items
                         </label>
                         <ChoiceGroup
+                            disabled={sourceLocked}
                             selectedKey={source.toString()}
                             onChanged={this.onChangeSource}
                             options={sourceOptions}
@@ -217,6 +224,7 @@ class CreatePanel extends React.Component<
         const {
             iterations,
             source,
+            sourceData,
             teams,
             team,
             iteration,
@@ -235,12 +243,25 @@ class CreatePanel extends React.Component<
                 );
 
             case SessionSource.Ids:
-                return (
-                    <div>
-                        Go to the backlog or a query result and select
-                        "Estimate" from the context menu
-                    </div>
-                );
+                if (
+                    !sourceData ||
+                    sourceData.length === 0 ||
+                    !Array.isArray(sourceData)
+                ) {
+                    return (
+                        <div>
+                            Go to the backlog or a query result and select
+                            "Estimate" from the context menu
+                        </div>
+                    );
+                } else {
+                    return (
+                        <div>
+                            This session will include the work items with the
+                            ids: {(sourceData as number[]).join(", ")}
+                        </div>
+                    );
+                }
 
             default:
             case SessionSource.Sprint:
@@ -339,6 +360,7 @@ export default connect(
         cardSet: state.create.session.cardSet,
         mode: state.create.session.mode,
         source: state.create.session.source,
+        sourceData: state.create.session.sourceData,
         isValid: isValid(state.create),
 
         teams: state.create.teams,
@@ -349,7 +371,8 @@ export default connect(
 
         queryId: state.create.queryId,
 
-        cardSets: state.create.cardSets || []
+        cardSets: state.create.cardSets || [],
+        sourceLocked: state.create.sourceLocked
     }),
     Actions
 )(CreatePanel);

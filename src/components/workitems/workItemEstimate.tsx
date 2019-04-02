@@ -9,7 +9,7 @@ export const WorkItemEstimate: React.StatelessComponent<{
     estimate?: number | string;
 }> = props => (
     <div className={css(props.className, "work-item-estimate")}>
-        <label>Estimate</label>:{" "}
+        <label>Estimate</label>:&nbsp;
         {getEstimateDisplay(props.cardSet, props.estimate)}
     </div>
 );

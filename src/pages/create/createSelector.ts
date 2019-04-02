@@ -16,7 +16,12 @@ function isSourceValid(session: ISession): boolean {
     switch (session.source) {
         default:
         case SessionSource.Ids:
-            return false;
+            return (
+                (session.sourceData &&
+                    Array.isArray(session.sourceData) &&
+                    session.sourceData.length > 0) ||
+                false
+            );
 
         case SessionSource.Query: {
             return !!session.sourceData;

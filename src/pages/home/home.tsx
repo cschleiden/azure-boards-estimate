@@ -24,7 +24,11 @@ import {
 } from "./sessionsActions";
 import { getDisplaySessions, getLegacySessions } from "./sessionsSelectors";
 
-interface IHomePageProps extends IPageProps<{}> {
+interface IHomePageParams {
+    ids?: string;
+}
+
+interface IHomePageProps extends IPageProps<IHomePageParams> {
     sessions: ISessionDisplay[];
     legacySessions: ISessionDisplay[];
     error: string | null;
@@ -133,7 +137,16 @@ class HomePage extends React.Component<IHomePageProps & typeof Actions> {
                 </div>
 
                 {match.path.indexOf("/create") !== -1 && (
-                    <CreatePanel onDismiss={this.closeCreate} />
+                    <CreatePanel
+                        onDismiss={this.closeCreate}
+                        workItemIds={
+                            (this.props.match.params.ids &&
+                                this.props.match.params.ids
+                                    .split(",")
+                                    .map<number>(x => parseInt(x, 10))) ||
+                            undefined
+                        }
+                    />
                 )}
 
                 {match.path.indexOf("/settings") !== -1 && (

@@ -5,7 +5,7 @@ import { IIteration, ITeam } from "../../services/teams";
 
 const factory = actionCreatorFactory("create");
 
-export const init = factory<void>("init");
+export const init = factory<number[] | undefined>("init");
 export const reset = factory<void>("reset");
 
 export const setName = factory<string>("setName");

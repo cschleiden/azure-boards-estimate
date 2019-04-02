@@ -1,7 +1,7 @@
 {
     "manifestVersion": 1,
     "id": "estimate",
-    "version": "2.0.3",
+    "version": "2.0.6",
     "name": "Estimate",
     "description": "Planning Poker in Azure Boards.",
     "publisher": "cschleiden",
@@ -89,6 +89,26 @@
             ]
         },
         {
+            "id": "estimate-context-menu-action",
+            "type": "ms.vss-web.action",
+            "targets": ["ms.vss-work-web.backlog-item-menu"],
+            "properties": {
+                "text": "Estimate work item(s)",
+                "title": "Start estimation session",
+                "group": "actions",
+                "uri": "build/index.html?context",
+                "registeredObjectId": "estimate-context-menu"
+            },
+            "constraints": [
+                {
+                    "name": "Feature",
+                    "properties": {
+                        "featureId": "ms-devlabs.estimate.estimate-2"
+                    }
+                }
+            ]
+        },
+        {
             "id": "estimate-ad-banner",
             "type": "ms.vss-web.global-message-banner",
             "targets": [".Estimate.Main"],
@@ -135,7 +155,6 @@
         {
             "id": "Estimate.WorkItems",
             "type": "ms.vss-web.action",
-            "description": "Shows the target properties for menu actions for work items",
             "targets": ["ms.vss-work-web.backlog-item-menu"],
             "properties": {
                 "text": "Estimate work item(s)",

@@ -25,7 +25,10 @@ const initialState = {
     iteration: "",
     queryId: "",
 
-    isCreating: false
+    isCreating: false,
+
+    /** If set, user cannot change source */
+    sourceLocked: false
 };
 
 export type ICreateSessionState = typeof initialState;
@@ -107,6 +110,17 @@ const setQuery = reducerAction(
     }
 );
 
+const init = reducerAction(
+    Actions.init,
+    (state: ICreateSessionState, workItemIds) => {
+        if (workItemIds && workItemIds.length > 0) {
+            state.session.source = SessionSource.Ids;
+            state.session.sourceData = workItemIds;
+            state.sourceLocked = true;
+        }
+    }
+);
+
 const reset = reducerAction(Actions.reset, (state: ICreateSessionState) => {
     // Reset but keep preloaded data
     Object.assign(state, {
@@ -121,6 +135,7 @@ export default <TPayload>(
     action?: Action<TPayload>
 ) => {
     return reducerMap(action, state, {
+        [Actions.init.type]: init,
         [Actions.reset.type]: reset,
 
         [Actions.setName.type]: setName,
