@@ -29,14 +29,21 @@ export class WorkItemHeader extends React.Component<IWorkItemHeaderProps> {
                         href={url}
                         target="_blank"
                         onClick={async ev => {
-                            ev.preventDefault();
+                            if (
+                                !ev.ctrlKey &&
+                                !ev.metaKey &&
+                                !ev.altKey &&
+                                !ev.shiftKey
+                            ) {
+                                ev.preventDefault();
 
-                            const service = await DevOps.getService<
-                                IWorkItemFormNavigationService
-                            >(
-                                "ms.vss-work-web.work-item-form-navigation-service"
-                            );
-                            service.openWorkItem(id);
+                                const service = await DevOps.getService<
+                                    IWorkItemFormNavigationService
+                                >(
+                                    "ms.vss-work-web.work-item-form-navigation-service"
+                                );
+                                service.openWorkItem(id);
+                            }
                         }}
                     >
                         <WorkItemTypeIcon icon={icon} color={color} />
