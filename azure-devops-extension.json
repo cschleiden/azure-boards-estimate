@@ -91,7 +91,10 @@
         {
             "id": "estimate-context-menu-action",
             "type": "ms.vss-web.action",
-            "targets": ["ms.vss-work-web.backlog-item-menu"],
+            "targets": [
+                "ms.vss-work-web.backlog-item-menu",
+                "ms.vss-work-web.query-result-work-item-menu"
+            ],
             "properties": {
                 "text": "Estimate work item(s)",
                 "title": "Start estimation session",
