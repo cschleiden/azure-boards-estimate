@@ -1,4 +1,8 @@
-import { IExtensionDataManager } from "azure-devops-extension-api";
+import * as DevOps from "azure-devops-extension-sdk";
+import {
+    IExtensionDataManager,
+    IProjectPageService
+} from "azure-devops-extension-api";
 import { defaultCardSets } from "../model/cards";
 import {
     ILegacySession,
@@ -28,8 +32,6 @@ export interface ISessionService extends IService {
 }
 
 export const SessionServiceId = "SessionService";
-
-const SessionCollection = "sessions";
 
 /**
  * Storage key for the field configuration
@@ -64,14 +66,19 @@ export class SessionService implements ISessionService {
         const manager = await this.getManager();
 
         try {
-            const sessions: ISession[] = await manager.getDocuments(
-                SessionCollection,
-                {
-                    defaultValue: []
-                }
+            // Try legacy and current collection
+            const sessions: ISession[][] = await Promise.all(
+                [
+                    manager.getDocuments("sessions", {
+                        defaultValue: []
+                    }),
+                    manager.getDocuments(await this._getCollection(), {
+                        defaultValue: []
+                    })
+                ].map(p => p.catch(() => []))
             );
 
-            return sessions;
+            return sessions.flat();
         } catch {
             return [];
         }
@@ -106,7 +113,7 @@ export class SessionService implements ISessionService {
 
         try {
             const session: ISession | null = await manager.getDocument(
-                SessionCollection,
+                await this._getCollection(),
                 id,
                 {
                     defaultValue: null
@@ -150,7 +157,7 @@ export class SessionService implements ISessionService {
 
     async saveSession(session: ISession): Promise<ISession> {
         const manager = await this.getManager();
-        await manager.setDocument(SessionCollection, session);
+        await manager.setDocument(await this._getCollection(), session);
         return session;
     }
 
@@ -158,9 +165,14 @@ export class SessionService implements ISessionService {
         const manager = await this.getManager();
 
         try {
-            await manager.deleteDocument(SessionCollection, id);
+            await manager.deleteDocument(await this._getCollection(), id);
         } catch {
-            // Ignore
+            try {
+                // Try again with legacy collection
+                await manager.deleteDocument("sessions", id);
+            } catch {
+                // Ignore
+            }
         }
     }
 
@@ -170,5 +182,14 @@ export class SessionService implements ISessionService {
         }
 
         return this.manager;
+    }
+
+    private async _getCollection(): Promise<string> {
+        const SessionCollection = "sessions";
+        const projectPageService = await DevOps.getService<IProjectPageService>(
+            "ms.vss-tfs-web.tfs-page-data-service"
+        );
+        const projectInfo = await projectPageService.getProject();
+        return `${SessionCollection}/${projectInfo!.id}`;
     }
 }

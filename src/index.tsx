@@ -2,7 +2,6 @@
 // Main entry point for the extension
 //
 import {
-    CommonServiceIds,
     IHostNavigationService,
     ILocationService,
     IProjectPageService
@@ -23,6 +22,9 @@ import { rootSettingsSaga } from "./pages/settings/settingsSaga";
 import { rootReducer } from "./reducer";
 import registerServiceWorker from "./registerServiceWorker";
 import "./services/registration";
+import { addPolyFills } from "./polyfills";
+
+addPolyFills();
 
 DevOps.register("estimate-context-menu", () => {
     return {
