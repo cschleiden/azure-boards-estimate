@@ -284,8 +284,10 @@ export class WorkItemService implements IWorkItemService {
             }
         }
 
-        // And, we're done.
-        return mappedWorkItems;
+        // And, we're done. Just return in input order
+        return workItemIds
+            .map(workItemId => mappedWorkItemsById[workItemId])
+            .filter(x => !!x);
     }
 
     async saveEstimate(
