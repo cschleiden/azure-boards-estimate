@@ -25,7 +25,7 @@ export const TeamServiceId = "TeamService";
 export class TeamService implements ITeamService {
     public async getAllTeams(projectId: string): Promise<ITeam[]> {
         const client = getClient(CoreRestClient);
-        const teams = await client.getTeams(projectId);
+        const teams = await client.getTeams(projectId, undefined, 2000);
         return teams.map(({ id, name }) => ({
             id,
             name
