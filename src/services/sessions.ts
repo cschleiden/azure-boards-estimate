@@ -190,6 +190,6 @@ export class SessionService implements ISessionService {
             "ms.vss-tfs-web.tfs-page-data-service"
         );
         const projectInfo = await projectPageService.getProject();
-        return `${SessionCollection}/${projectInfo!.id}`;
+        return `${SessionCollection}-${projectInfo!.id}`;
     }
 }
