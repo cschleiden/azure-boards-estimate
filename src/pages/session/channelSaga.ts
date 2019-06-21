@@ -9,24 +9,24 @@ import {
     takeEvery
 } from "redux-saga/effects";
 import { Action } from "typescript-fsa";
-import { IEstimate } from "../../model/estimate";
 import { ISession } from "../../model/session";
+import { ISnapshot } from "../../model/snapshots";
 import { IChannel } from "../../services/channels/channels";
+import { connected } from "./channelActions";
 import { getChannel } from "./channelFactory";
-import { getOwnEstimate, getSnapshot } from "./selector";
+import { getSnapshot } from "./selector";
 import {
     estimate,
     estimateSet,
+    estimateUpdated,
     reveal,
     revealed,
     selectWorkItem,
+    snapshotReceived,
     userJoined,
-    workItemSelected,
     userLeft,
-    snapshotReceived
+    workItemSelected
 } from "./sessionActions";
-import { connected } from "./channelActions";
-import { ISnapshot } from "../../model/snapshots";
 
 export function* channelSaga(session: ISession): SagaIterator {
     const channel: IChannel = yield call(getChannel, session.id, session.mode);
@@ -51,11 +51,21 @@ export function* channelSaga(session: ISession): SagaIterator {
  */
 export function* channelSenderSaga(sessionId: string, channel: IChannel) {
     yield takeEvery(
-        [estimate.type, selectWorkItem.type, reveal.type],
+        [estimate.type, estimateUpdated.type, selectWorkItem.type, reveal.type],
         function*(action: Action<any>) {
             switch (action.type) {
                 case estimate.type:
                     yield call([channel, channel.estimate], action.payload);
+                    break;
+
+                case estimateUpdated.type:
+                    if (!action.payload.remote) {
+                        // Only send if this wasn't a remote action
+                        yield call(
+                            [channel, channel.estimateUpdated],
+                            action.payload
+                        );
+                    }
                     break;
 
                 case selectWorkItem.type:
@@ -100,6 +110,15 @@ export function subscribe(channel: IChannel) {
 
         channel.estimate.attachHandler(e => {
             emit(estimateSet(e));
+        });
+
+        channel.estimateUpdated.attachHandler(e => {
+            emit(
+                estimateUpdated({
+                    ...e,
+                    remote: true
+                })
+            );
         });
 
         channel.join.attachHandler(payload => {

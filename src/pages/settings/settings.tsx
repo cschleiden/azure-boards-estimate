@@ -62,7 +62,7 @@ class SettingsPanel extends React.Component<
                 return (
                     <SimpleTableCell columnIndex={columnIndex}>
                         <Dropdown<IField>
-                            listBoxProps={{
+                            {...{
                                 onSelect: this.onSelect.bind(
                                     this,
                                     workItemType

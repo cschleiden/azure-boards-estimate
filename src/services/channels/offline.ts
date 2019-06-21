@@ -14,6 +14,13 @@ export class OfflineChannel implements IChannel {
         await this.estimate.incoming(estimate);
     });
 
+    estimateUpdated = defineOperation<{
+        workItemId: number;
+        value: number | string | undefined;
+    }>(async payload => {
+        await this.estimateUpdated.incoming(payload);
+    });
+
     setWorkItem = defineOperation<number>(async workItemId => {
         await this.setWorkItem.incoming(workItemId);
 

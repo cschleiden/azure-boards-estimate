@@ -86,6 +86,14 @@ export interface IChannel {
     snapshot: IBiDirectional<ISnapshot>;
 
     /**
+     * Work item estimate was committed
+     */
+    estimateUpdated: IBiDirectional<{
+        workItemId: number;
+        value: number | string | undefined;
+    }>;
+
+    /**
      * A client has left
      *
      * @param Identity Id

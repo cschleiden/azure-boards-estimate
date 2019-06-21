@@ -38,6 +38,8 @@ export const commitEstimate = factory<number | string | null>("commitCard");
 export const estimateUpdated = factory<{
     workItemId: number;
     value: number | string | undefined;
+    /** When set, this message was received remotely */
+    remote?: boolean;
 }>("estimateUpdated");
 
 export const estimateSet = factory<IEstimate>("estimateSet");

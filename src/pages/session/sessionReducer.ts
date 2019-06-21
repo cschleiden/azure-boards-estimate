@@ -27,7 +27,7 @@ export type ISessionState = typeof initialState;
 
 const loadSession = reducerAction(
     Actions.loadSession,
-    (state: ISessionState) => {
+    (state: ISessionState, _) => {
         state.status.loading = true;
     }
 );
@@ -46,7 +46,7 @@ const loadedSession = reducerAction(
 
 const leaveSession = reducerAction(
     Actions.leaveSession,
-    (state: ISessionState) => {
+    (state: ISessionState, _) => {
         state.session = null;
         state.cardSet = null;
         state.workItems = [];
@@ -107,7 +107,7 @@ const estimate = reducerAction(
 /**
  *
  */
-const revealed = reducerAction(Actions.revealed, (state: ISessionState) => {
+const revealed = reducerAction(Actions.revealed, (state: ISessionState, _) => {
     state.revealed = true;
 });
 

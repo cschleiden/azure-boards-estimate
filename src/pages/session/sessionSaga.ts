@@ -1,26 +1,25 @@
 import {
-    IProjectPageService,
     IGlobalMessagesService,
-    CommonServiceIds
+    IProjectPageService
 } from "azure-devops-extension-api";
 import { ProjectInfo } from "azure-devops-extension-api/Core";
 import { getService } from "azure-devops-extension-sdk";
-import { Task, SagaIterator } from "redux-saga";
+import { SagaIterator, Task } from "redux-saga";
 import {
     call,
     cancel,
     fork,
     put,
+    select,
     take,
-    takeLatest,
-    takeEvery,
-    select
+    takeLatest
 } from "redux-saga/effects";
 import history from "../../lib/history";
 import { ICardSet } from "../../model/cards";
 import { IIdentity } from "../../model/identity";
 import { ISession, SessionSource } from "../../model/session";
 import { IWorkItem } from "../../model/workitem";
+import { IState } from "../../reducer";
 import { CardSetServiceId, ICardSetService } from "../../services/cardSets";
 import { IdentityServiceId, IIdentityService } from "../../services/identity";
 import { IQueriesService, QueriesServiceId } from "../../services/queries";
@@ -29,22 +28,18 @@ import { ISessionService, SessionServiceId } from "../../services/sessions";
 import { ISprintService, SprintServiceId } from "../../services/sprints";
 import { IWorkItemService, WorkItemServiceId } from "../../services/workItems";
 import { fatalError } from "../home/sessionsActions";
+import { connected } from "./channelActions";
 import { channelSaga } from "./channelSaga";
 import {
+    commitEstimate,
     endSession,
+    estimateUpdated,
     leaveSession,
     loadedSession,
     loadSession,
-    commitEstimate,
-    updateStatus,
-    userJoined,
-    estimate,
-    estimateUpdated
+    selectWorkItem,
+    updateStatus
 } from "./sessionActions";
-import { connected } from "./channelActions";
-import { IEstimate } from "../../model/estimate";
-import { IState } from "../../reducer";
-import { ISnapshot } from "../../model/snapshots";
 
 export function* rootSessionSaga() {
     yield takeLatest(loadSession.type, sessionSaga);
@@ -189,6 +184,7 @@ export function* sessionSaga(action: ReturnType<typeof loadSession>) {
         );
 
         const estimationTask = yield fork(sessionEstimationSaga);
+        const x = yield fork(notificationSaga);
 
         // Wait for leave or end
         const a:
@@ -199,6 +195,7 @@ export function* sessionSaga(action: ReturnType<typeof loadSession>) {
         ]);
 
         yield cancel(estimationTask);
+        yield cancel(x);
 
         switch (a.type) {
             case endSession.type: {
@@ -264,6 +261,42 @@ function* sessionEstimationSaga(): SagaIterator {
                     value
                 })
             );
+
+            // Move to next work item, if it exists or to first one
+            const workItems: IWorkItem[] = yield select<IState>(
+                s => s.session.workItems
+            );
+            const idx = workItems.findIndex(x => x.id === workItem.id);
+            const nextWorkItemId =
+                idx + 1 < workItems.length
+                    ? workItems[idx + 1].id
+                    : workItems[0].id;
+            yield put(selectWorkItem(nextWorkItemId));
         } catch (e) {}
+    }
+}
+
+function* notificationSaga(): SagaIterator {
+    while (true) {
+        const action: ReturnType<typeof estimateUpdated> = yield take(
+            estimateUpdated
+        );
+
+        const workItem: IWorkItem = yield select<IState>(
+            s => s.session.selectedWorkItem
+        );
+        if (workItem && workItem.id !== action.payload.workItemId) {
+            // Only show message if the current work item is the one the estimate was updated for
+            continue;
+        }
+
+        const globalMessagesSvc: IGlobalMessagesService = yield call(
+            getService,
+            "ms.vss-tfs-web.tfs-global-messages-service"
+        );
+        globalMessagesSvc.addToast({
+            duration: 2000,
+            message: "Estimate saved"
+        });
     }
 }

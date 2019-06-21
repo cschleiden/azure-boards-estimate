@@ -1,6 +1,5 @@
 import { IHostNavigationService } from "azure-devops-extension-api";
 import * as DevOps from "azure-devops-extension-sdk";
-import "azure-devops-ui/FabricInit";
 import { Surface, SurfaceBackground } from "azure-devops-ui/Surface";
 import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
 import * as React from "react";

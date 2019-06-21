@@ -12,6 +12,7 @@ enum Action {
     Join = "join",
     Left = "left",
     Estimate = "estimate",
+    EstimateUpdated = "estimate-updated",
     Reveal = "reveal",
     Add = "add",
     Switch = "switch",
@@ -21,6 +22,13 @@ enum Action {
 export class SignalRChannel implements IChannel {
     estimate = defineOperation<IEstimate>(async estimate => {
         await this.sendToOtherClients(Action.Estimate, estimate);
+    });
+
+    estimateUpdated = defineOperation<{
+        workItemId: number;
+        value: number | string | undefined;
+    }>(async payload => {
+        await this.sendToOtherClients(Action.EstimateUpdated, payload);
     });
 
     setWorkItem = defineOperation<number>(async workItemId => {
@@ -102,6 +110,11 @@ export class SignalRChannel implements IChannel {
                 break;
             }
 
+            case Action.EstimateUpdated: {
+                this.estimateUpdated.incoming(payload);
+                break;
+            }
+
             case Action.Join: {
                 // Another user has joined
                 this.join.incoming(payload);
@@ -110,6 +123,7 @@ export class SignalRChannel implements IChannel {
 
             case Action.Switch: {
                 this.setWorkItem.incoming(payload);
+                break;
             }
 
             case Action.Left: {
