@@ -1,3 +1,4 @@
+import { Button } from "azure-devops-ui/Button";
 import { CardContent, CustomCard } from "azure-devops-ui/Card";
 import { Header } from "azure-devops-ui/Header";
 import { IHeaderCommandBarItem } from "azure-devops-ui/HeaderCommandBar";
@@ -7,18 +8,16 @@ import { Card } from "../../../components/cards/card";
 import { SubTitle } from "../../../components/subtitle";
 import { Votes } from "../../../components/votes";
 import { WorkItemDescription } from "../../../components/workitems/workItemDescription";
-import { WorkItemHeader } from "../../../components/workitems/workItemHeader";
 import { WorkItemEstimate } from "../../../components/workitems/workItemEstimate";
+import { WorkItemHeader } from "../../../components/workitems/workItemHeader";
 import { ICard, ICardSet } from "../../../model/cards";
 import { IEstimate } from "../../../model/estimate";
 import { IIdentity } from "../../../model/identity";
 import { IWorkItem } from "../../../model/workitem";
 import { IState } from "../../../reducer";
 import { commitEstimate, estimate, reveal } from "../sessionActions";
-import "./workItemView.scss";
-import { TextField } from "azure-devops-ui/TextField";
-import { PrimaryButton } from "office-ui-fabric-react";
 import { CustomEstimate } from "./customEstimate";
+import "./workItemView.scss";
 
 interface IWorkItemProps {
     identity: IIdentity;
@@ -100,6 +99,13 @@ class WorkItemView extends React.Component<IWorkItemProps & typeof Actions> {
                             />
 
                             <SubTitle>Actions</SubTitle>
+                            {canReveal && (
+                                <div className="flex-column flex-self-start">
+                                    <Button primary onClick={this.doReveal}>
+                                        Reveal
+                                    </Button>
+                                </div>
+                            )}
                             {revealed && (
                                 <>
                                     <div>

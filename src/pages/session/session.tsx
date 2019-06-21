@@ -98,7 +98,10 @@ class Session extends React.Component<
         }
 
         return (
-            <Page className="absolute-fill" orientation={Orientation.Vertical}>
+            <Page
+                className="absolute-fill"
+                orientation={0 /* Orientation.Vertical */}
+            >
                 <CustomHeader className="bolt-header-with-commandbar">
                     <HeaderTitleArea>
                         <HeaderTitle>{session.name}</HeaderTitle>
