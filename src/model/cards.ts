@@ -5,7 +5,8 @@ export interface ICard {
 
 export enum CardSetType {
     Numeric,
-    Ordinal
+    Ordinal,
+    Fibonacci
 }
 
 export interface ICardSet {
@@ -98,6 +99,65 @@ export const defaultCardSets: ICardSet[] = [
             {
                 identifier: "XL",
                 value: "XL"
+            }
+        ]
+    },
+    {
+        id: "fibonacci",
+        type: CardSetType.Fibonacci,
+        name: "Fibonacci",
+        cards: [
+            {
+                identifier: "0",
+                value: 0
+            },
+            {
+                identifier: "1",
+                value: 1
+            },
+            {
+                identifier: "2",
+                value: 2
+            },
+            {
+                identifier: "3",
+                value: 3
+            },
+            {
+                identifier: "5",
+                value: 5
+            },
+            {
+                identifier: "8",
+                value: 8
+            },
+            {
+                identifier: "13",
+                value: 13
+            },
+            {
+                identifier: "21",
+                value: 21
+            },
+            {
+                identifier: "34",
+                value: 34
+            },
+            {
+                identifier: "55",
+                value: 55
+            },
+            {
+                identifier: "89",
+                value: 89
+            },
+            {
+                identifier: "?",
+                value: null
+            },
+            {
+                identifier: "☕",
+                value: null
             }
         ]
     }
