@@ -5,8 +5,7 @@ export interface ICard {
 
 export enum CardSetType {
     Numeric,
-    Ordinal,
-    Fibonacci
+    Ordinal
 }
 
 export interface ICardSet {
@@ -104,7 +103,7 @@ export const defaultCardSets: ICardSet[] = [
     },
     {
         id: "fibonacci",
-        type: CardSetType.Fibonacci,
+        type: CardSetType.Numeric,
         name: "Fibonacci",
         cards: [
             {
@@ -160,5 +159,5 @@ export const defaultCardSets: ICardSet[] = [
                 value: null
             }
         ]
-    }
+    },
 ];
