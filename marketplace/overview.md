@@ -41,19 +41,19 @@ Select any number of items on your backlog and start a new session from the cont
 
 Estimate all work items in an iteration.
 
-![Iteration](marketplace/images/images/start-iteration.png)
+![Iteration](marketplace/images/start-iteration.png)
 
 ## Work with your team in real-time
 
 See immediately who has joined the session, who has selected a card, who has picked which estimate.
 
-![Team Members](marketplace/images/images/team-members.png)
+![Team Members](marketplace/images/team-members.png)
 
 ## Update your work items as you go
 
 Each estimation is saved to your work items as soon as you have estimated
 
-![Work Items](marketplace/images/images/work-items.png)
+![Work Items](marketplace/images/work-items.png)
 
 # Quick steps to get started
 
@@ -71,7 +71,7 @@ After you are done, you can end the session.
 ## Joining an existing session
 
 There are two ways to join an existing session, use a direct link, or pick an existing session from the *Estimate* hub
-![Existing Sessions](marketplace/images/images/join-existing.png)
+![Existing Sessions](marketplace/images/join-existing.png)
 
 
 > Microsoft DevLabs is an outlet for experiments from Microsoft, experiments that represent some of the latest ideas around developer tools. Solutions in this category are designed for broad usage, and you are encouraged to use and provide feedback on them; however, these extensions are not supported nor are any commitments made as to their longevity.
