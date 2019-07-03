@@ -21,6 +21,9 @@
     "content": {
         "details": {
             "path": "marketplace/overview.md"
+        },
+        "license": {
+            "path": "marketplace/license.md"
         }
     },
     "repository": {
