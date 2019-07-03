@@ -26,10 +26,14 @@ export class TeamService implements ITeamService {
     public async getAllTeams(projectId: string): Promise<ITeam[]> {
         const client = getClient(CoreRestClient);
         const teams = await client.getTeams(projectId, undefined, 2000);
-        return teams.map(({ id, name }) => ({
+        const mappedTeams = teams.map(({ id, name }) => ({
             id,
             name
         }));
+
+        mappedTeams.sort((a, b) => a.name.localeCompare(b.name));
+
+        return mappedTeams;
     }
 
     public async getIterationsForTeam(teamId: string): Promise<IIteration[]> {
