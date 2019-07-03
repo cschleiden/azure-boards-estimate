@@ -4,7 +4,10 @@
     cursor: pointer;
 
     min-width: 200px;
+    min-height: 50px;
     margin-bottom: 15px;
+
+    flex: 1 1 auto;
 
     .bolt-card {
         transition: 0.3s linear all;
@@ -31,6 +34,9 @@
     &--meta {
         display: flex;
         align-items: center;
+
+        flex: 1 1 auto;
+        padding-right: 5px;
     }
 
     &--id {
