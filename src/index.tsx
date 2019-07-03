@@ -1,6 +1,8 @@
 //
 // Main entry point for the extension
 //
+import { addPolyFills } from "./polyfills";
+
 import {
     IHostNavigationService,
     ILocationService,
@@ -22,7 +24,6 @@ import { rootSettingsSaga } from "./pages/settings/settingsSaga";
 import { rootReducer } from "./reducer";
 import registerServiceWorker from "./registerServiceWorker";
 import "./services/registration";
-import { addPolyFills } from "./polyfills";
 
 addPolyFills();
 

@@ -1,3 +1,5 @@
+import "core-js";
+
 export function addPolyFills() {
     if (!Array.prototype.flat) {
         Array.prototype.flat = function() {
