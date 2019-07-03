@@ -1,18 +1,15 @@
-# Preview: Estimate 2 
-
-This now includes a beta version of the next version of Estimate, enable it on the [Preview Features](https://docs.microsoft.com/en-us/azure/devops/project/navigation/preview-features?view=azdevops&tabs=new-nav) panel:
-
-![Preview feature panel with enabled feature](marketplace/images2/enable-preview-feature.png)
-
-See also https://github.com/cschleiden/azure-boards-estimate/wiki/Enable-the-Estimate-2-preview 
+# Estimate 2 
 
 Please report any feedback here: https://github.com/cschleiden/azure-boards-estimate/
 
 ------
 
-Play Planning Poker in Visual Studio Team Services. Select work from an iteration or your backlog, estimate the effort of those items with your team, and immediately update the work items.
+Play Planning Poker in Azure DevOps. Select work from an iteration, query, or your backlog, estimate the effort of those items with your team, and immediately update the work items.
 
 ## Updates
+
+**7/3/2019** - 2.1.0
+- Public release of **Estimate 2**
 
 **2/1/2019** - 2.0.0
 - First beta release of the new Estimate version
@@ -32,8 +29,6 @@ Play Planning Poker in Visual Studio Team Services. Select work from an iteratio
 - Non-numeric card selections are now indicated as a warning when being revealed:
     ![Warning](marketplace/images/updates/warning.gif)
 - Improved support for Internet Explorer 11 when revealing cards
-
-Note: If you run any into problems, please do not hesitate to send an email to the address listed under Support.
 
 
 ## Estimate work items from your backlog...
