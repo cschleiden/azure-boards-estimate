@@ -44,7 +44,8 @@
     "base64-inline-loader": "^1.1.1",
     "node-sass": "^4.11.0",
     "tfx-cli": "0.6.3",
-    "typescript": "^3.1.6"
+    "typescript": "^3.1.6",
+    "tslint-react": "4.0.0"
   },
   "browserslist": [
     ">0.2%",
