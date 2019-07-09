@@ -174,13 +174,27 @@ class WorkItemView extends React.Component<IWorkItemProps & typeof Actions> {
     };
 
     private doEstimate = (card: ICard): void => {
-        const { estimate, identity, selectedWorkItem } = this.props;
-
-        estimate({
+        const {
+            estimate,
             identity,
-            workItemId: selectedWorkItem.id,
-            cardIdentifier: card.identifier
-        });
+            selectedWorkItem,
+            selectedCardId
+        } = this.props;
+
+        if (card.identifier === selectedCardId) {
+            // Cancel vote
+            estimate({
+                identity,
+                workItemId: selectedWorkItem.id,
+                cardIdentifier: null
+            });
+        } else {
+            estimate({
+                identity,
+                workItemId: selectedWorkItem.id,
+                cardIdentifier: card.identifier
+            });
+        }
     };
 
     private doCommitCard = (card: ICard): void => {

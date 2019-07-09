@@ -184,7 +184,7 @@ export function* sessionSaga(action: ReturnType<typeof loadSession>) {
         );
 
         const estimationTask = yield fork(sessionEstimationSaga);
-        const x = yield fork(notificationSaga);
+        const notificationTask = yield fork(notificationSaga);
 
         // Wait for leave or end
         const a:
@@ -195,7 +195,7 @@ export function* sessionSaga(action: ReturnType<typeof loadSession>) {
         ]);
 
         yield cancel(estimationTask);
-        yield cancel(x);
+        yield cancel(notificationTask);
 
         switch (a.type) {
             case endSession.type: {

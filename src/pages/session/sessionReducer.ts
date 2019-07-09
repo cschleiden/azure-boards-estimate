@@ -100,7 +100,11 @@ const userLeft = reducerAction(
 const estimate = reducerAction(
     Actions.estimate,
     (state: ISessionState, estimate) => {
-        state.ownEstimate = estimate;
+        if (estimate.cardIdentifier === null) {
+            state.ownEstimate = null;
+        } else {
+            state.ownEstimate = estimate;
+        }
     }
 );
 
@@ -117,7 +121,7 @@ const revealed = reducerAction(Actions.revealed, (state: ISessionState, _) => {
 const estimateSet = reducerAction(
     Actions.estimateSet,
     (state: ISessionState, estimate) => {
-        const { workItemId, identity } = estimate;
+        const { cardIdentifier, workItemId, identity } = estimate;
 
         if (!state.selectedWorkItem) {
             // No selected work item, this means we have joined the session recently. Take the work item id of
@@ -126,23 +130,41 @@ const estimateSet = reducerAction(
                 state.workItems.find(x => x.id === workItemId) || null;
         }
 
-        if (!state.estimates[workItemId]) {
-            state.estimates[workItemId] = [estimate];
-        } else {
-            const idx = state.estimates[workItemId].findIndex(
-                e => e.identity.id === identity.id
-            );
-            if (idx === -1) {
-                // We don't have an estimate from this user
-                state.estimates[workItemId].push(estimate);
-            } else {
-                // User might have changed their estimate
-                state.estimates[workItemId][idx] = estimate;
-            }
-        }
+        if (cardIdentifier === null) {
+            if (state.estimates[workItemId]) {
+                const idx = state.estimates[workItemId].findIndex(
+                    e => e.identity.id === identity.id
+                );
+                if (idx >= 0) {
+                    state.estimates[workItemId].splice(idx, 1);
 
-        if (state.currentUser && identity.id === state.currentUser.tfId) {
-            state.ownEstimate = estimate;
+                    if (
+                        state.currentUser &&
+                        identity.id === state.currentUser.tfId
+                    ) {
+                        state.ownEstimate = null;
+                    }
+                }
+            }
+        } else {
+            if (!state.estimates[workItemId]) {
+                state.estimates[workItemId] = [estimate];
+            } else {
+                const idx = state.estimates[workItemId].findIndex(
+                    e => e.identity.id === identity.id
+                );
+                if (idx === -1) {
+                    // We don't have an estimate from this user
+                    state.estimates[workItemId].push(estimate);
+                } else {
+                    // User might have changed their estimate
+                    state.estimates[workItemId][idx] = estimate;
+                }
+            }
+
+            if (state.currentUser && identity.id === state.currentUser.tfId) {
+                state.ownEstimate = estimate;
+            }
         }
     }
 );

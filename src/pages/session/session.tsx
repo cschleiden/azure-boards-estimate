@@ -7,12 +7,11 @@ import {
     HeaderCommandBar,
     IHeaderCommandBarItem
 } from "azure-devops-ui/HeaderCommandBar";
-import { Orientation, Page } from "azure-devops-ui/Page";
+import { Page } from "azure-devops-ui/Page";
 import { Tooltip } from "azure-devops-ui/TooltipEx";
 import { VssPersona } from "azure-devops-ui/VssPersona";
 import { Spinner, SpinnerSize } from "office-ui-fabric-react";
 import * as React from "react";
-import { ZeroData, ZeroDataActionType } from "azure-devops-ui/ZeroData";
 import { connect } from "react-redux";
 import { WorkItemCard } from "../../components/workitems/workItemCard";
 import { ICardSet } from "../../model/cards";
