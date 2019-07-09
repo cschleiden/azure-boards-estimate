@@ -1,1 +1,0 @@
-This is a compiled copy of the latest version of the legacy Estimate extension. No changes will be accepted, this is only here to allow a gradual rollout of the new extension, and a way to keep existing data.
