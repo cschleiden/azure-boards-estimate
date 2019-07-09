@@ -48,10 +48,6 @@
         {
             "path": "build",
             "addressable": true
-        },
-        {
-            "path": "legacy",
-            "addressable": true
         }
     ],
     "contributions": [
