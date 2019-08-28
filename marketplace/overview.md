@@ -1,6 +1,12 @@
 # Estimate 2 
 
-Please report any feedback here: https://github.com/cschleiden/azure-boards-estimate/
+Please file issues for any bugs/feedback here: https://github.com/cschleiden/azure-boards-estimate/
+
+------
+
+## Important information for users of version 1 (8/23/2019):
+
+Version 1 of the extension will be turned off in a few days. Please talk to your admin to upgrade to Version 2 otherwise you won't be able to connect to sesions.
 
 ------
 
