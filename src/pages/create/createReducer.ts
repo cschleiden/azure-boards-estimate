@@ -9,11 +9,12 @@ const initialState = {
     session: {
         id: "",
         cardSet: "",
-        mode: SessionMode.Online,
+        mode: SessionMode.Online as SessionMode,
         name: "",
         source: SessionSource.Sprint,
         createdAt: new Date(),
         createdBy: "",
+        onlyCreatorCanSwitch: false,
         version: 1
     } as ISession,
 
@@ -42,15 +43,22 @@ const setName = reducerAction(
 
 const setMode = reducerAction(
     Actions.setMode,
-    (state: ICreateSessionState, mode) => {
+    (state: ICreateSessionState, mode: SessionMode) => {
         state.session.mode = mode;
     }
 );
 
 const setSource = reducerAction(
     Actions.setSource,
-    (state: ICreateSessionState, source) => {
+    (state: ICreateSessionState, source: SessionSource) => {
         state.session.source = source;
+    }
+);
+
+const setLimitedToCreator = reducerAction(
+    Actions.setLimitedToCreator,
+    (state: ICreateSessionState, value: boolean) => {
+        state.session.onlyCreatorCanSwitch = value;
     }
 );
 
@@ -142,6 +150,7 @@ export default <TPayload>(
         [Actions.setCardSet.type]: setCardSet,
         [Actions.setMode.type]: setMode,
         [Actions.setSource.type]: setSource,
+        [Actions.setLimitedToCreator.type]: setLimitedToCreator,
         [Actions.create.type]: create,
 
         [Actions.setCardSets.type]: setCardSets,

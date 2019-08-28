@@ -23,7 +23,8 @@ import {
     setName,
     setQuery,
     setSource,
-    setTeam
+    setTeam,
+    setLimitedToCreator
 } from "../../pages/create/createActions";
 import { isValid } from "../../pages/create/createSelector";
 import { IState } from "../../reducer";
@@ -32,6 +33,7 @@ import { getIconForMode } from "../cardIcon";
 import { QueryPicker } from "../controls/queryPicker";
 import { CardSetPicker } from "./cardSetPicker";
 import "./panel.scss";
+import { Toggle } from "azure-devops-ui/Toggle";
 
 const { icon: onlineIcon, description: onlineDescription } = getIconForMode(
     SessionMode.Online
@@ -116,6 +118,8 @@ interface ICreatePanelProps {
     iteration: string;
     queryId: string;
 
+    onlyCreatorCanSwitch?: boolean;
+
     cardSets: ICardSet[];
     sourceLocked: boolean;
 }
@@ -130,6 +134,7 @@ const Actions = {
     onSetTeam: setTeam,
     onSetIteration: setIteration,
     onSetCardSet: setCardSet,
+    setLimitedToCreator,
     onCreate: create
 };
 
@@ -150,7 +155,8 @@ class CreatePanel extends React.Component<
             onDismiss,
             cardSets,
             isValid,
-            sourceLocked
+            sourceLocked,
+            onlyCreatorCanSwitch
         } = this.props;
 
         return (
@@ -213,6 +219,17 @@ class CreatePanel extends React.Component<
                             cardSets={cardSets}
                             selectedCardSetId={cardSet || ""}
                             onChange={this.onChangeCardSet}
+                        />
+                    </div>
+
+                    <div className="create-panel--group">
+                        <label className="create-panel--group-label">
+                            Security
+                        </label>
+                        <Toggle
+                            checked={onlyCreatorCanSwitch}
+                            onChange={this.onSecurityToggle}
+                            text="Only creator can change work items and commit"
                         />
                     </div>
                 </div>
@@ -342,6 +359,11 @@ class CreatePanel extends React.Component<
         onSetCardSet(cardSet.id);
     };
 
+    private onSecurityToggle = (_: any, checked: boolean) => {
+        const { setLimitedToCreator } = this.props;
+        setLimitedToCreator(checked);
+    };
+
     private onCreate = () => {
         const { onCreate } = this.props;
         onCreate();
@@ -368,6 +390,8 @@ export default connect(
 
         team: state.create.team,
         iteration: state.create.iteration,
+
+        onlyCreatorCanSwitch: state.create.session.onlyCreatorCanSwitch,
 
         queryId: state.create.queryId,
 

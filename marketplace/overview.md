@@ -8,6 +8,9 @@ Play Planning Poker in Azure DevOps. Select work from an iteration, query, or yo
 
 ## Updates
 
+**8/28/2019** - 2.2.0
+- Allow restricting selecting work items/commiting values to the creator of the session [#43](https://github.com/cschleiden/azure-boards-estimate/issues/43)
+
 **7/3/2019** - 2.1.0
 - Public release of **Estimate 2**
 

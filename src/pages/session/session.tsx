@@ -23,7 +23,7 @@ import { IWorkItem } from "../../model/workitem";
 import { IState } from "../../reducer";
 import { IPageProps } from "../props";
 import WorkItemView from "./components/workItemView";
-import { getActiveUsers } from "./selector";
+import { getActiveUsers, canPerformAdminActions } from "./selector";
 import "./session.scss";
 import {
     endSession,
@@ -49,6 +49,8 @@ interface ISessionProps extends IPageProps<ISessionParams> {
     cardSet: ICardSet;
     selectedWorkItem: IWorkItem | null;
     activeUsers: IUserInfo[];
+
+    canPerformAdminActions: boolean;
 }
 
 const Actions = {
@@ -77,7 +79,7 @@ class Session extends React.Component<
 
     render(): JSX.Element {
         const {
-            estimates,
+            canPerformAdminActions,
             cardSet,
             session,
             status,
@@ -161,8 +163,13 @@ class Session extends React.Component<
                                     selectedWorkItem.id === workItem.id
                                 }
                                 workItem={workItem}
-                                onClick={() =>
-                                    this.props.selectWorkItem(workItem.id)
+                                onClick={
+                                    (canPerformAdminActions &&
+                                        (() =>
+                                            this.props.selectWorkItem(
+                                                workItem.id
+                                            ))) ||
+                                    undefined
                                 }
                             />
                         ))}
@@ -189,7 +196,8 @@ export default connect(
             workItems: state.session.workItems,
             estimates: state.session.estimates,
             selectedWorkItem: state.session.selectedWorkItem,
-            activeUsers: getActiveUsers(state)
+            activeUsers: getActiveUsers(state),
+            canPerformAdminActions: canPerformAdminActions(state)
         };
     },
     Actions

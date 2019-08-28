@@ -26,6 +26,8 @@ export interface ISession {
 
     cardSet: string;
 
+    /** If set, only the creator of the session can toggle work items or commit values */
+    onlyCreatorCanSwitch?: boolean;
     isLegacy?: boolean;
 }
 

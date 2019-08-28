@@ -11,6 +11,20 @@ export function getActiveUsers(state: IState): IUserInfo[] {
     return state.session.activeUsers || [];
 }
 
+export function canPerformAdminActions(state: IState): boolean {
+    if (
+        state.session.session &&
+        state.session.session.onlyCreatorCanSwitch &&
+        state.session.currentUser
+    ) {
+        return (
+            state.session.session.createdBy === state.session.currentUser.tfId
+        );
+    }
+
+    return true;
+}
+
 export function getSnapshot(state: IState): ISnapshot {
     return {
         currentWorkItemId:

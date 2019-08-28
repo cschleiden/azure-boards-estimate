@@ -3,7 +3,7 @@ import {
     IProjectPageService
 } from "azure-devops-extension-api";
 import { ProjectInfo } from "azure-devops-extension-api/Core";
-import { getService } from "azure-devops-extension-sdk";
+import { getService, IUserContext } from "azure-devops-extension-sdk";
 import { SagaIterator, Task } from "redux-saga";
 import {
     call,
@@ -239,12 +239,21 @@ function* sessionEstimationSaga(): SagaIterator {
         }
 
         if (!workItem.estimationFieldRefName) {
-            // No estimation field ref name given, we cannot save
-            console.error("Cannot save ");
+            // No estimation field ref name given, we cannot save, show error message and abort
+            const globalMessagesSvc: IGlobalMessagesService = yield call(
+                getService,
+                "ms.vss-tfs-web.tfs-global-messages-service"
+            );
+            globalMessagesSvc.addToast({
+                duration: 5000,
+                message: `Cannot save estimate, no field is configured for work items of type ${workItem.workItemType}`,
+                forceOverrideExisting: true
+            });
             continue;
         }
 
         try {
+            // Save estimate to work item
             const workItemService = Services.getService<IWorkItemService>(
                 WorkItemServiceId
             );

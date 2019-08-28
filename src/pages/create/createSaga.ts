@@ -11,6 +11,7 @@ import { ISessionService, SessionServiceId } from "../../services/sessions";
 import { ITeamService, TeamServiceId } from "../../services/teams";
 import { loadSessions } from "../home/sessionsActions";
 import * as Actions from "./createActions";
+import { IIdentityService, IdentityServiceId } from "../../services/identity";
 
 export function* createSaga() {
     yield all([initSaga(), iterationSaga(), createSessionSaga()]);
@@ -79,6 +80,13 @@ export function* createSessionSaga() {
                 .toString(36)
                 .substr(2, 5)
         };
+
+        // Set creator's identity
+        const identityService = Services.getService<IIdentityService>(
+            IdentityServiceId
+        );
+        const identity = identityService.getCurrentIdentity();
+        session.createdBy = identity.id;
 
         // Save session
         const sessionService = Services.getService<ISessionService>(

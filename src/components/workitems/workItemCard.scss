@@ -1,17 +1,19 @@
 @import "azure-devops-ui/core/_platformCommon.scss";
 
-.work-item-card {
-    cursor: pointer;
-
+.work-item-card {    
     min-width: 200px;
     min-height: 50px;
     margin-bottom: 15px;
+
+    &.clickable {
+        cursor: pointer;
+    }
 
     .bolt-card {
         transition: 0.3s linear all;
     }
 
-    &:hover .bolt-card {
+    &.clickable:hover .bolt-card {
         background-color: $neutral-8;
     }
 

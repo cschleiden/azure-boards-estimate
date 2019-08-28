@@ -14,6 +14,7 @@ export const setMode = factory<SessionMode>("setMode");
 export const setSource = factory<SessionSource>("setSource");
 export const setCardSets = factory<ICardSet[]>("setCardSets");
 export const setCardSet = factory<string>("setCardSet");
+export const setLimitedToCreator = factory<boolean>("setLimitedToCreator");
 export const setTeams = factory<ITeam[]>("setTeams");
 export const setTeam = factory<string>("setTeam");
 export const setIterations = factory<IIteration[]>("setIterations");

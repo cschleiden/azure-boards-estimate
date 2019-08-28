@@ -14,7 +14,7 @@ export interface IWorkItemCardProps {
 
     selected: boolean;
 
-    onClick: () => void;
+    onClick?: () => void;
 }
 
 export const WorkItemCard: React.SFC<IWorkItemCardProps> = props => {
@@ -27,7 +27,11 @@ export const WorkItemCard: React.SFC<IWorkItemCardProps> = props => {
 
     return (
         <div
-            className={css("work-item-card", selected && "selected")}
+            className={css(
+                "work-item-card",
+                onClick && "clickable",
+                selected && "selected"
+            )}
             onClick={onClick}
         >
             <Card>

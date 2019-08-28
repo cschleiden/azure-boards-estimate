@@ -18,6 +18,7 @@ import { IState } from "../../../reducer";
 import { commitEstimate, estimate, reveal } from "../sessionActions";
 import { CustomEstimate } from "./customEstimate";
 import "./workItemView.scss";
+import { canPerformAdminActions } from "../selector";
 
 interface IWorkItemProps {
     identity: IIdentity;
@@ -30,6 +31,8 @@ interface IWorkItemProps {
 
     revealed: boolean;
     canReveal: boolean;
+
+    canPerformAdminActions: boolean;
 }
 
 const Actions = {
@@ -41,6 +44,7 @@ const Actions = {
 class WorkItemView extends React.Component<IWorkItemProps & typeof Actions> {
     render() {
         const {
+            canPerformAdminActions,
             cardSet,
             selectedWorkItem,
             selectedCardId,
@@ -98,43 +102,54 @@ class WorkItemView extends React.Component<IWorkItemProps & typeof Actions> {
                                 revealed={revealed}
                             />
 
-                            <SubTitle>Actions</SubTitle>
-                            {canReveal && (
-                                <div className="flex-column flex-self-start">
-                                    <Button primary onClick={this.doReveal}>
-                                        Reveal
-                                    </Button>
-                                </div>
-                            )}
-                            {revealed && (
+                            {canPerformAdminActions && (
                                 <>
-                                    <div>
-                                        These were the cards selected, choose
-                                        one to commit the value to the work
-                                        item:
-                                    </div>
-                                    <div>
-                                        {(estimates || []).map(e => {
-                                            const card = cardSet.cards.find(
-                                                x =>
-                                                    x.identifier ===
-                                                    e.cardIdentifier
-                                            )!;
-                                            return this.renderCard(
-                                                card,
-                                                false,
-                                                false,
-                                                this.doCommitCard.bind(
-                                                    this,
-                                                    card
-                                                )
-                                            );
-                                        })}
-                                    </div>
-                                    <div>Or enter a custom value:</div>
-                                    <CustomEstimate
-                                        commitEstimate={this.doCommitValue}
-                                    />
+                                    <SubTitle>Actions</SubTitle>
+                                    {canReveal && (
+                                        <div className="flex-column flex-self-start">
+                                            <Button
+                                                primary
+                                                onClick={this.doReveal}
+                                            >
+                                                Reveal
+                                            </Button>
+                                        </div>
+                                    )}
+                                    {revealed && (
+                                        <>
+                                            <div>
+                                                These were the cards selected,
+                                                choose one to commit the value
+                                                to the work item:
+                                            </div>
+                                            <div>
+                                                {(estimates || []).map(e => {
+                                                    const card = cardSet.cards.find(
+                                                        x =>
+                                                            x.identifier ===
+                                                            e.cardIdentifier
+                                                    )!;
+                                                    return this.renderCard(
+                                                        card,
+                                                        false,
+                                                        false,
+                                                        (canPerformAdminActions &&
+                                                            this.doCommitCard.bind(
+                                                                this,
+                                                                card
+                                                            )) ||
+                                                            undefined
+                                                    );
+                                                })}
+                                            </div>
+                                            <div>Or enter a custom value:</div>
+                                            <CustomEstimate
+                                                commitEstimate={
+                                                    this.doCommitValue
+                                                }
+                                            />
+                                        </>
+                                    )}
                                 </>
                             )}
                         </div>
@@ -209,16 +224,20 @@ export default connect(
 
         const estimates = session.estimates[session.selectedWorkItem!.id];
 
+        const admin = canPerformAdminActions(state);
+
         return {
             identity: state.init.currentIdentity!,
             cardSet: session.cardSet!,
             selectedWorkItem: session.selectedWorkItem!,
             estimates,
             revealed: session.revealed,
-            canReveal: !session.revealed && estimates && estimates.length > 0,
+            canReveal:
+                admin && !session.revealed && estimates && estimates.length > 0,
             selectedCardId:
                 state.session.ownEstimate &&
-                state.session.ownEstimate.cardIdentifier
+                state.session.ownEstimate.cardIdentifier,
+            canPerformAdminActions: admin
         };
     },
     Actions
