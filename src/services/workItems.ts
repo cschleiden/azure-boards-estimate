@@ -97,7 +97,7 @@ export class WorkItemService implements IWorkItemService {
             return {
                 name: wi.name,
                 icon: wi.icon,
-                color: wi.color,
+                color: transformColor(wi.color),
                 estimationFieldRefName
             };
         });
@@ -341,4 +341,12 @@ export class WorkItemService implements IWorkItemService {
 
         return "System.Description";
     }
+}
+
+function transformColor(color: string): string {
+    if (color && color.length === 8) {
+        return color.substr(2);
+    }
+
+    return color;
 }
