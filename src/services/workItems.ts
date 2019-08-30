@@ -96,6 +96,8 @@ export class WorkItemService implements IWorkItemService {
 
             return {
                 name: wi.name,
+                icon: wi.icon,
+                color: wi.color,
                 estimationFieldRefName
             };
         });
@@ -176,54 +178,69 @@ export class WorkItemService implements IWorkItemService {
                             workItemType.estimationFieldRefName;
                     });
 
-                    // Get process type id
+                    // Get process type id - if this is an inherited customization based project
                     const properties = await coreClient.getProjectProperties(
                         project.id,
                         ["System.ProcessTemplateType"]
                     );
-                    const processTypeId = properties[0].value;
+                    if (properties.length > 0) {
+                        const processTypeId = properties[0].value;
 
-                    const workItemTypes = await processClient.getProcessWorkItemTypes(
-                        processTypeId
-                    );
+                        const workItemTypes = await processClient.getProcessWorkItemTypes(
+                            processTypeId
+                        );
 
-                    // Map of friendly work item name (e.g. Bug) to reference name inherited customization
-                    const witNameToRefNameMapping: {
-                        [name: string]: string;
-                    } = {};
-                    workItemTypes.forEach(x => {
-                        witNameToRefNameMapping[x.name] = x.referenceName;
-                    });
+                        // Map of friendly work item name (e.g. Bug) to reference name inherited customization
+                        const witNameToRefNameMapping: {
+                            [name: string]: string;
+                        } = {};
+                        workItemTypes.forEach(x => {
+                            witNameToRefNameMapping[x.name] = x.referenceName;
+                        });
 
-                    // Get work item type definitions
-                    await Promise.all(
-                        Array.from(projectInfo.workItemTypes.keys()).map(
-                            async workItemTypeName => {
-                                const workItemType = await processClient.getProcessWorkItemType(
-                                    processTypeId,
-                                    witNameToRefNameMapping[workItemTypeName],
-                                    4 /* GetWorkItemTypeExpand.Layout */
-                                );
+                        // Get work item type definitions
+                        await Promise.all(
+                            Array.from(projectInfo.workItemTypes.keys()).map(
+                                async workItemTypeName => {
+                                    const workItemType = await processClient.getProcessWorkItemType(
+                                        processTypeId,
+                                        witNameToRefNameMapping[
+                                            workItemTypeName
+                                        ],
+                                        4 /* GetWorkItemTypeExpand.Layout */
+                                    );
 
-                                // Look for the first page and get the first HTML control
-                                const descriptionFieldRefName = this._getDescription(
-                                    workItemType.layout.pages
-                                );
-                                projectInfo.workItemTypes.set(
-                                    workItemTypeName,
-                                    {
-                                        icon: workItemType.icon,
-                                        color: workItemType.color,
-                                        descriptionFieldRefName,
-                                        estimationFieldRefName:
-                                            witEstimationFieldRefNameMapping[
-                                                workItemType.name
-                                            ]
-                                    }
-                                );
-                            }
-                        )
-                    );
+                                    // Look for the first page and get the first HTML control
+                                    const descriptionFieldRefName = this._getDescription(
+                                        workItemType.layout.pages
+                                    );
+                                    projectInfo.workItemTypes.set(
+                                        workItemTypeName,
+                                        {
+                                            icon: workItemType.icon,
+                                            color: workItemType.color,
+                                            descriptionFieldRefName,
+                                            estimationFieldRefName:
+                                                witEstimationFieldRefNameMapping[
+                                                    workItemType.name
+                                                ]
+                                        }
+                                    );
+                                }
+                            )
+                        );
+                    } else {
+                        // XML customization
+                        currentProjectWorkItemTypes.forEach(workItemType => {
+                            projectInfo.workItemTypes.set(workItemType.name, {
+                                icon: workItemType.icon && workItemType.icon.id,
+                                color: workItemType.color,
+                                descriptionFieldRefName: "System.Description", // Default to description
+                                estimationFieldRefName:
+                                    workItemType.estimationFieldRefName
+                            });
+                        });
+                    }
                 }
             )
         );
