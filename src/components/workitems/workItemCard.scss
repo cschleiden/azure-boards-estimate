@@ -4,6 +4,8 @@
     min-width: 200px;
     min-height: 50px;
     margin-bottom: 15px;
+    height: auto;
+    overflow: hidden;
 
     &.clickable {
         cursor: pointer;
