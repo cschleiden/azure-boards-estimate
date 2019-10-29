@@ -4,6 +4,7 @@
     min-width: 200px;
     min-height: 50px;
     margin-bottom: 15px;
+    flex-shrink: 0;
 
     &.clickable {
         cursor: pointer;
@@ -24,11 +25,12 @@
     &--info {
         display: flex;
         align-items: flex-start;
-        flex-grow: 1;
+        flex-grow: 1;        
     }
 
     &--title {
         overflow-wrap: break-word;
+        padding-right: 5px;
     }
 
     &--meta {
