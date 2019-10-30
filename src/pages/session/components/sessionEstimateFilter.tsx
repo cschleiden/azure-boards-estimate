@@ -16,7 +16,6 @@ export class SessionEstimateFilter extends React.Component<ISessionEstimateFilte
 
     render(): JSX.Element {
         const {
-            updateFilter
         } = this.props;
 
         return (
