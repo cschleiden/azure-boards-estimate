@@ -18,7 +18,7 @@ import { getSnapshot } from "./selector";
 import {
     estimate,
     estimateSet,
-    estimateUpdated,
+    estimateUpdated,    
     reveal,
     revealed,
     selectWorkItem,
