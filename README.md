@@ -10,6 +10,7 @@
 
 1. Run `npm run package-dev` and upload the package as a private extension to your  Azure DevOps publisher account
 > Note: You may need to add a directory called `build` to the project root when running the script. The output of the `package-dev` script is there.
+ - Be sure to update the `manifest.json` to use your publisher's ID before running the script.
 2. Install the private extension on your Azure DevOps oragnization and test your changes.
 
 
