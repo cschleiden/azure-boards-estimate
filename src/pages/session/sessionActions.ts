@@ -50,4 +50,4 @@ export const userLeft = factory<string>("userLeft");
 
 export const snapshotReceived = factory<ISnapshot>("snapshotReceived");
 
-export const workItemsFiltered = factory<EstimateFilter>("workItemsFiltered");
+export const filterCards = factory<EstimateFilter>("filterCards");

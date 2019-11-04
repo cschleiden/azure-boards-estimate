@@ -3,6 +3,7 @@ import React from "react";
 
 interface ISessionEstimateFilter {
     estimateFilter: EstimateFilter;
+    updateFilter: (filter: EstimateFilter) => {}
 }
 
 export class SessionEstimateFilter extends React.Component<ISessionEstimateFilter> {
@@ -14,8 +15,13 @@ export class SessionEstimateFilter extends React.Component<ISessionEstimateFilte
 
     estimateFilter: EstimateFilter = EstimateFilter.All;
 
+    updateFilter(filter: EstimateFilter) {
+        this.estimateFilter = filter;
+    }
+
     render(): JSX.Element {
         const {
+            estimateFilter
         } = this.props;
 
         return (
@@ -25,8 +31,8 @@ export class SessionEstimateFilter extends React.Component<ISessionEstimateFilte
                         value={this.props.estimateFilter}
                         onInput={
                             (() => {
-                                this.props.updateFilter(
-                                    this.estimateFilter
+                                this.updateFilter(
+                                    estimateFilter
                                 );
                             })
                 }/>

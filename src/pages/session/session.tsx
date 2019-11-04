@@ -31,7 +31,8 @@ import {
     leaveSession,
     loadedSession,
     loadSession,
-    selectWorkItem
+    selectWorkItem,
+    filterCards
 } from "./sessionActions";
 import { EstimateFilter } from "../../model/estimateFilter";
 
@@ -52,7 +53,6 @@ interface ISessionProps extends IPageProps<ISessionParams> {
     cardSet: ICardSet;
     selectedWorkItem: IWorkItem | null;
     activeUsers: IUserInfo[];
-
     canPerformAdminActions: boolean;
 }
 
@@ -61,7 +61,8 @@ const Actions = {
     loadedSession,
     selectWorkItem,
     leaveSession,
-    endSession
+    endSession,
+    filterCards  
 };
 
 class Session extends React.Component<
@@ -159,10 +160,7 @@ class Session extends React.Component<
 
                 <div className="page-content page-content-top flex-row session-content">
 
-                    <SessionEstimateFilter 
-                        updateFilter={(value: EstimateFilter) => { 
-                                        this.estimateFilter = value; }} 
-                    />
+                    <SessionEstimateFilter estimateFilter={this.estimateFilter} updateFilter={(value: EstimateFilter) => this.estimateFilter = value} />
 
                     <div className="work-item-list v-scroll-auto flex-column custom-scrollbar flex-noshrink">
                         {workItems.filter(workItem => {
