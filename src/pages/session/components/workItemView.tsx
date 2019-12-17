@@ -147,7 +147,7 @@ class WorkItemView extends React.Component<IWorkItemProps & typeof Actions> {
                                                 <>
                                                     <SubTitle>Average</SubTitle>
                                                     <div className="flex-column flex-self-start">
-                                                        {Math.round((estimates || []).reduce((sum, e) => {
+                                                        {(estimates || []).reduce((sum, e) => {
                                                             const card = cardSet.cards.find(
                                                                 x =>
                                                                     x.identifier ===
@@ -155,7 +155,7 @@ class WorkItemView extends React.Component<IWorkItemProps & typeof Actions> {
                                                             )!;
                                                             sum += parseInt((card!.value!.toString() || "0"));
                                                             return sum;
-                                                        }, 0) / (estimates!.length || 1))}
+                                                        }, 0) / (estimates!.length || 1)}
                                                     </div>
                                                 </>
                                             )}
@@ -249,7 +249,7 @@ export default connect(
             selectedWorkItem: session.selectedWorkItem!,
             estimates,
             revealed: session.revealed,
-            confidence: session.cardSet!.type === CardSetType.NumericWithAverage,
+            confidence: session.cardSet!.type === CardSetType.Numeric,
             canReveal:
                 admin && !session.revealed && estimates && estimates.length > 0,
             selectedCardId:

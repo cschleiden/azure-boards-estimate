@@ -5,8 +5,7 @@ export interface ICard {
 
 export enum CardSetType {
     Numeric,
-    Ordinal,
-    NumericWithAverage
+    Ordinal
 }
 
 export interface ICardSet {
@@ -163,7 +162,7 @@ export const defaultCardSets: ICardSet[] = [
     },
     {
         id: "confidence",
-        type: CardSetType.NumericWithAverage,
+        type: CardSetType.Numeric,
         name: "Confidence",
         cards: [
             {
