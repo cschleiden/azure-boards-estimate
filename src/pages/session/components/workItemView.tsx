@@ -31,7 +31,7 @@ interface IWorkItemProps {
 
     revealed: boolean;
     canReveal: boolean;
-    confidence: boolean;
+    showAverage: boolean;
     canPerformAdminActions: boolean;
 }
 
@@ -51,7 +51,7 @@ class WorkItemView extends React.Component<IWorkItemProps & typeof Actions> {
             estimates,
             canReveal,
             revealed,
-            confidence
+            showAverage
         } = this.props;
 
         return (
@@ -143,7 +143,7 @@ class WorkItemView extends React.Component<IWorkItemProps & typeof Actions> {
                                                     );
                                                 })}
                                             </div>
-                                            {confidence && (
+                                            {showAverage && (
                                                 <>
                                                     <SubTitle>Average</SubTitle>
                                                     <div className="flex-column flex-self-start">
@@ -249,7 +249,7 @@ export default connect(
             selectedWorkItem: session.selectedWorkItem!,
             estimates,
             revealed: session.revealed,
-            confidence: session.cardSet!.type === CardSetType.Numeric,
+            showAverage: session.cardSet!.type === CardSetType.Numeric,
             canReveal:
                 admin && !session.revealed && estimates && estimates.length > 0,
             selectedCardId:
