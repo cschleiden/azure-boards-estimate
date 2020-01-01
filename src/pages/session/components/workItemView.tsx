@@ -10,7 +10,7 @@ import { Votes } from "../../../components/votes";
 import { WorkItemDescription } from "../../../components/workitems/workItemDescription";
 import { WorkItemEstimate } from "../../../components/workitems/workItemEstimate";
 import { WorkItemHeader } from "../../../components/workitems/workItemHeader";
-import { ICard, ICardSet } from "../../../model/cards";
+import { ICard, ICardSet, CardSetType } from "../../../model/cards";
 import { IEstimate } from "../../../model/estimate";
 import { IIdentity } from "../../../model/identity";
 import { IWorkItem } from "../../../model/workitem";
@@ -31,7 +31,7 @@ interface IWorkItemProps {
 
     revealed: boolean;
     canReveal: boolean;
-
+    showAverage: boolean;
     canPerformAdminActions: boolean;
 }
 
@@ -50,7 +50,8 @@ class WorkItemView extends React.Component<IWorkItemProps & typeof Actions> {
             selectedCardId,
             estimates,
             canReveal,
-            revealed
+            revealed,
+            showAverage
         } = this.props;
 
         return (
@@ -142,6 +143,22 @@ class WorkItemView extends React.Component<IWorkItemProps & typeof Actions> {
                                                     );
                                                 })}
                                             </div>
+                                            {showAverage && (
+                                                <>
+                                                    <SubTitle>Average</SubTitle>
+                                                    <div className="flex-column flex-self-start">
+                                                        {(estimates || []).reduce((sum, e) => {
+                                                            const card = cardSet.cards.find(
+                                                                x =>
+                                                                    x.identifier ===
+                                                                    e.cardIdentifier
+                                                            )!;
+                                                            sum += parseInt((card!.value!.toString() || "0"));
+                                                            return sum;
+                                                        }, 0) / (estimates!.length || 1)}
+                                                    </div>
+                                                </>
+                                            )}
                                             <div>Or enter a custom value:</div>
                                             <CustomEstimate
                                                 commitEstimate={
@@ -232,6 +249,7 @@ export default connect(
             selectedWorkItem: session.selectedWorkItem!,
             estimates,
             revealed: session.revealed,
+            showAverage: session.cardSet!.type === CardSetType.Numeric,
             canReveal:
                 admin && !session.revealed && estimates && estimates.length > 0,
             selectedCardId:

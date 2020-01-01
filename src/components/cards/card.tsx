@@ -56,7 +56,7 @@ export interface ICardComponentProps {
 
     disabled?: boolean;
     selected?: boolean;
-
+    showAverage?: boolean;
     onClick?: () => void;
 }
 
@@ -68,6 +68,7 @@ export class Card extends React.Component<ICardComponentProps> {
             back,
             disabled = false,
             flipped = false,
+            showAverage = false,
             onClick,
             size = CardSize.medium,
             selected

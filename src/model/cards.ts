@@ -160,4 +160,32 @@ export const defaultCardSets: ICardSet[] = [
             }
         ]
     },
+    {
+        id: "confidence",
+        type: CardSetType.Numeric,
+        name: "Confidence",
+        cards: [
+            {
+                identifier: "1",
+                value: 1
+            },
+            {
+                identifier: "2",
+                value: 2
+            },
+            {
+                identifier: "3",
+                value: 3
+            },
+            {
+                identifier: "4",
+                value: 4
+            },
+            {
+                identifier: "5",
+                value: 5
+            }
+
+        ]
+    }
 ];
