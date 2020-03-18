@@ -1,3 +1,5 @@
+# Update 3/18/2020: As stated below, I do not work on the Azure Boards team anymore, and as of now I don't have time to maintain this extension. 
+
 # Azure Boards Estimate
 
 ![](https://github.com/cschleiden/azure-boards-estimate/workflows/Build%20&%20Deploy/badge.svg)
