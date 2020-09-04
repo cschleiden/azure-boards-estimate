@@ -42,7 +42,7 @@
     "@types/react-redux": "^6.0.2",
     "@types/react-router-dom": "^4.2.7",
     "base64-inline-loader": "^1.1.1",
-    "node-sass": "4.13.0",
+    "node-sass": "4.13.1",
     "tfx-cli": "0.6.3",
     "typescript": "^3.1.6",
     "tslint-react": "4.0.0"
