@@ -118,6 +118,7 @@ class SettingsPanel extends React.Component<
             <Panel
                 titleProps={{
                     text: "Settings",
+                    // @ts-ignore
                     size: TitleSize.Large
                 }}
                 onDismiss={this.onDismiss}

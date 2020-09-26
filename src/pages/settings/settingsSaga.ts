@@ -20,11 +20,11 @@ export function* rootSettingsSaga(): SagaIterator {
 }
 
 function* initSaga(): SagaIterator {
-    const projectService: IProjectPageService = yield call(
+    const projectService: any = yield call(
         getService,
         "ms.vss-tfs-web.tfs-page-data-service"
     );
-    const projectInfo: ProjectInfo = yield call([
+    const projectInfo: any = yield call([
         projectService,
         projectService.getProject
     ]);
@@ -33,12 +33,12 @@ function* initSaga(): SagaIterator {
     const workItemService = Services.getService<IWorkItemService>(
         WorkItemServiceId
     );
-    const workItemTypes: IWorkItemType[] = yield call(
+    const workItemTypes: any = yield call(
         [workItemService, workItemService.getWorkItemTypes],
         projectInfo.id
     );
 
-    const fields: IField[] = yield call(
+    const fields: any = yield call(
         [workItemService, workItemService.getFields],
         projectInfo.id
     );
@@ -56,18 +56,18 @@ export function* setFieldSaga(
 ): SagaIterator {
     const workItemType = action.payload;
 
-    const projectService: IProjectPageService = yield call(
+    const projectService: any = yield call(
         getService,
         "ms.vss-tfs-web.tfs-page-data-service"
     );
-    const projectInfo: ProjectInfo = yield call([
+    const projectInfo: any = yield call([
         projectService,
         projectService.getProject
     ]);
 
     const service = Services.getService<ISessionService>(SessionServiceId);
 
-    let configuration: { [name: string]: IWorkItemType } = yield call(
+    let configuration: any = yield call(
         [service, service.getSettingsValue as any],
         projectInfo.id,
         FieldConfiguration

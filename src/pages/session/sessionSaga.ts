@@ -226,12 +226,12 @@ export function* sessionSaga(action: ReturnType<typeof loadSession>) {
  */
 function* sessionEstimationSaga(): SagaIterator {
     while (true) {
-        const action: ReturnType<typeof commitEstimate> = yield take(
+        const action: any = yield take(
             commitEstimate
         );
         const value = action.payload;
 
-        const workItem: IWorkItem = yield select<IState>(
+        const workItem: any = yield select<IState>(
             s => s.session.selectedWorkItem
         );
         if (!workItem || !value) {
@@ -240,7 +240,7 @@ function* sessionEstimationSaga(): SagaIterator {
 
         if (!workItem.estimationFieldRefName) {
             // No estimation field ref name given, we cannot save, show error message and abort
-            const globalMessagesSvc: IGlobalMessagesService = yield call(
+            const globalMessagesSvc: any = yield call(
                 getService,
                 "ms.vss-tfs-web.tfs-global-messages-service"
             );
@@ -272,10 +272,10 @@ function* sessionEstimationSaga(): SagaIterator {
             );
 
             // Move to next work item, if it exists or to first one
-            const workItems: IWorkItem[] = yield select<IState>(
+            const workItems: any = yield select<IState>(
                 s => s.session.workItems
             );
-            const idx = workItems.findIndex(x => x.id === workItem.id);
+            const idx = workItems.findIndex((x: IWorkItem) => x.id === workItem.id);
             const nextWorkItemId =
                 idx + 1 < workItems.length
                     ? workItems[idx + 1].id
@@ -287,11 +287,11 @@ function* sessionEstimationSaga(): SagaIterator {
 
 function* notificationSaga(): SagaIterator {
     while (true) {
-        const action: ReturnType<typeof estimateUpdated> = yield take(
+        const action: any = yield take(
             estimateUpdated
         );
 
-        const workItem: IWorkItem = yield select<IState>(
+        const workItem: any = yield select<IState>(
             s => s.session.selectedWorkItem
         );
         if (workItem && workItem.id !== action.payload.workItemId) {
@@ -299,7 +299,7 @@ function* notificationSaga(): SagaIterator {
             continue;
         }
 
-        const globalMessagesSvc: IGlobalMessagesService = yield call(
+        const globalMessagesSvc: any = yield call(
             getService,
             "ms.vss-tfs-web.tfs-global-messages-service"
         );

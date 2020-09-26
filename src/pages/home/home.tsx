@@ -104,6 +104,7 @@ class HomePage extends React.Component<IHomePageProps & typeof Actions> {
                     {error && (
                         <MessageCard
                             className="fatal-error"
+                            // @ts-ignore
                             severity={MessageCardSeverity.Error}
                             onDismiss={clearError}
                         >

@@ -29,7 +29,7 @@ import {
 } from "./sessionActions";
 
 export function* channelSaga(session: ISession): SagaIterator {
-    const channel: IChannel = yield call(getChannel, session.id, session.mode);
+    const channel: any = yield call(getChannel, session.id, session.mode);
     yield call([channel, channel.start], session.id);
 
     yield put(connected());

@@ -37,7 +37,7 @@ export enum CardSize {
     medium
 }
 
-export enum CardState {}
+export enum CardState { }
 
 export interface ICardData {
     label: string;
@@ -74,13 +74,6 @@ export class Card extends React.Component<ICardComponentProps> {
             selected
         } = this.props;
 
-        let BaseElement: string;
-        if (onClick) {
-            BaseElement = "button";
-        } else {
-            BaseElement = "div";
-        }
-
         const cardClassNames = css(
             flipped && "flipped",
             disabled && "disabled",
@@ -94,47 +87,55 @@ export class Card extends React.Component<ICardComponentProps> {
             fontSize: getFontSize(size)
         };
 
-        return (
-            <BaseElement
+        const content: JSX.Element = <div
+            className="card--flip"
+            style={{
+                width: `${getWidth(size)}px`,
+                height: `${getHeight(size)}px`
+            }}
+        >
+            <div
                 className={css(
-                    className,
-                    onClick && "card--base-button",
-                    !onClick && "card--base"
+                    "card--frame",
+                    "card--front",
+                    cardClassNames
                 )}
-                disabled={disabled}
-                onClick={onClick}
+                style={cardStyle}
             >
+                {this.renderCard(front)}
+            </div>
+            {back && (
                 <div
-                    className="card--flip"
-                    style={{
-                        width: `${getWidth(size)}px`,
-                        height: `${getHeight(size)}px`
-                    }}
-                >
-                    <div
-                        className={css(
-                            "card--frame",
-                            "card--front",
-                            cardClassNames
-                        )}
-                        style={cardStyle}
-                    >
-                        {this.renderCard(front)}
-                    </div>
-                    {back && (
-                        <div
-                            className={css(
-                                "card--frame",
-                                "card--back",
-                                cardClassNames
-                            )}
-                            style={cardStyle}
-                        >
-                            {this.renderCard(back)}
-                        </div>
+                    className={css(
+                        "card--frame",
+                        "card--back",
+                        cardClassNames
                     )}
+                    style={cardStyle}
+                >
+                    {this.renderCard(back)}
                 </div>
-            </BaseElement>
+            )}
+        </div>
+
+        const cssClassName: string = css(
+            className,
+            onClick && "card--base-button",
+            !onClick && "card--base"
+        )
+
+        return (
+            <React.Fragment>
+                {
+                    onClick ? <button className={cssClassName}
+                        disabled={disabled}
+                        onClick={onClick}>
+                        {content}
+                    </button> : <div className={cssClassName}>
+                            {content}
+                        </div>
+                }
+            </React.Fragment>
         );
     }
 
