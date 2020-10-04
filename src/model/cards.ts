@@ -25,6 +25,10 @@ export const defaultCardSets: ICardSet[] = [
         name: "Default",
         cards: [
             {
+                identifier: "0.5",
+                value: 0
+            },
+            {
                 identifier: "1",
                 value: 1
             },
