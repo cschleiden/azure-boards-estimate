@@ -191,7 +191,7 @@ export const defaultCardSets: ICardSet[] = [
     {
         id: "weeks",
         type: CardSetType.Numeric,
-        name: "Confidence",
+        name: "Weeks",
         cards: [
             {
                 identifier: "0.5",
