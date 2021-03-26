@@ -1,4 +1,8 @@
-# Update 3/18/2020: As stated below, I do not work on the Azure Boards team anymore, and as of now I don't have time to maintain this extension. 
+# Update 3/26/2021: I am going to shut down this extension and deactive the backend in the near future. 
+
+I also have lost permissions to update the extension on the marketplace unfortunately, so I'm not able to accept any PRs or deploy changes. 
+
+## Update 3/18/2020: As stated below, I do not work on the Azure Boards team anymore, and as of now I don't have time to maintain this extension. 
 
 # Azure Boards Estimate
 
