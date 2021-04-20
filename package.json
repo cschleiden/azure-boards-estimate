@@ -14,7 +14,7 @@
     "office-ui-fabric-react": "6.105.0",
     "prop-types": "^15.6.2",
     "react": "^16.8.5",
-    "react-dev-utils": "^7.0.1",
+    "react-dev-utils": "^11.0.4",
     "react-dom": "^16.8.5",
     "react-redux": "5.0.7",
     "react-router-dom": "4.3.1",
