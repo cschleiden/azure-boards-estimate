@@ -27,4 +27,4 @@ export const filter = factory<string>("filter");
 
 export const fatalError = factory<string>("error");
 
-export const clearError = factory<void>("clearError");
+export const clearError : any = factory<void>("clearError");

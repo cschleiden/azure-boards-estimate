@@ -34,12 +34,12 @@ export function* initSaga(): SagaIterator {
     const sessionService = Services.getService<ISessionService>(
         SessionServiceId
     );
-    const sessions: ISession[] = yield call([
+    const sessions: any = yield call([
         sessionService,
         sessionService.getSessions
     ]);
 
-    const legacySessions: ISession[] = yield call([
+    const legacySessions: any = yield call([
         sessionService,
         sessionService.getLegacySessions
     ]);
@@ -51,29 +51,30 @@ export function* initSaga(): SagaIterator {
     //
 
     // Get project
-    const projectService: IProjectPageService = yield call(
+    const projectService: any = yield call(
         getService,
         "ms.vss-tfs-web.tfs-page-data-service"
     );
-    const projectInfo: ProjectInfo = yield call([
+    const projectInfo: any = yield call([
         projectService,
         projectService.getProject
     ]);
 
     // Resolve iterations
     const teamAndIterationIds: [string, string][] = sessions
-        .filter(s => s.source === SessionSource.Sprint)
-        .map(s => (s.sourceData as string) || ";")
-        .map<[string, string]>(x => {
+        .filter((s: ISession) => s.source === SessionSource.Sprint)
+        .map((s: ISession) => (s.sourceData as string) || ";")
+        .map((x: String) => {
             const segments = x.split(";");
             return [segments[0], segments[1]];
         })
-        .filter(x => x[0] && x[1]);
+        .filter((x: [string, string]) => x[0] && x[1]);
+
     if (teamAndIterationIds && teamAndIterationIds.length > 0) {
         const sprintService = Services.getService<ISprintService>(
             SprintServiceId
         );
-        const iterations: IIteration[] = yield call(
+        const iterations: any = yield call(
             [sprintService, sprintService.getIterations],
             projectInfo.id,
             teamAndIterationIds
@@ -84,7 +85,7 @@ export function* initSaga(): SagaIterator {
 
     // Resolve teams
     const teamService = Services.getService<ITeamService>(TeamServiceId);
-    const teams: ITeam[] = yield call(
+    const teams: any = yield call(
         [teamService, teamService.getAllTeams],
         projectInfo.id
     );
@@ -92,16 +93,16 @@ export function* initSaga(): SagaIterator {
     yield put(setTeamLookup(toLookup(teams, t => t.id)));
 
     // Resolve queries
-    const queryIds = sessions
-        .filter(s => s.source === SessionSource.Query)
-        .map(s => s.sourceData as string);
+    const queryIds: string[] = sessions
+        .filter((s: ISession) => s.source === SessionSource.Query)
+        .map((s: ISession) => s.sourceData as string);
 
     if (queryIds && queryIds.length > 0) {
         const queriesService = Services.getService<IQueriesService>(
             QueriesServiceId
         );
 
-        const queries = yield call(
+        const queries : any = yield call(
             [queriesService, queriesService.getQueries],
             projectInfo.id,
             queryIds

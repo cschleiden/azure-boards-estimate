@@ -5,16 +5,14 @@ import { Button } from "azure-devops-ui/Button";
 export const CustomEstimate: React.FC<{
     commitEstimate: (value: string) => void;
 }> = props => {
-    const [value, setValue] = React.useState();
+    const [value, setValue]: [any, any] = React.useState();
 
     return (
         <div className="flex-row">
             <TextField
                 value={value}
                 onChange={(
-                    event: React.ChangeEvent<
-                        HTMLInputElement | HTMLTextAreaElement
-                    >,
+                    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
                     value: string
                 ) => {
                     setValue(value);

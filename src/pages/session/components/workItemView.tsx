@@ -42,6 +42,14 @@ const Actions = {
 };
 
 class WorkItemView extends React.Component<IWorkItemProps & typeof Actions> {
+    eliminateDuplicates(estimates: IEstimate[]): IEstimate[] {
+        return estimates.filter(
+            (estimate, index, estimatesList) => estimatesList.findIndex(
+                estimate2 => (estimate2.cardIdentifier === estimate.cardIdentifier)
+            ) === index
+        )
+    }
+
     render() {
         const {
             canPerformAdminActions,
@@ -124,7 +132,7 @@ class WorkItemView extends React.Component<IWorkItemProps & typeof Actions> {
                                                 to the work item:
                                             </div>
                                             <div>
-                                                {(estimates || []).map(e => {
+                                                {this.eliminateDuplicates(estimates || []).map(e => {
                                                     const card = cardSet.cards.find(
                                                         x =>
                                                             x.identifier ===

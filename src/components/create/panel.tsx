@@ -163,6 +163,7 @@ class CreatePanel extends React.Component<
             <Panel
                 titleProps={{
                     text: "Create new session",
+                    //@ts-ignore
                     size: TitleSize.Large
                 }}
                 onDismiss={onDismiss}
