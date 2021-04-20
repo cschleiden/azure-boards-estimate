@@ -187,5 +187,44 @@ export const defaultCardSets: ICardSet[] = [
             }
 
         ]
+    },
+    {
+        id: "weeks",
+        type: CardSetType.Numeric,
+        name: "Weeks",
+        cards: [
+            {
+                identifier: "0.5",
+                value: 0.5
+            },
+            {
+                identifier: "1",
+                value: 1
+            },
+            {
+                identifier: "1.5",
+                value: 1.5
+            },
+            {
+                identifier: "2",
+                value: 2
+            },
+            {
+                identifier: "2.5",
+                value: 2.5
+            },
+            {
+                identifier: "3",
+                value: 3
+            },
+            {
+                identifier: "3.5",
+                value: 3.5
+            },
+            {
+                identifier: "4",
+                value: 4
+            }
+        ]
     }
 ];
