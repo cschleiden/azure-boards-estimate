@@ -187,5 +187,36 @@ export const defaultCardSets: ICardSet[] = [
             }
 
         ]
+    },
+    {
+        id: "doubling",
+        type: CardSetType.Numeric,
+        name: "Doubling",
+        cards: [
+            {
+                identifier: "1",
+                value: 1
+            },
+            {
+                identifier: "2",
+                value: 2
+            },
+            {
+                identifier: "4",
+                value: 4
+            },
+            {
+                identifier: "8",
+                value: 8
+            },
+            {
+                identifier: "16",
+                value: 16
+            },
+            {
+                identifier: "☕",
+                value: null
+            }
+        ]
     }
 ];
