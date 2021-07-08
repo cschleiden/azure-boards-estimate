@@ -5,6 +5,7 @@ import { ISession } from "../../model/session";
 import { IUserInfo } from "../../model/user";
 import { IWorkItem } from "../../model/workitem";
 import { ISnapshot } from "../../model/snapshots";
+import { EstimateFilter } from "../../model/estimateFilter";
 
 const factory = actionCreatorFactory("session");
 
@@ -48,3 +49,5 @@ export const userJoined = factory<IUserInfo>("userJoined");
 export const userLeft = factory<string>("userLeft");
 
 export const snapshotReceived = factory<ISnapshot>("snapshotReceived");
+
+export const filterCards = factory<EstimateFilter>("filterCards");

@@ -24,14 +24,17 @@ import { IState } from "../../reducer";
 import { IPageProps } from "../props";
 import WorkItemView from "./components/workItemView";
 import { getActiveUsers, canPerformAdminActions } from "./selector";
+import { SessionEstimateFilter } from "./components/sessionEstimateFilter"; 
 import "./session.scss";
 import {
     endSession,
     leaveSession,
     loadedSession,
     loadSession,
-    selectWorkItem
+    selectWorkItem,
+    filterCards
 } from "./sessionActions";
+import { EstimateFilter } from "../../model/estimateFilter";
 
 interface ISessionParams {
     id: string;
@@ -46,10 +49,10 @@ interface ISessionProps extends IPageProps<ISessionParams> {
     session: ISession;
     workItems: IWorkItem[];
     estimates: ISessionEstimates;
+    estimateFilter: EstimateFilter;
     cardSet: ICardSet;
     selectedWorkItem: IWorkItem | null;
     activeUsers: IUserInfo[];
-
     canPerformAdminActions: boolean;
 }
 
@@ -58,7 +61,8 @@ const Actions = {
     loadedSession,
     selectWorkItem,
     leaveSession,
-    endSession
+    endSession,
+    filterCards  
 };
 
 class Session extends React.Component<
@@ -76,6 +80,8 @@ class Session extends React.Component<
     componentDidMount() {
         this.props.loadSession(this.props.match.params.id);
     }
+
+    estimateFilter: EstimateFilter = EstimateFilter.All;
 
     render(): JSX.Element {
         const {
@@ -153,8 +159,21 @@ class Session extends React.Component<
                 </CustomHeader>
 
                 <div className="page-content page-content-top flex-row session-content">
+
+                    <SessionEstimateFilter estimateFilter={this.estimateFilter} updateFilter={(value: EstimateFilter) => this.estimateFilter = value} />
+
                     <div className="work-item-list v-scroll-auto flex-column custom-scrollbar flex-noshrink">
-                        {workItems.map(workItem => (
+                        {workItems.filter(workItem => {
+                                switch(this.estimateFilter){
+                                    case 0:
+                                        return workItem.estimate;
+                                    case 1:
+                                        return (!workItem.estimate || workItem.estimate == 0);
+                                    case 2:
+                                        return true;
+                                }
+                            }
+                        ).map(workItem => (
                             <WorkItemCard
                                 key={workItem.id}
                                 cardSet={cardSet}
@@ -195,6 +214,7 @@ export default connect(
             cardSet: state.session.cardSet,
             workItems: state.session.workItems,
             estimates: state.session.estimates,
+            estimateFilter: state.session.estimateFilter,
             selectedWorkItem: state.session.selectedWorkItem,
             activeUsers: getActiveUsers(state),
             canPerformAdminActions: canPerformAdminActions(state)

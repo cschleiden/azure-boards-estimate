@@ -5,6 +5,7 @@ import { IdentityServiceId, IIdentityService } from "../identity";
 import { Services } from "../services";
 import { defineIncomingOperation, defineOperation, IChannel } from "./channels";
 import { ISnapshot } from "../../model/snapshots";
+import { EstimateFilter } from "../../model/estimateFilter";
 
 const baseUrl = "https://estimate-backend.azurewebsites.net/";
 
@@ -16,7 +17,8 @@ enum Action {
     Reveal = "reveal",
     Add = "add",
     Switch = "switch",
-    Snapshot = "snapshot"
+    Snapshot = "snapshot",
+    Filter = "filter"
 }
 
 export class SignalRChannel implements IChannel {
@@ -50,6 +52,10 @@ export class SignalRChannel implements IChannel {
     snapshot = defineOperation<ISnapshot>(async snapshot => {
         await this.sendToOtherClients(Action.Snapshot, snapshot);
     });
+
+    filter = defineOperation<EstimateFilter>(async filterValue => {
+        await this.sendToOtherClients(Action.Filter, filterValue);
+    })
 
     private connection: signalR.HubConnection | undefined;
     private sessionId: string = "";
@@ -139,6 +145,12 @@ export class SignalRChannel implements IChannel {
             case Action.Snapshot: {
                 this.snapshot.incoming(payload);
                 break;
+            }
+
+            case Action.Filter: {
+                // A user has changed the value of the 
+                // EstimateFilter selector
+                this.filter.incoming(payload);
             }
 
             default: {

@@ -6,6 +6,7 @@ import { ISession } from "../../model/session";
 import { IUserInfo } from "../../model/user";
 import { IWorkItem } from "../../model/workitem";
 import * as Actions from "./sessionActions";
+import { EstimateFilter } from "../../model/estimateFilter";
 
 export const initialState = {
     status: {
@@ -18,6 +19,7 @@ export const initialState = {
     selectedWorkItem: null as IWorkItem | null,
     ownEstimate: null as IEstimate | null,
     estimates: {} as ISessionEstimates,
+    estimateFilter: {} as EstimateFilter,
     revealed: false,
     activeUsers: [] as IUserInfo[],
     currentUser: null as IUserInfo | null
